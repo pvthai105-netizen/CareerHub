@@ -39,8 +39,9 @@ def seed():
                 continue
             user = User(
                 email=data["email"],
-                hashed_password=pwd_context.hash(data["password"]),
+                password_hash=pwd_context.hash(data["password"]),
                 role=data["role"],
+                is_active=True, 
             )
             db.add(user)
             print(f"[ADD]  {data['email']} ({data['role']})")
