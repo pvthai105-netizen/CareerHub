@@ -2,7 +2,10 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from app.database import engine
+from app import models 
 
+models.Base.metadata.create_all(bind=engine)  
 app = FastAPI(title="CareerHub API")
 
 
