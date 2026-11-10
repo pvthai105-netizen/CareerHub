@@ -8,7 +8,7 @@ Ví dụ: feature/t02cdb5-dang-nhap , feature/t02cdb5-dang-ky
 
 ## Commit message
 Định dạng: <MÃ-TASK>: <động từ> <nội dung>
-Ví dụ: T02CDB5: thêm form đăng nhập
+Ví dụ: T02CDB5: thêm form đăng nhập, T02D13E-Clone-repo-nhóm
 
 ## Pull Request
 - Tiêu đề bắt đầu bằng mã task
