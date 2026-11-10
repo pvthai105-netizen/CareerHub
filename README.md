@@ -17,7 +17,17 @@ Nền tảng tìm việc làm thêm và thực tập cho sinh viên.
 
 ## Chạy dự án
 
-Yêu cầu: Python 3.10 trở lên.
+Yêu cầu: Python 3.10 trở lên và MySQL 8.
+
+### 1. Tạo database
+
+Trong MySQL (Workbench hoặc dòng lệnh):
+
+```sql
+CREATE DATABASE careerhub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 2. Cài đặt và chạy backend
 
 ```
 cd backend
@@ -25,6 +35,17 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 copy .env.example .env
+```
+
+Mở file `.env` và sửa `DATABASE_URL` theo user, mật khẩu MySQL trên máy bạn:
+
+```
+DATABASE_URL='mysql+pymysql://USER:MẬT_KHẨU@localhost:3306/careerhub?charset=utf8mb4'
+```
+
+Rồi chạy:
+
+```
 uvicorn app.main:app --reload
 ```
 
@@ -36,7 +57,7 @@ Sau khi chạy, kiểm tra các địa chỉ:
 
 Lưu ý:
 - Các lệnh trên dành cho Windows PowerShell. Nếu `Activate.ps1` báo lỗi execution policy, chạy một lần `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-- File `.env` chứa cấu hình riêng của từng máy, không đẩy lên GitHub. Chỉ sửa trong `.env`, không sửa `.env.example`.
+- File `.env` chứa mật khẩu riêng của từng máy, không đẩy lên GitHub. Chỉ sửa trong `.env`, không điền mật khẩu thật vào `.env.example`.
 
 ## Cấu trúc thư mục
 
