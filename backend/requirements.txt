@@ -4,4 +4,4 @@ sqlalchemy
 python-dotenv
 pymysql
 cryptography
-passlib[bcrypt]
+bcrypt
