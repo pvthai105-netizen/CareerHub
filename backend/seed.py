@@ -1,35 +1,18 @@
-from passlib.context import CryptContext
-
-from app.database import SessionLocal, engine
+import app.models  # noqa: F401  (nạp mọi model để create_all tạo đủ bảng)
+from app.database import Base, SessionLocal, engine
 from app.models.user import Role, User
-import app.models  # đảm bảo create_all chạy trước
+from app.security import hash_password
 
-# Tạo bảng nếu chưa có
-from app.database import Base
-Base.metadata.create_all(bind=engine)
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+# Mật khẩu DEMO, chỉ dùng để thử trên máy. Không dùng mật khẩu thật.
 SAMPLE_USERS = [
-    {
-        "email": "admin@careerhub.vn",
-        "password": "Admin@123",
-        "role": Role.admin,
-    },
-    {
-        "email": "employer@careerhub.vn",
-        "password": "Employer@123",
-        "role": Role.employer,
-    },
-    {
-        "email": "student@careerhub.vn",
-        "password": "Student@123",
-        "role": Role.student,
-    },
+    {"email": "admin@careerhub.vn", "password": "Admin@123", "role": Role.admin},
+    {"email": "employer@careerhub.vn", "password": "Employer@123", "role": Role.employer},
+    {"email": "student@careerhub.vn", "password": "Student@123", "role": Role.student},
 ]
 
 
 def seed():
+    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         for data in SAMPLE_USERS:
@@ -37,16 +20,20 @@ def seed():
             if exists:
                 print(f"[SKIP] {data['email']} đã tồn tại")
                 continue
-            user = User(
-                email=data["email"],
-                password_hash=pwd_context.hash(data["password"]),
-                role=data["role"],
-                is_active=True, 
+            db.add(
+                User(
+                    email=data["email"],
+                    password_hash=hash_password(data["password"]),
+                    role=data["role"],
+                    is_active=True,
+                )
             )
-            db.add(user)
-            print(f"[ADD]  {data['email']} ({data['role']})")
+            print(f"[ADD] {data['email']} ({data['role'].value})")
         db.commit()
-        print("\n✅ Seed hoàn tất!")
+        print("Seed hoàn tất")
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 
