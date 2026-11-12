@@ -23,9 +23,9 @@ def seed():
             db.add(
                 User(
                     email=data["email"],
-                    password_hash=hash_password(data["password"]),
+                    hashed_password=hash_password(data["password"]),
                     role=data["role"],
-                    is_active=True,
+                    is_locked=False,
                 )
             )
             print(f"[ADD] {data['email']} ({data['role'].value})")
