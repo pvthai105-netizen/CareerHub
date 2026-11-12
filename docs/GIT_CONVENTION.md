@@ -3,7 +3,7 @@
 ## Nhánh
 - main: bản ổn định, không commit trực tiếp
 - feature/<mã-task>-<tên-ngắn>: làm tính năng mới
-- fix/<mã-task>-<tên-ngắn>: sửa lỗi
+- fix/<mã-task>-<tên-ngắn>: sửa lỗi chức năng
 Ví dụ: feature/t02cdb5-dang-nhap
 
 ## Commit message

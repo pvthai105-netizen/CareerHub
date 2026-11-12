@@ -1,4 +1,10 @@
 from app.database import Base  # noqa: F401
 from app.models.user import User  # noqa: F401
-from app.models.job import Job  # noqa: F401
-from app.models.saved_jobs import SavedJob  # noqa: F401
+from app.models.student_profiles import StudentProfile  # noqa: F401
+from app.models.employee_profiles import EmployerProfile  # noqa: F401
+from app.models.jobs import Job  # noqa: F401
+from app.models.save_jobs import SavedJob  # noqa: F401
+from app.models.applications import Application  # noqa: F401
+from app.models.notifications import Notification  # noqa: F401
+from app.models.chat_messages import ChatMessage  # noqa: F401
+from app.models.cv_analyses import CvAnalysis  # noqa: F401

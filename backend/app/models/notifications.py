@@ -1,0 +1,33 @@
+from datetime import datetime, timezone
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import relationship
+
+from app.database import Base
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    
+    # Khóa ngoại trỏ tới người nhận thông báo
+    user_id = Column(
+        Integer, 
+        ForeignKey("users.id", ondelete="CASCADE"), 
+        nullable=False, 
+        index=True
+    )
+    
+    title = Column(String(255), nullable=False)
+    message = Column(Text, nullable=False)
+    is_read = Column(Boolean, default=False, nullable=False)
+    
+    created_at = Column(
+        DateTime, 
+        default=lambda: datetime.now(timezone.utc), 
+        server_default=func.now(), 
+        nullable=False
+    )
+
+    # Quan hệ N - 1 với User
+    user = relationship("User", back_populates="notifications")
