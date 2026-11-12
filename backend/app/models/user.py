@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, Enum, Integer, String
 from app.database import Base
+from sqlalchemy.orm import relationship
 
 
 class Role(str, enum.Enum):
@@ -20,3 +21,6 @@ class User(Base):
     role = Column(Enum(Role), nullable=False)
     is_locked = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    jobs = relationship("Job", back_populates="employer")
+    saved_jobs = relationship("SavedJob", back_populates="user")
