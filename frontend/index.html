@@ -1,19 +1,266 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CareerHub</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <h1>CareerHub</h1>
-  <p>Nền tảng tìm việc làm thêm và thực tập cho sinh viên.</p>
-  <button id="btn-health">Kiểm tra kết nối backend</button>
-  <p id="health-result"></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CareerHub - Nền tảng kết nối việc làm sinh viên</title>
 
+    <!-- CSS dùng chung -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ====================================================================
+       1. HEADER DÙNG CHUNG (Cả nhóm copy đoạn này sang các trang khác)
+       ==================================================================== 
+       nếu là nền màu tím thì để ảnh Logo Career Connect White-->
+    <header class="site-header">
+      <div class="container site-navbar">
+        <a href="index.html" class="brand-logo" title="CareerConnect">
+          <img src="Logo Career Connect.png" alt="CareerConnect Logo" />
+        </a>
 
-  <script src="/js/api.js"></script>
-  <script src="/js/main.js"></script>
-</body>
+        <!-- Menu chính -->
+        <ul class="nav-menu">
+          <li><a href="/index.html" class="nav-link active">Trang chủ</a></li>
+          <li><a href="#" class="nav-link">Tìm việc</a></li>
+          <li><a href="#" class="nav-link">Công ty</a></li>
+          <li><a href="#" class="nav-link">Trợ lý AI</a></li>
+        </ul>
+
+        <!-- Nút tài khoản -->
+        <div class="nav-actions">
+          <a href="#" class="btn btn-outline">Đăng nhập</a>
+          <a href="#" class="btn btn-primary">Đăng ký</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+       2. NỘI DUNG MẪU (Các thành phần UI chung để cả nhóm tái sử dụng)
+       ==================================================================== -->
+    <main class="container" style="padding-top: 36px">
+      <!-- Khối Thông báo (Alert Feedback) -->
+      <div class="alert-feedback">
+        <span style="font-size: 20px; color: var(--success); font-weight: bold"
+          >✓</span
+        >
+        <div>
+          <div class="alert-title">Cập nhật thành công</div>
+          <p class="alert-desc">Thay đổi của bạn đã được hệ thống lưu lại.</p>
+        </div>
+      </div>
+
+      <!-- Khối 01: Nút bấm (Buttons) -->
+      <section style="margin-bottom: 40px">
+        <h2>01. Nút bấm (Buttons)</h2>
+        <div
+          style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center"
+        >
+          <button class="btn btn-primary">Tìm việc ngay</button>
+          <button class="btn btn-outline">Đăng nhập</button>
+          <button class="btn btn-ghost">Xem thêm</button>
+          <button class="btn btn-primary" disabled>Nút bị khóa</button>
+        </div>
+      </section>
+
+      <!-- Khối 02: Nhãn trạng thái (Badges) -->
+      <section style="margin-bottom: 40px">
+        <h2>02. Nhãn trạng thái (Badges)</h2>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap">
+          <span class="badge-status status-active">Đang hoạt động</span>
+          <span class="badge-status status-pending">Đang chờ</span>
+          <span class="badge-status status-rejected">Từ chối</span>
+          <span class="badge-status status-interview">Phỏng vấn</span>
+        </div>
+      </section>
+
+      <!-- Khối 03: Thẻ công việc (Job Card - Chuẩn Lumina Studio) -->
+      <section style="margin-bottom: 40px">
+        <h2>03. Thẻ công việc (Job Cards)</h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+          "
+        >
+          <div class="card card-job">
+            <div class="job-company">LUMINA STUDIO</div>
+            <div class="job-title">UI/UX Designer</div>
+            <div class="job-meta">TP. Hồ Chí Minh · Toàn thời gian</div>
+            <div class="job-salary">12 – 18 triệu / tháng</div>
+          </div>
+
+          <div class="card card-job">
+            <div class="job-company">FPT SOFTWARE</div>
+            <div class="job-title">Frontend Developer (Intern)</div>
+            <div class="job-meta">Hà Nội · Bán thời gian</div>
+            <div class="job-salary">7 – 10 triệu / tháng</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Khối 04: Biểu mẫu (Form: Input, Select, Checkbox, Radio) -->
+      <section style="margin-bottom: 40px">
+        <h2>04. Biểu mẫu (Forms)</h2>
+        <div class="card" style="max-width: 520px">
+          <div class="form-group">
+            <label class="form-label">Nhập địa chỉ email</label>
+            <input
+              type="email"
+              class="form-control"
+              placeholder="nhapemail@example.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Lọc theo trạng thái</label>
+            <select class="form-select">
+              <option>Tất cả trạng thái</option>
+              <option>Đang hoạt động</option>
+              <option>Đang chờ</option>
+              <option>Phỏng vấn</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" checked />
+              <span>Đã chọn</span>
+            </label>
+            <label class="form-check">
+              <input type="radio" name="role_demo" checked />
+              <span>Sinh viên</span>
+            </label>
+            <label class="form-check">
+              <input type="radio" name="role_demo" />
+              <span>Nhà tuyển dụng</span>
+            </label>
+          </div>
+
+          <button class="btn btn-primary">Xác nhận gửi</button>
+        </div>
+      </section>
+
+      <!-- Khối 05: Bảng dữ liệu (Table) & Phân trang -->
+      <section style="margin-bottom: 40px">
+        <h2>05. Bảng dữ liệu (Table)</h2>
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>Ứng viên</th>
+                <th>Vị trí</th>
+                <th>Ngày nộp</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Nguyễn Văn A</strong></td>
+                <td>UI/UX Designer</td>
+                <td>12/11/2026</td>
+                <td>
+                  <span class="badge-status status-active">Đang hoạt động</span>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-outline"
+                    style="padding: 4px 10px; font-size: 12px"
+                  >
+                    Xem hồ sơ
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Trần Thị B</strong></td>
+                <td>Frontend Intern</td>
+                <td>11/11/2026</td>
+                <td>
+                  <span class="badge-status status-pending">Đang chờ</span>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-outline"
+                    style="padding: 4px 10px; font-size: 12px"
+                  >
+                    Xem hồ sơ
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="pagination-wrapper">
+          <button class="page-btn">←</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span style="color: var(--muted); padding: 0 4px">...</span>
+          <button class="page-btn">12</button>
+          <button class="page-btn">→</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ====================================================================
+       3. FOOTER DÙNG CHUNG (Cả nhóm copy đoạn này sang các trang khác)
+       ==================================================================== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <!-- Logo ở footer nếu là nền màu tím thì để ảnh Logo Career Connect White-->
+
+            <a href="index.html" class="brand-logo" style="margin-bottom: 12px">
+              <img src="Logo Career Connect.png" alt="CareerConnect Logo" />
+            </a>
+            <p class="footer-desc">
+              Một nền tảng. Mọi cơ hội. Kết nối việc làm thêm và thực tập chất
+              lượng cao cho sinh viên.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="footer-col-title">Ứng viên</h4>
+            <ul class="footer-links">
+              <li><a href="#">Tìm việc làm</a></li>
+              <li><a href="#">Tạo CV</a></li>
+              <li><a href="#">Cẩm nang</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-col-title">Nhà tuyển dụng</h4>
+            <ul class="footer-links">
+              <li><a href="#">Đăng tin tuyển dụng</a></li>
+              <li><a href="#">Tìm kiếm hồ sơ</a></li>
+              <li><a href="#">Bảng giá</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-col-title">Liên hệ</h4>
+            <p style="color: var(--muted); font-size: 13px; margin-bottom: 6px">
+              📍 Học viện CN Bưu chính Viễn thông
+            </p>
+            <p style="color: var(--muted); font-size: 13px; margin-bottom: 6px">
+              ✉️ contact@careerconnect.vn
+            </p>
+            <p style="color: var(--muted); font-size: 13px">
+              📞 (024) 3754 5555
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>© 2026 CareerHub / CareerConnect - Nhóm 4.</span>
+          <span>Task T02D172 · Sprint 1</span>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>

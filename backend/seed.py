@@ -40,7 +40,7 @@ def seed():
             if not user:
                 user = User(
                     email=data["email"],
-                    password_hash=hash_password(data["password"]),
+                    hashed_password=hash_password(data["password"]),
                     role=data["role"],
                     is_locked=False,
                 )

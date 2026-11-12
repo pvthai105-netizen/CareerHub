@@ -1,5 +1,5 @@
-from app.database import Base
-from app.models.user import User  # noqa: F401 – để create_all tìm thấy model
+from app.database import Base  # noqa: F401
+from app.models.user import User  # noqa: F401
 from app.models.student_profiles import StudentProfile  # noqa: F401
 from app.models.employee_profiles import EmployerProfile  # noqa: F401
 from app.models.jobs import Job  # noqa: F401

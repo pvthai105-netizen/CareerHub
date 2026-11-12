@@ -95,3 +95,6 @@ Sau khi chạy, kiểm tra các địa chỉ:
 - `frontend/`: HTML, CSS, JS thuần (FastAPI phục vụ bằng StaticFiles)
   - `js/api.js`: hàm gọi API, tự gắn JWT vào mỗi yêu cầu
 - `docs/`: tài liệu của nhóm
+
+## Thiết kế Giao diện (UI/UX)
+- **Figma Design / Prototype:** [Xem bản thiết kế CareerHub trên Figma](https://www.figma.com/design/ZOI0e2EpPElIK4PQvOzZzW/Wireframe-Figma?node-id=0-1&p=f&t=oV3zrzk4q8oNlbAo-0)
