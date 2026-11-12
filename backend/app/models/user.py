@@ -22,6 +22,7 @@ class User(Base):
     is_locked = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
+
     employer_profile = relationship(
         "EmployerProfile",
         back_populates="user",
@@ -67,5 +68,8 @@ class User(Base):
     cv_analyses = relationship(
         "CvAnalysis", 
         back_populates="student", 
-        cascade="all, delete-orphan",
+        cascade="all, delete-orphan"
     )
+    
+   
+
