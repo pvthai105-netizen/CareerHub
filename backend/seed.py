@@ -1,14 +1,14 @@
 import app.models  # noqa: F401  (nạp mọi model để Base.metadata nhận đủ bảng)
 from datetime import date, datetime, timedelta, timezone
-from app.models.jobs import JobStatus
+from app.models.job import JobStatus
 from app.database import Base, SessionLocal, engine
 from app.models.applications import Application, ApplicationStatus
 from app.models.chat_messages import ChatMessage
 from app.models.cv_analyses import CvAnalysis
 from app.models.employee_profiles import EmployerProfile
-from app.models.jobs import Job
+from app.models.job import Job
 from app.models.notifications import Notification
-from app.models.save_jobs import SavedJob
+from app.models.saved_jobs import SavedJob
 from app.models.student_profiles import DesiredJobType, StudentProfile
 from app.models.user import Role, User
 from app.security import hash_password
