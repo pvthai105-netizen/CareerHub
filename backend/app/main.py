@@ -4,10 +4,11 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
 from app import models 
+from app.routers import auth
 
 models.Base.metadata.create_all(bind=engine)  
 app = FastAPI(title="CareerHub API")
-
+app.include_router(auth.router)
 
 @app.get("/api/health")
 def health():
