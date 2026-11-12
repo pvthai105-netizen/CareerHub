@@ -29,4 +29,4 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
     role: Role
-    is_active: bool
+    is_locked: bool
