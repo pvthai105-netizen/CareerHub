@@ -1,6 +1,6 @@
 import app.models  # noqa: F401  (nạp mọi model để Base.metadata nhận đủ bảng)
 from datetime import date, datetime, timedelta, timezone
-
+from app.models.jobs import JobStatus
 from app.database import Base, SessionLocal, engine
 from app.models.applications import Application, ApplicationStatus
 from app.models.chat_messages import ChatMessage
@@ -234,7 +234,7 @@ def seed():
                     salary_max=s_max,
                     job_type=j_type,
                     deadline=d_line,
-                    status="Đang tuyển",
+                    status=JobStatus.ACTIVE.value,
                     employer_id=emp_id,
                 )
                 db.add(job)
@@ -316,8 +316,8 @@ def seed():
         ]
 
         for stu_id, j_id in saved_samples:
-            if not db.query(SavedJob).filter(SavedJob.student_id == stu_id, SavedJob.job_id == j_id).first():
-                db.add(SavedJob(student_id=stu_id, job_id=j_id))
+            if not db.query(SavedJob).filter(SavedJob.user_id == stu_id, SavedJob.job_id == j_id).first():
+                db.add(SavedJob(user_id=stu_id, job_id=j_id))
                 print(f"[ADD] SavedJob: Student #{stu_id} saved Job #{j_id}")
 
         db.commit()

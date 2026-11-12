@@ -42,7 +42,7 @@ class User(Base):
     )                       
     saved_jobs = relationship(
         "SavedJob", 
-        back_populates="student", 
+        back_populates="user", 
         cascade="all, delete-orphan"
     )
     # Kết nối với bảng đơn dv
