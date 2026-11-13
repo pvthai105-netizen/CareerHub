@@ -24,8 +24,12 @@ async function apiFetch(path, options = {}) {
 
   if (response.status === 401) {
     Auth.clear();
+    // Nếu đang không ở trang login hay register thì tự chuyển về login
+    if (!window.location.pathname.includes("login.html") && !window.location.pathname.includes("register.html")) {
+      window.location.href = "/login.html?expired=1";
+    }
   }
-
+  
   let data = null;
   try {
     data = await response.json();

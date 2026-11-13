@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký tài khoản - CareerHub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .auth-container {
+        min-height: calc(100vh - 72px - 250px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+      }
+      .auth-card {
+        width: 100%;
+        max-width: 480px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 36px 32px;
+        box-shadow: var(--shadow-md);
+      }
+      .auth-header {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .auth-header h1 {
+        font-size: 24px;
+        color: var(--ink);
+        margin-bottom: 8px;
+      }
+      .auth-header p {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0;
+      }
+      .role-selection {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .role-box {
+        border: 2px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 14px;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .role-box:hover {
+        border-color: var(--accent);
+      }
+      .role-box.active {
+        border-color: var(--indigo);
+        background-color: var(--info-bg);
+      }
+      .role-box input {
+        display: none;
+      }
+      .role-title {
+        font-weight: 600;
+        color: var(--ink);
+        font-size: 14px;
+      }
+      .role-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .form-error {
+        color: #be4848;
+        font-size: 12px;
+        margin-top: 4px;
+        display: none;
+      }
+      .alert-box {
+        display: none;
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+      .alert-box.error {
+        display: block;
+        background-color: var(--error-bg);
+        color: #be4848;
+        border: 1px solid #f5c2c2;
+      }
+      .alert-box.success {
+        display: block;
+        background-color: var(--success-bg);
+        color: #387c53;
+        border: 1px solid #c2e3ce;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="site-header">
+      <div class="container site-navbar">
+        <a href="index.html" class="brand-logo" title="CareerHub">
+          <img src="Logo Career Connect.png" alt="CareerHub Logo" />
+        </a>
+        <div class="nav-actions">
+          <span style="font-size: 13px; color: var(--muted)">Đã có tài khoản?</span>
+          <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Register Form -->
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>Tạo tài khoản mới</h1>
+          <p>Tham gia cộng đồng kết nối việc làm CareerHub</p>
+        </div>
+
+        <div id="register-alert" class="alert-box"></div>
+
+        <form id="form-register" novalidate>
+          <!-- Chọn vai trò -->
+          <label class="form-label">Bạn tham gia với tư cách là:</label>
+          <div class="role-selection">
+            <label class="role-box active" id="label-role-student">
+              <input type="radio" name="role" value="student" checked />
+              <div class="role-title">🎓 Sinh viên</div>
+              <div class="role-desc">Tìm việc & thực tập</div>
+            </label>
+            <label class="role-box" id="label-role-employer">
+              <input type="radio" name="role" value="employer" />
+              <div class="role-title">🏢 Doanh nghiệp</div>
+              <div class="role-desc">Đăng tin tuyển dụng</div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Địa chỉ Email</label>
+            <input
+              type="email"
+              id="reg-email"
+              class="form-control"
+              placeholder="name@example.com"
+              required
+            />
+            <div class="form-error" id="err-reg-email">Email không đúng định dạng.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Mật khẩu (tối thiểu 8 ký tự)</label>
+            <input
+              type="password"
+              id="reg-password"
+              class="form-control"
+              placeholder="Tối thiểu 8 ký tự"
+              required
+            />
+            <div class="form-error" id="err-reg-password">Mật khẩu phải có ít nhất 8 ký tự.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-repassword">Xác nhận mật khẩu</label>
+            <input
+              type="password"
+              id="reg-repassword"
+              class="form-control"
+              placeholder="Nhập lại mật khẩu"
+              required
+            />
+            <div class="form-error" id="err-reg-repassword">Mật khẩu xác nhận không khớp.</div>
+          </div>
+
+          <button type="submit" id="btn-submit-reg" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+            Đăng ký tài khoản
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/auth.js"></script>
+  </body>
+</html>
