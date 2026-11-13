@@ -15,7 +15,10 @@ def hash_password(password: str) -> str:
 
 def verify_password(password: str, password_hash: str) -> bool:
     """Kiểm tra mật khẩu người dùng nhập có khớp bản băm đã lưu không."""
-    return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+    try:
+        return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+    except Exception:
+        return False
 
 
 def create_access_token(user_id: int, role) -> str:
