@@ -38,7 +38,7 @@ def get_current_user(
     if user is None:
         raise _unauthorized()
 
-    if not user.is_locked:
+    if user.is_locked:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Tài khoản đã bị khoá",
