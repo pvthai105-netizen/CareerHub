@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-def register(data: RegisterRequest, db: Session = Depends(get_db)):
+def register(data: RegisterRequest = Depends(), db: Session = Depends(get_db)):
     email = data.email.lower()
     if db.query(User).filter(User.email == email).first():
         raise HTTPException(status.HTTP_409_CONFLICT, "Email đã được sử dụng")
@@ -34,7 +34,7 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(data: LoginRequest, db: Session = Depends(get_db)):
+def login(data: LoginRequest = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email.lower()).first()
     # Dùng một thông báo chung, không tiết lộ email hay mật khẩu bên nào sai
     if user is None or not verify_password(data.password, user.hashed_password):
