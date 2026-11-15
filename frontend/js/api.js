@@ -20,7 +20,12 @@ async function apiFetch(path, options = {}) {
     body = JSON.stringify(body);
   }
 
-  const response = await fetch(API_BASE + path, { ...options, headers, body });
+  let response;
+  try {
+    response = await fetch(API_BASE + path, { ...options, headers, body });
+  } catch (netErr) {
+    throw new Error("Không thể kết nối đến máy chủ Backend (hãy kiểm tra xem uvicorn đã chạy chưa)");
+  }
 
   if (response.status === 401) {
     Auth.clear();
@@ -29,17 +34,32 @@ async function apiFetch(path, options = {}) {
       window.location.href = "/login.html?expired=1";
     }
   }
-  
+
   let data = null;
+  let text = "";
   try {
-    data = await response.json();
+    text = await response.text();
+    data = JSON.parse(text);
   } catch (e) {
-    // phản hồi không có nội dung JSON
+    // Phản hồi không phải JSON (có thể là lỗi 500 hoặc trang 404 HTML)
   }
 
   if (!response.ok) {
-    throw new Error((data && data.detail) || "Có lỗi xảy ra");
+    let errorMsg = "Có lỗi xảy ra";
+    if (data && data.detail) {
+      if (typeof data.detail === "string") {
+        errorMsg = data.detail;
+      } else if (Array.isArray(data.detail) && data.detail.length > 0) {
+        errorMsg = data.detail[0].msg || JSON.stringify(data.detail);
+      } else {
+        errorMsg = JSON.stringify(data.detail);
+      }
+    } else if (text) {
+      errorMsg = text.length < 100 ? text : `Lỗi máy chủ (${response.status})`;
+    }
+    throw new Error(errorMsg);
   }
+
   return data;
 }
 
