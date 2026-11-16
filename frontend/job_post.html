@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Career Hub – Quản lý tin tuyển dụng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tabler Icons (optional fallback) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.22.1/iconfont/tabler-icons.min.css" />
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./css/job_post.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Overlay for mobile drawer -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="logo">
+          <img src="./Logo Career Connect.png" alt="Career Connect Logo" />
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">NHÀ TUYỂN DỤNG</div>
+          <div class="company-card">
+            <strong class="company-name">LUMINA STUDIO</strong>
+            <span class="company-type">Tài khoản doanh nghiệp</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="#" class="menu-item">
+                <span class="menu-num">01</span>
+                <span class="menu-text">Tổng quan</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item active">
+                <span class="menu-num">02</span>
+                <span class="menu-text">Tin tuyển dụng</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item">
+                <span class="menu-num">03</span>
+                <span class="menu-text">Ứng viên</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item">
+                <span class="menu-num">04</span>
+                <span class="menu-text">Hồ sơ công ty</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item">
+                <span class="menu-num">05</span>
+                <span class="menu-text">Tin nhắn</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="promo-box">
+          <strong>Cùng tuyển đúng người</strong>
+          <p>Mẹo viết tin tuyển dụng thu hút ứng viên phù hợp.</p>
+        </div>
+        <a href="#" class="logout-link">
+          <span>Đăng xuất</span>
+          <svg class="icon-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main-area">
+      <!-- Header with 3 equal columns -->
+      <header class="header">
+        <!-- Col 1: Title & Hamburger (left-aligned) -->
+        <div class="header-col header-left">
+          <button class="hamburger-btn" id="hamburger" aria-label="Mở menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">Không gian tuyển dụng</span>
+        </div>
+
+        <!-- Col 2: Notification (centered) -->
+        <div class="header-col header-center">
+          <div class="header-notif">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-text">Thông báo</span>
+            <span class="notif-badge">03</span>
+          </div>
+        </div>
+
+        <!-- Col 3: User Profile (right-aligned) -->
+        <div class="header-col header-right">
+          <div class="header-user">
+            <span class="user-name">Lan Phương</span>
+            <!-- Mũi tên bên phải chữ Lan Phương -->
+            <svg class="user-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Content Header -->
+        <div class="content-header">
+          <div class="content-header-text">
+            <h1 class="page-title">Quản lý tin tuyển dụng</h1>
+            <p class="page-desc">Theo dõi hiệu quả và giữ thông tin tuyển dụng luôn cập nhật.</p>
+          </div>
+          <button class="btn-create-job">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Đăng tin mới</span>
+          </button>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+          <button class="tab-btn active">Tất cả 24</button>
+          <button class="tab-btn">Đang hoạt động 12</button>
+          <button class="tab-btn">Bản nháp 04</button>
+          <button class="tab-btn">Đã đóng 08</button>
+        </div>
+
+        <!-- Toolbar (Search & Filters) -->
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" placeholder="Tìm theo tên vị trí..." class="search-input" />
+          </div>
+          <div class="filter-box">
+            <select class="filter-select">
+              <option value="">Tất cả trạng thái</option>
+              <option value="active">Hoạt động</option>
+              <option value="draft">Bản nháp</option>
+              <option value="closed">Đã đóng</option>
+            </select>
+            <svg class="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Job Table Container -->
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="job-table">
+              <thead>
+                <tr>
+                  <th class="col-position">VỊ TRÍ</th>
+                  <th class="col-date">NGÀY ĐĂNG</th>
+                  <th class="col-deadline">HẠN TUYỂN</th>
+                  <th class="col-candidates">ỨNG VIÊN</th>
+                  <th class="col-status">TRẠNG THÁI</th>
+                  <th class="col-actions">THAO TÁC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="job-name">UI/UX Designer</div>
+                    <div class="job-category">Thiết kế &amp; công nghệ</div>
+                  </td>
+                  <td class="text-date">8/11/2026</td>
+                  <td class="text-date">30/12/2026</td>
+                  <td class="text-candidates">24</td>
+                  <td><span class="badge badge-active">Hoạt động</span></td>
+                  <td class="actions-cell">
+                    <a href="#" class="action-btn">Sửa</a>
+                    <a href="#" class="action-btn">Đóng</a>
+                    <a href="#" class="action-btn action-delete" aria-label="Xóa">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="job-name">Frontend Developer</div>
+                    <div class="job-category">Thiết kế &amp; công nghệ</div>
+                  </td>
+                  <td class="text-date">7/11/2026</td>
+                  <td class="text-date">30/12/2026</td>
+                  <td class="text-candidates">18</td>
+                  <td><span class="badge badge-active">Hoạt động</span></td>
+                  <td class="actions-cell">
+                    <a href="#" class="action-btn">Sửa</a>
+                    <a href="#" class="action-btn">Đóng</a>
+                    <a href="#" class="action-btn action-delete" aria-label="Xóa">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="job-name">Marketing Intern</div>
+                    <div class="job-category">Thiết kế &amp; công nghệ</div>
+                  </td>
+                  <td class="text-date">6/11/2026</td>
+                  <td class="text-date">30/12/2026</td>
+                  <td class="text-candidates">32</td>
+                  <td><span class="badge badge-active">Hoạt động</span></td>
+                  <td class="actions-cell">
+                    <a href="#" class="action-btn">Sửa</a>
+                    <a href="#" class="action-btn">Đóng</a>
+                    <a href="#" class="action-btn action-delete" aria-label="Xóa">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="job-name">Product Designer</div>
+                    <div class="job-category">Thiết kế &amp; công nghệ</div>
+                  </td>
+                  <td class="text-date">5/11/2026</td>
+                  <td class="text-date">30/12/2026</td>
+                  <td class="text-candidates">0</td>
+                  <td><span class="badge badge-draft">Bản nháp</span></td>
+                  <td class="actions-cell">
+                    <a href="#" class="action-btn">Sửa</a>
+                    <a href="#" class="action-btn">Đóng</a>
+                    <a href="#" class="action-btn action-delete" aria-label="Xóa">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="job-name">UX Research Intern</div>
+                    <div class="job-category">Thiết kế &amp; công nghệ</div>
+                  </td>
+                  <td class="text-date">4/11/2026</td>
+                  <td class="text-date">30/12/2026</td>
+                  <td class="text-candidates">12</td>
+                  <td><span class="badge badge-active">Hoạt động</span></td>
+                  <td class="actions-cell">
+                    <a href="#" class="action-btn">Sửa</a>
+                    <a href="#" class="action-btn">Đóng</a>
+                    <a href="#" class="action-btn action-delete" aria-label="Xóa">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="job-name">Graphic Designer</div>
+                    <div class="job-category">Thiết kế &amp; công nghệ</div>
+                  </td>
+                  <td class="text-date">3/11/2026</td>
+                  <td class="text-date">30/12/2026</td>
+                  <td class="text-candidates">8</td>
+                  <td><span class="badge badge-closed">Đã đóng</span></td>
+                  <td class="actions-cell">
+                    <a href="#" class="action-btn">Sửa</a>
+                    <a href="#" class="action-btn">Đóng</a>
+                    <a href="#" class="action-btn action-delete" aria-label="Xóa">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination Section with Left and Right Arrows -->
+        <div class="pagination-footer">
+          <div class="pagination-info">Hiển thị 6 trên 24 tin tuyển dụng</div>
+          <div class="pagination-pages">
+            <!-- Mũi tên trái -->
+            <button class="page-arrow prev" disabled aria-label="Trang trước">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </button>
+            <button class="page-number active">1</button>
+            <button class="page-number">2</button>
+            <button class="page-number">3</button>
+            <button class="page-number">4</button>
+            <!-- Mũi tên phải -->
+            <button class="page-arrow next" aria-label="Trang sau">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="./js/main.js"></script>
+</body>
+</html>
