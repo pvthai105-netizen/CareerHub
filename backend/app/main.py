@@ -7,12 +7,14 @@ from app import models
 from app.routers import auth
 from app.routers import job_router
 from utils.exceptions import exception_handlers
+from app.routers import student_router
 
 models.Base.metadata.create_all(bind=engine)  
 app = FastAPI(title="CareerHub API")
 exception_handlers(app)
 app.include_router(auth.router)
 app.include_router(job_router.router)
+app.include_router(student_router.router)
 
 @app.get("/api/health")
 def health():
