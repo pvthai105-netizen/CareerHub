@@ -7,3 +7,4 @@ cryptography
 bcrypt
 pyjwt
 pydantic[email]
+python-multipart
