@@ -65,7 +65,7 @@ Chạy lệnh trong thư mục `backend`:
 python seed.py
 ```
 
-Lệnh này tạo các bảng cần thiết và thêm 3 tài khoản mẫu nếu chưa tồn tại. Backend cũng tự tạo bảng `ai_usage_daily` khi khởi động để lưu số lượt gọi AI theo từng người dùng trong ngày.
+Lệnh này tạo các bảng cần thiết và thêm 3 tài khoản mẫu nếu chưa tồn tại.
 
 **Tài khoản demo:**
 
