@@ -1,6 +1,6 @@
 import enum
 from datetime import datetime, timezone
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint, func
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -45,6 +45,9 @@ class Application(Base):
         server_default=func.now(), 
         nullable=False
     )
+
+    cv_file_path = Column(String(255), nullable=True)
+    cover_letter = Column(Text, nullable=True)
 
     # Ràng buộc UNIQUE tổ hợp (job_id, student_id)
     __table_args__ = (
