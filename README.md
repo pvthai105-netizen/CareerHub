@@ -46,6 +46,15 @@ Mở file `.env` và sửa `DATABASE_URL` theo user, mật khẩu MySQL trên m�
 DATABASE_URL='mysql+pymysql://USER:MẬT_KHẨU@localhost:3306/careerhub?charset=utf8mb4'
 ```
 
+Chat tư vấn dùng Gemini API. Tạo API key tại [Google AI Studio](https://aistudio.google.com/apikey) rồi thêm vào `backend/.env`:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-3.5-flash-lite
+```
+
+Model này có free tier nhưng giới hạn lượt gọi có thể thay đổi. Theo chính sách Google, nội dung gửi bằng free tier có thể được dùng để cải thiện sản phẩm; không gửi thông tin nhạy cảm.
+
 ### 3. Tạo bảng và tài khoản demo
 
 Đảm bảo đã tạo database và cấu hình `.env` thành công.
@@ -56,7 +65,7 @@ Chạy lệnh trong thư mục `backend`:
 python seed.py
 ```
 
-Lệnh này tạo các bảng cần thiết và thêm 3 tài khoản mẫu nếu chưa tồn tại.
+Lệnh này tạo các bảng cần thiết và thêm 3 tài khoản mẫu nếu chưa tồn tại. Backend cũng tự tạo bảng `ai_usage_daily` khi khởi động để lưu số lượt gọi AI theo từng người dùng trong ngày.
 
 **Tài khoản demo:**
 
