@@ -3,7 +3,8 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-
+from math import ceil
+from datetime import date
 from app.models.job import Job, JobStatus, JobType
 from app.models.user import Role, User
 from app.schemas.job import JobCreateSchema, JobUpdateSchema, JobStatusPatchSchema
@@ -193,3 +194,99 @@ def change_status(
     db.commit()
     db.refresh(job)
     return job
+
+def get_public_jobs(
+    db: Session,                       # Kết nối database
+    *,
+    page: int = 1,                     # Trang hiện tại, mặc định là trang 1
+    limit: int = 10,                   # Số tin tuyển dụng mỗi trang, mặc định 10
+    keyword: str | None = None,        # Từ khóa tìm kiếm
+    industry: str | None = None,       # Ngành nghề cần lọc
+    location: str | None = None,       # Địa điểm cần lọc
+    min_salary: float | None = None,   # Mức lương tối thiểu người dùng mong muốn
+    max_salary: float | None = None,   # Mức lương tối đa người dùng mong muốn
+    job_type: JobType | None = None,   # Hình thức làm việc cần lọc
+) -> dict:
+
+    # Kiểm tra số trang phải lớn hơn hoặc bằng 1
+    if page < 1:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Số trang phải lớn hơn hoặc bằng 1.",
+        )
+
+    # Kiểm tra số lượng tin mỗi trang phải từ 1 đến 100
+    if not (1 <= limit <= 100):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Số lượng tin mỗi trang phải từ 1 đến 100.",
+        )
+
+    # Kiểm tra mức lương tối thiểu không được lớn hơn mức lương tối đa
+    if (min_salary is not None and max_salary is not None) and min_salary > max_salary:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Mức lương tối thiểu không được lớn hơn mức lương tối đa.",
+        )
+
+    # Khởi tạo truy vấn danh sách tin tuyển dụng công khai
+    query = db.query(Job).filter(
+        Job.status == JobStatus.ACTIVE.value,  # Chỉ lấy tin đang hoạt động
+        Job.deadline >= date.today(),          # Chỉ lấy tin chưa hết hạn
+    )
+
+    # Nếu người dùng nhập từ khóa tìm kiếm
+    if keyword:
+        kw = f"%{keyword.strip()}%"  # Thêm % để tìm kiếm một phần nội dung
+
+        # Tìm từ khóa trong tiêu đề, mô tả hoặc ngành nghề
+        query = query.filter(
+            (Job.title.ilike(kw))
+            | (Job.description.ilike(kw))
+            | (Job.industry.ilike(kw))
+        )
+
+    # Nếu có ngành nghề thì lọc theo ngành nghề
+    if industry:
+        query = query.filter(Job.industry.ilike(f"%{industry.strip()}%"))
+
+    # Nếu có địa điểm thì lọc theo địa điểm
+    if location:
+        query = query.filter(Job.location.ilike(f"%{location.strip()}%"))
+
+    # Nếu có hình thức làm việc thì lọc theo hình thức đó
+    if job_type:
+        query = query.filter(Job.job_type == job_type.value)
+
+    # Nếu có mức lương tối thiểu
+    if min_salary is not None:
+        query = query.filter(
+            (Job.salary_max == None) | (Job.salary_max >= min_salary)
+        )  # Lấy tin có lương tối đa lớn hơn mức mong muốn hoặc chưa xác định
+
+    # Nếu có mức lương tối đa
+    if max_salary is not None:
+        query = query.filter(
+            (Job.salary_min == None) | (Job.salary_min <= max_salary)
+        )  # Lấy tin có lương tối thiểu nhỏ hơn mức mong muốn hoặc chưa xác định
+
+    # Đếm tổng số tin sau khi đã áp dụng tất cả điều kiện lọc
+    total = query.count()
+
+    # Tính tổng số trang, nếu không có tin thì tổng số trang bằng 0
+    total_pages = ceil(total / limit) if total else 0
+
+    # Tính vị trí bản ghi bắt đầu lấy dữ liệu
+    offset = (page - 1) * limit
+
+    # Lấy danh sách tin theo trang hiện tại và giới hạn số lượng
+    items = query.offset(offset).limit(limit).all()
+
+    # Trả về danh sách tin cùng thông tin phân trang
+    return {
+        "total": total,              # Tổng số tin thỏa mãn điều kiện lọc
+        "page": page,                # Trang hiện tại
+        "limit": limit,              # Số tin trên mỗi trang
+        "total_pages": total_pages,  # Tổng số trang
+        "items": items,              # Danh sách tin của trang hiện tại
+    }
