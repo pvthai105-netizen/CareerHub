@@ -22,6 +22,7 @@ def _attach_user_info(profile: StudentProfile) -> StudentProfile:
 
 
 def get_my_student_profile(db: Session, current_user: User) -> StudentProfile:
+    """Xem hồ sơ của chính mình."""
     ensure_student(current_user)
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
     if not profile:
@@ -42,6 +43,7 @@ def update_my_student_profile(
     current_user: User,
     payload: StudentProfileUpdateSchema,
 ) -> StudentProfile:
+    """Sửa hồ sơ của chính mình."""
     ensure_student(current_user)
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
     if not profile:
@@ -82,53 +84,11 @@ def update_my_student_profile(
 
 
 def get_student_profile_by_id(db: Session, profile_id: int) -> StudentProfile:
+    """Người khác tìm và xem hồ sơ theo profile_id."""
     profile = db.query(StudentProfile).filter(StudentProfile.id == profile_id).first()
     if not profile:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Không tìm thấy hồ sơ sinh viên.",
         )
-    return _attach_user_info(profile)
-
-
-def update_student_profile_by_id(
-    db: Session,
-    current_user: User,
-    profile_id: int,
-    payload: StudentProfileUpdateSchema,
-) -> StudentProfile:
-    profile = db.query(StudentProfile).filter(StudentProfile.id == profile_id).first()
-    if not profile:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Không tìm thấy hồ sơ sinh viên.",
-        )
-
-    # RÀNG BUỘC: Chỉ chủ hồ sơ mới được sửa
-    if profile.user_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Bạn không có quyền sửa hồ sơ này (chỉ chủ hồ sơ mới được sửa).",
-        )
-
-    if payload.full_name is not None:
-        ensure_not_empty("full_name", payload.full_name)
-        profile.full_name = payload.full_name.strip()
-    if payload.phone is not None:
-        profile.phone = payload.phone.strip() if payload.phone else None
-    if payload.university is not None:
-        profile.university = payload.university.strip() if payload.university else None
-    if payload.major is not None:
-        profile.major = payload.major.strip() if payload.major else None
-    if payload.bio is not None:
-        profile.bio = payload.bio.strip() if payload.bio else None
-    if payload.skills is not None:
-        profile.skills = payload.skills.strip() if payload.skills else None
-    if payload.desired_job_type is not None:
-        profile.desired_job_type = payload.desired_job_type
-    if payload.avatar_url is not None:
-        profile.avatar_url = payload.avatar_url.strip() if payload.avatar_url else None
-
-    db.commit()
-    db.refresh(profile)
     return _attach_user_info(profile)
