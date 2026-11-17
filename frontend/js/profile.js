@@ -546,6 +546,45 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /**
+   * 9. Tính năng Trợ giúp AI (AI Assistant)
+   */
+  const btnAiBio = document.getElementById("btn-ai-bio");
+  if (btnAiBio) {
+    btnAiBio.addEventListener("click", () => {
+      const currentMajor = (inputMajor && inputMajor.value.trim()) || "Công nghệ thông tin";
+      const currentUni = (inputUniversity && inputUniversity.value.trim()) || "Học viện Công nghệ Bưu chính Viễn thông";
+      const currentSkills = skillsList.length > 0 ? skillsList.slice(0, 4).join(", ") : "kỹ năng chuyên môn";
+
+      const aiBioTemplates = [
+        `Sinh viên chuyên ngành ${currentMajor} tại ${currentUni}, có nền tảng vững chắc về ${currentSkills}. Tinh thần trách nhiệm cao, chủ động học hỏi công nghệ mới và mong muốn tìm kiếm cơ hội thực tập phát triển chuyên môn thực tế.`,
+        `Đam mê phát triển trong lĩnh vực ${currentMajor}, sở hữu kỹ năng thực hành tốt với ${currentSkills}. Định hướng trở thành một chuyên viên chuyên nghiệp, đóng góp tích cực vào các dự án thực tế của doanh nghiệp.`,
+        `Hiện là sinh viên năm 3 chuyên ngành ${currentMajor}. Có khả năng nghiên cứu độc lập cũng như làm việc nhóm hiệu quả với các công cụ ${currentSkills}. Sẵn sàng học hỏi và cam kết cống hiến lâu dài.`
+      ];
+
+      const randomTemplate = aiBioTemplates[Math.floor(Math.random() * aiBioTemplates.length)];
+      if (inputBio) {
+        inputBio.value = randomTemplate;
+        inputBio.focus();
+      }
+      updateLivePreview();
+      showToast("✨ Trợ giúp AI", "Đã tự động tạo đoạn giới thiệu bản thân chuẩn hóa theo ngành và kỹ năng của bạn!");
+    });
+  }
+
+  const navAiAssistant = document.getElementById("nav-ai-assistant");
+  if (navAiAssistant) {
+    navAiAssistant.addEventListener("click", (e) => {
+      e.preventDefault();
+      showToast("🤖 Trợ lý AI CareerHub", "Trợ lý AI sẵn sàng hỗ trợ! Hãy bấm '✨ Trợ giúp AI viết Bio' trong phần Giới thiệu bản thân để tự động tối ưu hồ sơ nhé.");
+      if (btnAiBio) {
+        btnAiBio.scrollIntoView({ behavior: "smooth", block: "center" });
+        btnAiBio.style.transform = "scale(1.08)";
+        setTimeout(() => { btnAiBio.style.transform = ""; }, 600);
+      }
+    });
+  }
+
   // Tiện ích escape html
   function escapeHtml(str) {
     return str
