@@ -52,4 +52,7 @@ class JobBaseSchema(BaseModel):
 
 class JobListResponse(BaseModel):
     total: int
+    page: int      
+    limit: int      
+    total_pages: int  
     items: list[JobBaseSchema]
