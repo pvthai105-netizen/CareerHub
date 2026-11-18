@@ -8,6 +8,7 @@ from app.routers import auth
 from app.routers import job_router
 from utils.exceptions import exception_handlers
 from app.routers import student_router
+from app.routers import employer_router
 from app.routers import admin_router
 from app.routers import admin_job_router
 
@@ -17,6 +18,7 @@ exception_handlers(app)
 app.include_router(auth.router)
 app.include_router(job_router.router)
 app.include_router(student_router.router)
+app.include_router(employer_router.router)
 app.include_router(admin_router.router) 
 app.include_router(admin_job_router.router)
 
