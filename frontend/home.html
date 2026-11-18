@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Hub – Tìm việc làm</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/logo.png">
+  <link rel="stylesheet" href="./css/home.css">
+</head>
+<body>
+
+  <!-- ===== HEADER (dùng chung cho mọi trang) ===== -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="./home.html" class="logo"><img src="./logoCHT-Photoroom.png" alt="Career Hub"></a>
+      <nav class="nav">
+        <a href="#/" id="nav-home">Trang chủ</a>
+        <a href="#/jobs" id="nav-jobs">Tìm việc</a>
+        <span>Công ty</span>
+        <span>Trợ lý AI</span>
+      </nav>
+      <div class="header-buttons">
+        <button class="btn btn-outline">Đăng nhập</button>
+        <button class="btn">Đăng ký</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== TRANG CHỦ ===== -->
+  <main id="page-home">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <span class="tag">KHỞI ĐẦU NHỎ · TƯƠNG LAI LỚN</span>
+          <h1>Khám phá cơ hội –<br>Kiến tạo tương lai</h1>
+          <p class="muted">Kết nối tài năng trẻ với doanh nghiệp phù hợp.<br>Bước tiếp theo trong sự nghiệp bắt đầu từ đây.</p>
+          <div class="search-box">
+            <input id="home-keyword" class="input" placeholder="Vị trí, kỹ năng hoặc công ty">
+            <select id="home-location" class="input location-select">
+              <option value="">Địa điểm</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+            <button id="home-search" class="btn" onclick="homeSearch()">Tìm việc ngay</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2>YOUR FUTURE<br>STARTS HERE</h2>
+          <p>01&nbsp; Khám phá thế mạnh</p>
+          <p>02&nbsp; Kết nối cơ hội phù hợp</p>
+          <p>03&nbsp; Tự tin bước về phía trước</p>
+          <small>Cùng bạn trên mỗi chặng đường ↗</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="stats">
+        <div><b>2.400+</b> Việc làm đang tuyển</div>
+        <div><b>850+</b> Doanh nghiệp đồng hành</div>
+        <div><b>12.000+</b> Ứng viên kết nối</div>
+      </div>
+
+      <h2 class="section-title">Khám phá theo lĩnh vực</h2>
+      <div id="home-fields" class="grid-4"></div>
+
+      <div class="row-between">
+        <h2 class="section-title">Cơ hội mới dành cho bạn</h2>
+        <a href="#/jobs" class="link">Xem tất cả việc làm →</a>
+      </div>
+      <div id="home-jobs" class="grid-3"></div>
+
+      <div class="partners">
+        <small>ĐỒNG HÀNH CÙNG TÀI NĂNG TRẺ</small>
+        <div><b>FPT Software</b><b>VNG Corporation</b><b>Viettel Solutions</b></div>
+      </div>
+
+      <div class="why">
+        <h2>Không chỉ tìm việc. Tìm đúng hướng đi.</h2>
+        <div><span>01&nbsp; Cơ hội được kiểm duyệt</span><span>02&nbsp; Ứng tuyển chỉ trong vài bước</span><span>03&nbsp; AI đồng hành cùng sự nghiệp</span></div>
+      </div>
+
+      <div class="cta">
+        <div><h2>Bạn đang tìm kiếm nhân tài?</h2><p>Kết nối thế hệ tài năng tiếp theo cùng Career Connect.</p></div>
+        <button class="btn btn-white">Đăng tuyển ngay</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== DANH SÁCH TIN (tìm kiếm + lọc + phân trang) ===== -->
+  <main id="page-jobs" class="container" hidden>
+    <h1 class="page-title">Tìm công việc bạn muốn gắn bó</h1>
+    <p class="muted">Cơ hội phù hợp, khởi đầu xứng đáng.</p>
+
+    <div class="search-row">
+      <input id="keyword" class="input" placeholder="Vị trí, kỹ năng hoặc công ty" onkeydown="if (event.key === 'Enter') doSearch()">
+      <select id="location" class="input" onchange="doSearch()">
+        <option value="">Tất cả địa điểm</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+      <button id="search-btn" class="btn" onclick="doSearch()">Tìm kiếm</button>
+    </div>
+
+    <div class="layout">
+      <aside class="filters">
+        <div class="row-between"><h2>Bộ lọc</h2><button id="clear-btn" class="link" onclick="clearAll()">Xóa bộ lọc</button></div>
+
+        <label>Ngành nghề</label>
+        <select id="f-field" class="input" onchange="onSidebarChange()">
+          <option value="">Tất cả</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+
+        <label>Địa điểm</label>
+        <select id="f-location" class="input" onchange="onSidebarChange()">
+          <option value="">Tất cả</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+
+        <label>Mức lương</label>
+        <select id="f-salary" class="input" onchange="onSidebarChange()">
+          <option value="">Tất cả</option>
+          <option value="lt4">Dưới 4 triệu</option><option value="4-5">4 – 5 triệu</option><option value="ge5">Từ 5 triệu trở lên</option>
+        </select>
+
+        <label>Hình thức làm việc</label>
+        <div id="f-types" onchange="onSidebarChange()">
+          <label class="check"><input type="checkbox" value="Thực tập"> Thực tập</label>
+          <label class="check"><input type="checkbox" value="Bán thời gian"> Bán thời gian</label>
+        </div>
+      </aside>
+
+      <section>
+        <div class="row-between">
+          <h2 id="result-count"></h2>
+          <select id="sort" class="input sort" onchange="onSortChange()">
+            <option value="new">Sắp xếp: Mới nhất</option>
+            <option value="salary">Sắp xếp: Lương cao nhất</option>
+          </select>
+        </div>
+        <div id="chips" class="chips"></div>
+        <div id="job-list" class="grid-2"></div>
+        <div id="empty" class="empty" hidden>
+          <div class="empty-icon">🔍</div>
+          <h3>Không tìm thấy việc làm phù hợp</h3>
+          <p class="muted">Hãy thử đổi từ khóa hoặc bỏ bớt bộ lọc nhé.</p>
+          <button id="empty-clear" class="btn" onclick="clearAll()">Xóa bộ lọc</button>
+        </div>
+        <div id="pagination" class="pagination"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== CHI TIẾT VIỆC LÀM (nội dung do JS đổ vào) ===== -->
+  <main id="page-detail" class="container" hidden></main>
+
+  <footer class="container footer">
+    <b>© 2026 Career Connect</b>
+    <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
+  </footer>
+
+  <script src="./js/home.js"></script>
+</body>
+</html>
