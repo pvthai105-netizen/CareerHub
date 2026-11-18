@@ -89,7 +89,7 @@ def send_chat_message(db: Session, user: User, message: str) -> str:
     db.add_all(
         [
             ChatMessage(user_id=user.id, sender="user", message=message.strip()),
-            ChatMessage(user_id=user.id, sender="assistant", message=reply.strip()),
+            ChatMessage(user_id=user.id, sender="bot", message=reply.strip()),
         ]
     )
     db.commit()
