@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đơn ứng tuyển của tôi - CareerHub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/my_applications.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-navbar">
+        <a href="home.html" class="brand-logo" title="CareerHub">
+          <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a href="home.html" class="nav-link">Trang chủ</a></li>
+          <li><a href="home.html#jobs" class="nav-link">Tìm việc</a></li>
+          <li><a href="profile.html" class="nav-link">Hồ sơ cá nhân</a></li>
+          <li><a href="my_applications.html" class="nav-link active" aria-current="page">Đơn ứng tuyển</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="profile.html" class="btn btn-outline">Hồ sơ của tôi</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="container applications-page">
+      <div class="applications-heading">
+        <div>
+          <p class="eyebrow">CƠ HỘI NGHỀ NGHIỆP CỦA BẠN</p>
+          <h1>Đơn ứng tuyển của tôi</h1>
+          <p class="page-intro">Theo dõi hồ sơ đã gửi và cập nhật trạng thái ứng tuyển tại đây.</p>
+        </div>
+        <a class="heading-link" href="home.html">Khám phá việc làm <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <section class="apply-card" aria-labelledby="apply-title">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">BƯỚC TIẾP THEO</p>
+            <h2 id="apply-title">Gửi hồ sơ ứng tuyển</h2>
+            <p class="section-description">Chọn công việc phù hợp, đính kèm CV và gửi lời giới thiệu đến nhà tuyển dụng.</p>
+          </div>
+          <span class="section-mark" aria-hidden="true">01</span>
+        </div>
+
+        <form id="application-form" class="application-form" enctype="multipart/form-data" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="job-select">Công việc muốn ứng tuyển <span class="required-mark">*</span></label>
+            <select id="job-select" name="job_id" class="form-select" required>
+              <option value="">Đang tải danh sách công việc...</option>
+            </select>
+            <small class="field-hint" id="jobs-hint">Chọn tin tuyển dụng bạn muốn gửi hồ sơ.</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cv-file">CV của bạn <span class="required-mark">*</span></label>
+            <label class="upload-control" for="cv-file">
+              <span class="upload-icon" aria-hidden="true">↑</span>
+              <span class="upload-copy">
+                <strong id="cv-file-name">Chọn CV từ thiết bị</strong>
+                <span>Định dạng PDF hoặc DOCX · tối đa 5 MB</span>
+              </span>
+              <span class="upload-browse">Duyệt tệp</span>
+            </label>
+            <input id="cv-file" class="visually-hidden" type="file" name="cv" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+            <small class="field-hint" id="cv-hint">CV sẽ được gửi kèm hồ sơ ứng tuyển.</small>
+          </div>
+
+          <div class="form-group form-group-wide">
+            <label class="form-label" for="cover-letter">Thư giới thiệu <span class="optional-mark">Không bắt buộc</span></label>
+            <textarea id="cover-letter" name="cover_letter" class="form-control cover-letter-input" rows="4" maxlength="5000" placeholder="Giới thiệu ngắn gọn về bản thân và lý do bạn phù hợp với công việc..."></textarea>
+            <small class="field-hint">Một lời giới thiệu ngắn sẽ giúp nhà tuyển dụng hiểu thêm về bạn.</small>
+          </div>
+
+          <div class="form-footer">
+            <p class="privacy-note"><span aria-hidden="true">▣</span> Thông tin hồ sơ chỉ được gửi cho nhà tuyển dụng của tin này.</p>
+            <button id="submit-application" class="btn btn-primary submit-button" type="submit">Gửi hồ sơ <span aria-hidden="true">→</span></button>
+          </div>
+          <p id="application-feedback" class="form-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="applications-section" aria-labelledby="applications-title">
+        <div class="section-title-row list-heading-row">
+          <div>
+            <p class="eyebrow">HỒ SƠ CỦA BẠN</p>
+            <h2 id="applications-title">Các đơn đã gửi</h2>
+            <p class="section-description">Xem tiến trình xử lý và rút đơn khi nhà tuyển dụng chưa xem hồ sơ.</p>
+          </div>
+          <span id="application-count" class="application-count">— đơn</span>
+        </div>
+
+        <div id="list-feedback" class="list-feedback" role="status" aria-live="polite">Đang tải đơn ứng tuyển...</div>
+        <div id="applications-table-wrap" class="applications-table-wrap" hidden>
+          <table class="applications-table">
+            <thead>
+              <tr>
+                <th scope="col">VỊ TRÍ ỨNG TUYỂN</th>
+                <th scope="col">NGÀY GỬI</th>
+                <th scope="col">THƯ GIỚI THIỆU</th>
+                <th scope="col">TRẠNG THÁI</th>
+                <th scope="col"><span class="visually-hidden">Thao tác</span></th>
+              </tr>
+            </thead>
+            <tbody id="applications-list"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="page-footnote"><span aria-hidden="true">✦</span> Chúc bạn sớm tìm được cơ hội phù hợp với mình.</div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/my_applications.js"></script>
+  </body>
+</html>

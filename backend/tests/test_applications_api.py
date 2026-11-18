@@ -61,8 +61,76 @@ def valid_docx_bytes():
 
 
 def test_student_application_route_is_registered():
-    route = next(route for route in router.routes if route.path == "/api/jobs/{job_id}/applications")
-    assert "POST" in route.methods
+    routes = {route.path: route.methods for route in router.routes}
+    assert "POST" in routes["/api/jobs/{job_id}/applications"]
+    assert "GET" in routes["/api/applications/my"]
+    assert "POST" in routes["/api/applications/{application_id}/withdraw"]
+
+
+def test_my_applications_returns_the_students_jobs_and_status(application_context):
+    db, student, employer, job, _ = application_context
+    submit(db, student, job.job_id, cover_letter="Lời giới thiệu")
+    other_student = User(email="other@example.com", hashed_password="x", role=Role.student)
+    db.add(other_student)
+    db.commit()
+    db.refresh(other_student)
+    other_job = Job(
+        title="Other internship",
+        description="Other role",
+        industry="Tech",
+        location="Hanoi",
+        job_type="INTERNSHIP",
+        deadline=date.today(),
+        status=JobStatus.ACTIVE.value,
+        employer_id=employer.id,
+    )
+    db.add(other_job)
+    db.commit()
+    db.refresh(other_job)
+    submit(db, other_student, other_job.job_id)
+
+    applications = application_services.get_my_applications(db, student)
+
+    assert len(applications) == 1
+    assert applications[0]["job_title"] == job.title
+    assert applications[0]["status"].value == "pending"
+    assert applications[0]["cover_letter"] == "Lời giới thiệu"
+
+
+def test_student_can_withdraw_pending_application(application_context):
+    db, student, _, job, _ = application_context
+    application = submit(db, student, job.job_id)
+
+    withdrawn = application_services.withdraw_application(db, student, application.id)
+
+    assert withdrawn.status.value == "withdrawn"
+    assert db.query(Application).filter(Application.id == application.id).one()
+
+
+def test_student_cannot_withdraw_application_after_review(application_context):
+    db, student, _, job, _ = application_context
+    application = submit(db, student, job.job_id)
+    application.status = application_services.ApplicationStatus.reviewed
+    db.commit()
+
+    with pytest.raises(HTTPException) as error:
+        application_services.withdraw_application(db, student, application.id)
+
+    assert error.value.status_code == 409
+
+
+def test_student_cannot_view_or_withdraw_another_students_application(application_context):
+    db, student, _, job, _ = application_context
+    application = submit(db, student, job.job_id)
+    other_student = User(email="other@example.com", hashed_password="x", role=Role.student)
+    db.add(other_student)
+    db.commit()
+    db.refresh(other_student)
+
+    with pytest.raises(HTTPException) as error:
+        application_services.withdraw_application(db, other_student, application.id)
+
+    assert error.value.status_code == 404
 
 
 def submit(db, student, job_id, filename="resume.pdf", mime="application/pdf", content=b"%PDF-1.7 test", cover_letter=" Tôi quan tâm "):

@@ -46,13 +46,14 @@ async function apiFetch(path, options = {}) {
 
   if (!response.ok) {
     let errorMsg = "Có lỗi xảy ra";
-    if (data && data.detail) {
-      if (typeof data.detail === "string") {
-        errorMsg = data.detail;
-      } else if (Array.isArray(data.detail) && data.detail.length > 0) {
-        errorMsg = data.detail[0].msg || JSON.stringify(data.detail);
+    const apiError = data?.detail ?? data?.message;
+    if (apiError) {
+      if (typeof apiError === "string") {
+        errorMsg = apiError;
+      } else if (Array.isArray(apiError) && apiError.length > 0) {
+        errorMsg = apiError[0].msg || JSON.stringify(apiError);
       } else {
-        errorMsg = JSON.stringify(data.detail);
+        errorMsg = JSON.stringify(apiError);
       }
     } else if (text) {
       errorMsg = text.length < 100 ? text : `Lỗi máy chủ (${response.status})`;

@@ -5,6 +5,7 @@ from zipfile import BadZipFile, ZipFile
 
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 from app.models.applications import Application, ApplicationStatus
@@ -107,3 +108,55 @@ def apply_to_job(
         raise
 
     return application
+
+
+def get_my_applications(db: Session, student: User) -> list[dict]:
+    ensure_student(student)
+    rows = (
+        db.query(Application, Job.title)
+        .join(Job, Application.job_id == Job.job_id)
+        .filter(Application.student_id == student.id)
+        .order_by(Application.applied_at.desc(), Application.id.desc())
+        .all()
+    )
+    return [
+        {
+            "id": application.id,
+            "job_id": application.job_id,
+            "job_title": title,
+            "status": application.status,
+            "applied_at": application.applied_at,
+            "cover_letter": application.cover_letter,
+        }
+        for application, title in rows
+    ]
+
+
+def withdraw_application(db: Session, student: User, application_id: int) -> Application:
+    ensure_student(student)
+    existing = (
+        db.query(Application)
+        .filter(Application.id == application_id, Application.student_id == student.id)
+        .first()
+    )
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Không tìm thấy đơn ứng tuyển")
+    if existing.status != ApplicationStatus.pending:
+        raise HTTPException(status_code=409, detail="Chỉ có thể rút đơn đang ở trạng thái Chờ")
+
+    result = db.execute(
+        update(Application)
+        .where(
+            Application.id == application_id,
+            Application.student_id == student.id,
+            Application.status == ApplicationStatus.pending,
+        )
+        .values(status=ApplicationStatus.withdrawn)
+    )
+    if result.rowcount != 1:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Trạng thái đơn đã thay đổi, không thể rút")
+
+    db.commit()
+    db.expire_all()
+    return db.query(Application).filter(Application.id == application_id).one()

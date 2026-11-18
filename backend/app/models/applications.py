@@ -12,6 +12,7 @@ class ApplicationStatus(str, enum.Enum):
     reviewed = "reviewed"      # Đã xem hồ sơ
     accepted = "accepted"      # Trúng tuyển / Chấp nhận
     rejected = "rejected"      # Từ chối
+    withdrawn = "withdrawn"    # Sinh viên đã rút đơn
 
 
 class Application(Base):
