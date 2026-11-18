@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F8F7FC" />
+    <title>Trợ lý nghề nghiệp | CareerHub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    <style>
+        .chat-page {
+            min-height: calc(100vh - 72px);
+            padding: 38px 0 56px;
+            background: var(--bg);
+        }
+
+        .chat-page .container {
+            max-width: 1240px;
+        }
+
+        .chat-page h1,
+        .chat-page h2,
+        .chat-page h3,
+        .chat-page p {
+            margin-top: 0;
+        }
+
+        .chat-page h1 {
+            margin-bottom: 8px;
+            color: var(--ink);
+            font-size: 30px;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+        }
+
+        .chat-page h2 {
+            margin-bottom: 0;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .chat-page p {
+            margin-bottom: 0;
+        }
+
+        .chat-page button,
+        .chat-page textarea {
+            font: inherit;
+        }
+
+        .chat-page .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            clip-path: inset(50%);
+        }
+
+        .chat-page button:focus-visible,
+        .chat-page a:focus-visible {
+            outline: 3px solid rgba(98, 85, 165, 0.3);
+            outline-offset: 2px;
+        }
+
+        .chat-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .chat-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 10px;
+            color: var(--indigo);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .chat-eyebrow .material-symbols-outlined {
+            font-size: 17px;
+        }
+
+        .chat-description {
+            max-width: 680px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .chat-layout {
+            display: grid;
+            grid-template-columns: minmax(230px, 280px) minmax(0, 1fr);
+            align-items: start;
+            gap: 20px;
+        }
+
+        .chat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chat-aside {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chat-aside-card {
+            padding: 20px;
+        }
+
+        .chat-section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .chat-section-title .material-symbols-outlined {
+            color: var(--primary);
+            font-size: 19px;
+        }
+
+        .chat-topic-list {
+            display: grid;
+            gap: 9px;
+        }
+
+        .chat-topic {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+            padding: 11px 12px;
+            color: var(--ink);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-topic:hover {
+            background: var(--bg);
+            border-color: var(--accent);
+            color: var(--indigo);
+        }
+
+        .chat-topic .material-symbols-outlined {
+            flex: 0 0 auto;
+            color: var(--primary);
+            font-size: 19px;
+        }
+
+        .chat-topic-text {
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.45;
+        }
+
+        .chat-aside-note {
+            padding: 15px;
+            background: var(--info-bg);
+            border-radius: var(--radius-md);
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .chat-aside-note strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--ink);
+            font-size: 13px;
+        }
+
+        .chat-main {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .chat-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 19px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-assistant-identity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .chat-assistant-avatar {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            flex: 0 0 auto;
+            place-items: center;
+            color: #fff;
+            background: var(--indigo);
+            border-radius: 13px;
+        }
+
+        .chat-assistant-avatar .material-symbols-outlined {
+            font-size: 23px;
+        }
+
+        .chat-assistant-name {
+            margin: 0 0 3px;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .chat-assistant-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .chat-status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        .chat-transcript {
+            display: flex;
+            height: min(62vh, 620px);
+            min-height: 360px;
+            max-height: 620px;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+            scrollbar-color: var(--accent) transparent;
+            scrollbar-width: thin;
+        }
+
+        .chat-transcript::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .chat-transcript::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border: 2px solid transparent;
+            border-radius: 999px;
+            background-clip: padding-box;
+        }
+
+        .chat-date-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .chat-date-divider::before,
+        .chat-date-divider::after {
+            height: 1px;
+            flex: 1;
+            background: var(--border);
+            content: "";
+        }
+
+        .chat-message {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            max-width: 88%;
+        }
+
+        .chat-message--user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .chat-message-avatar {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+            place-items: center;
+            color: var(--indigo);
+            background: #EEEAF7;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .chat-message--user .chat-message-avatar {
+            color: #fff;
+            background: var(--primary);
+        }
+
+        .chat-message-content {
+            min-width: 0;
+        }
+
+        .chat-message-meta {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 7px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .chat-message--user .chat-message-meta {
+            justify-content: flex-end;
+        }
+
+        .chat-message-author {
+            color: var(--ink);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .chat-bubble {
+            padding: 13px 15px;
+            color: var(--ink);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px 15px 15px;
+            font-size: 13px;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+            white-space: normal;
+        }
+
+        .chat-message--user .chat-bubble {
+            color: #fff;
+            background: var(--indigo);
+            border-color: var(--indigo);
+            border-radius: 15px 4px 15px 15px;
+        }
+
+        .chat-message--assistant .chat-message-content {
+            max-width: 690px;
+        }
+
+        .chat-bubble p+p {
+            margin-top: 7px;
+        }
+
+        .chat-bubble ul {
+            margin: 6px 0 0;
+            padding-left: 19px;
+        }
+
+        .chat-bubble li+li {
+            margin-top: 3px;
+        }
+
+        .chat-composer {
+            padding: 17px 20px 14px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 13px;
+        }
+
+        .chat-suggestion {
+            padding: 7px 11px;
+            color: var(--indigo);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-suggestion:hover {
+            background: var(--info-bg);
+            border-color: var(--accent);
+        }
+
+        .chat-compose-box {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            padding: 12px 12px 12px 15px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .chat-compose-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(129, 118, 181, 0.12);
+        }
+
+        .chat-input {
+            width: 100%;
+            min-height: 48px;
+            max-height: 150px;
+            resize: none;
+            padding: 4px 0;
+            color: var(--ink);
+            background: transparent;
+            border: 0;
+            outline: 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .chat-input::placeholder {
+            color: var(--muted);
+            opacity: 1;
+        }
+
+        .chat-send-button {
+            display: inline-flex;
+            min-width: 94px;
+            height: 42px;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 0 15px;
+            color: #fff;
+            background: var(--indigo);
+            border: 1px solid var(--indigo);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-send-button:hover {
+            background: var(--indigo-hover);
+            border-color: var(--indigo-hover);
+        }
+
+        .chat-send-button .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        .chat-send-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .chat-composer-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .chat-composer-hint {
+            white-space: nowrap;
+        }
+
+        .chat-loading {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            align-self: flex-start;
+            padding: 12px 15px;
+            color: var(--muted);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px 15px 15px;
+            font-size: 12px;
+        }
+
+        .chat-loading.is-visible {
+            display: inline-flex;
+        }
+
+        .chat-loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .chat-loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: chat-pulse 1s infinite ease-in-out;
+        }
+
+        .chat-loading-dots span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .chat-loading-dots span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes chat-pulse {
+
+            0%,
+            80%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.45;
+            }
+
+            40% {
+                transform: translateY(-4px);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .chat-page {
+                padding-top: 28px;
+            }
+
+            .chat-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-aside {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: stretch;
+            }
+
+            .chat-aside-card {
+                padding: 16px;
+            }
+
+            .chat-transcript {
+                height: min(60vh, 560px);
+                min-height: 320px;
+                max-height: 560px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .chat-page {
+                min-height: calc(100vh - 60px);
+                padding: 24px 0 32px;
+            }
+
+            .chat-page .container {
+                padding: 0 14px;
+            }
+
+            .chat-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+
+            .chat-page h1 {
+                font-size: 25px;
+            }
+
+            .chat-description {
+                font-size: 13px;
+            }
+
+            .chat-aside {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .chat-aside-note {
+                display: none;
+            }
+
+            .chat-panel-header {
+                padding: 15px;
+            }
+
+            .chat-transcript {
+                height: min(55vh, 460px);
+                min-height: 280px;
+                max-height: 460px;
+                gap: 14px;
+                padding: 16px 13px;
+            }
+
+            .chat-message {
+                max-width: 96%;
+                gap: 8px;
+            }
+
+            .chat-message-avatar {
+                width: 30px;
+                height: 30px;
+            }
+
+            .chat-bubble {
+                padding: 11px 12px;
+                font-size: 12px;
+            }
+
+            .chat-composer {
+                padding: 14px 13px 12px;
+            }
+
+            .chat-suggestions {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 2px 1px 5px;
+                scrollbar-width: thin;
+            }
+
+            .chat-suggestion {
+                flex: 0 0 auto;
+                max-width: 250px;
+                text-align: left;
+            }
+
+            .chat-compose-box {
+                align-items: flex-end;
+                gap: 8px;
+                padding: 9px;
+            }
+
+            .chat-input {
+                min-height: 42px;
+                font-size: 12px;
+            }
+
+            .chat-send-button {
+                min-width: 42px;
+                width: 42px;
+                height: 42px;
+                padding: 0;
+            }
+
+            .chat-send-label {
+                display: none;
+            }
+
+            .chat-composer-footer {
+                font-size: 10px;
+            }
+
+            .chat-composer-hint {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .chat-page *,
+            .chat-page *::before,
+            .chat-page *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container site-navbar">
+            <a class="brand-logo" href="/index.html" title="CareerHub">
+                <img src="logoCHT-Photoroom.png" alt="CareerHub" />
+            </a>
+            <nav aria-label="Điều hướng chính">
+                <ul class="nav-menu">
+                    <li><a class="nav-link" href="/index.html">Trang chủ</a></li>
+                    <li><a class="nav-link" href="/job_post.html">Việc làm</a></li>
+                    <li>
+                        <a class="nav-link active" href="/chat.html" aria-current="page">
+                            Trợ lý AI
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="nav-actions">
+                <a class="btn btn-outline" href="/login.html">Đăng nhập</a>
+                <a class="btn btn-primary" href="/register.html">Đăng ký</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="chat-page">
+        <div class="container">
+            <section class="chat-heading" aria-labelledby="chat-page-title">
+                <div>
+                    <div class="chat-eyebrow">
+                        <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+                        CareerHub • Hỗ trợ sinh viên
+                    </div>
+                    <h1 id="chat-page-title">Trợ lý nghề nghiệp</h1>
+                    <p class="chat-description">
+                        Cùng bạn chuẩn bị CV, luyện phỏng vấn và lên kế hoạch tìm việc phù hợp.
+                        Hãy bắt đầu bằng điều bạn đang quan tâm nhất.
+                    </p>
+                </div>
+            </section>
+
+            <div class="chat-layout">
+                <aside class="chat-aside" aria-label="Gợi ý tư vấn">
+                    <section class="chat-card chat-aside-card">
+                        <h2 class="chat-section-title">
+                            <span class="material-symbols-outlined" aria-hidden="true">lightbulb</span>
+                            Bạn cần hỗ trợ?
+                        </h2>
+                        <div class="chat-topic-list">
+                            <button class="chat-topic" type="button"
+                                data-chat-prompt="Em nên bắt đầu viết CV thế nào khi chưa có kinh nghiệm?">
+                                <span class="material-symbols-outlined" aria-hidden="true">description</span>
+                                <span class="chat-topic-text">Viết CV khi chưa có kinh nghiệm</span>
+                            </button>
+                            <button class="chat-topic" type="button"
+                                data-chat-prompt="Em nên chuẩn bị gì cho buổi phỏng vấn thực tập?">
+                                <span class="material-symbols-outlined" aria-hidden="true">forum</span>
+                                <span class="chat-topic-text">Chuẩn bị cho buổi phỏng vấn</span>
+                            </button>
+                            <button class="chat-topic" type="button"
+                                data-chat-prompt="Làm sao chọn vị trí thực tập phù hợp với kỹ năng hiện tại của em?">
+                                <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+                                <span class="chat-topic-text">Tìm vị trí thực tập phù hợp</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="chat-aside-note">
+                        <strong>Gợi ý nhỏ</strong>
+                        Bạn có thể chia sẻ ngành học, kỹ năng hoặc mục tiêu nghề nghiệp để nhận
+                        được tư vấn sát với nhu cầu hơn.
+                    </div>
+                </aside>
+
+                <section class="chat-card chat-main" aria-label="Cuộc trò chuyện">
+                    <header class="chat-panel-header">
+                        <div class="chat-assistant-identity">
+                            <div class="chat-assistant-avatar" aria-hidden="true">
+                                <span class="material-symbols-outlined">smart_toy</span>
+                            </div>
+                            <div>
+                                <h2 class="chat-assistant-name">CareerHub AI</h2>
+                                <span class="chat-assistant-status">
+                                    <span class="chat-status-dot" aria-hidden="true"></span>
+                                    Trợ lý tư vấn nghề nghiệp
+                                </span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="chat-transcript" data-chat-transcript aria-live="polite" aria-relevant="additions">
+                        <div class="chat-date-divider">
+                            <span>Hôm nay</span>
+                        </div>
+
+                        <article class="chat-message chat-message--assistant">
+                            <div class="chat-message-avatar" aria-hidden="true">
+                                <span class="material-symbols-outlined">smart_toy</span>
+                            </div>
+                            <div class="chat-message-content">
+                                <div class="chat-message-meta">
+                                    <span class="chat-message-author">CareerHub AI</span>
+                                    <time datetime="10:12">10:12</time>
+                                </div>
+                                <div class="chat-bubble">
+                                    <p>Chào bạn! Mình có thể cùng bạn trao đổi về CV, phỏng vấn, kỹ năng và định hướng
+                                        nghề nghiệp.</p>
+                                    <p>Bạn muốn bắt đầu từ chủ đề nào?</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="chat-message chat-message--user">
+                            <div class="chat-message-avatar" aria-hidden="true">BẠN</div>
+                            <div class="chat-message-content">
+                                <div class="chat-message-meta">
+                                    <time datetime="10:14">10:14</time>
+                                    <span class="chat-message-author">Bạn</span>
+                                </div>
+                                <div class="chat-bubble">
+                                    Em là sinh viên năm 3 ngành CNTT, chưa có kinh nghiệm làm việc. Em nên viết phần dự
+                                    án trong CV thế nào?
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="chat-message chat-message--assistant">
+                            <div class="chat-message-avatar" aria-hidden="true">
+                                <span class="material-symbols-outlined">smart_toy</span>
+                            </div>
+                            <div class="chat-message-content">
+                                <div class="chat-message-meta">
+                                    <span class="chat-message-author">CareerHub AI</span>
+                                    <time datetime="10:15">10:15</time>
+                                </div>
+                                <div class="chat-bubble">
+                                    <p>Phần dự án có thể giúp nhà tuyển dụng thấy cách bạn áp dụng kiến thức. Với mỗi dự
+                                        án, hãy nêu:</p>
+                                    <ul>
+                                        <li>Mục tiêu và vấn đề dự án giải quyết.</li>
+                                        <li>Vai trò, công nghệ bạn trực tiếp sử dụng.</li>
+                                        <li>Kết quả cụ thể — chỉ dùng số liệu bạn đã kiểm chứng.</li>
+                                    </ul>
+                                    <p>Nếu bạn chia sẻ mô tả một dự án, mình có thể giúp bạn chỉnh cách trình bày.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <div class="chat-loading" data-chat-loading role="status" hidden>
+                            <span class="chat-loading-dots"
+                                aria-hidden="true"><span></span><span></span><span></span></span>
+                            Đang chuẩn bị phản hồi…
+                        </div>
+                    </div>
+
+                    <form class="chat-composer" data-chat-form>
+                        <div class="chat-suggestions" aria-label="Câu hỏi gợi ý">
+                            <button class="chat-suggestion" type="button"
+                                data-chat-prompt="Em nên bắt đầu viết CV thế nào khi chưa có kinh nghiệm?">
+                                Bắt đầu viết CV
+                            </button>
+                            <button class="chat-suggestion" type="button"
+                                data-chat-prompt="Em nên chuẩn bị gì cho buổi phỏng vấn thực tập?">
+                                Chuẩn bị phỏng vấn
+                            </button>
+                            <button class="chat-suggestion" type="button"
+                                data-chat-prompt="Làm sao chọn vị trí thực tập phù hợp với kỹ năng hiện tại của em?">
+                                Chọn vị trí thực tập
+                            </button>
+                        </div>
+
+                        <label class="sr-only" for="chat-message-input">Tin nhắn của bạn</label>
+                        <div class="chat-compose-box">
+                            <textarea class="chat-input" id="chat-message-input" data-chat-input rows="2"
+                                maxlength="4000"
+                                placeholder="Nhập câu hỏi về CV, phỏng vấn hoặc định hướng nghề nghiệp…"></textarea>
+                            <button class="chat-send-button" type="submit">
+                                <span class="chat-send-label">Gửi</span>
+                                <span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>
+                            </button>
+                        </div>
+                        <div class="chat-composer-footer">
+                            <span>Hãy tránh gửi thông tin cá nhân nhạy cảm.</span>
+                            <span class="chat-composer-hint">Enter để gửi · Shift + Enter để xuống dòng</span>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (() => {
+            const form = document.querySelector("[data-chat-form]");
+            const input = document.querySelector("[data-chat-input]");
+            const promptButtons = document.querySelectorAll("[data-chat-prompt]");
+
+            if (!form || !input) return;
+
+            promptButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    input.value = button.dataset.chatPrompt || "";
+                    input.focus();
+                });
+            });
+
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                if (!input.value.trim()) {
+                    input.focus();
+                }
+            });
+
+            input.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    form.requestSubmit();
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>
