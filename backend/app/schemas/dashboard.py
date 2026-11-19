@@ -8,9 +8,7 @@ class DateCountItem(BaseModel):
     count: int = Field(..., description="Số lượng tương ứng")
 
 
-# ==========================================
 # 1. SCHEMAS CHO SINH VIÊN
-# ==========================================
 class StudentApplicationItem(BaseModel):
     application_id: int
     job_id: int
