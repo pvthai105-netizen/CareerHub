@@ -30,7 +30,7 @@ def api_get_student_dashboard(
     current_user: User = Depends(deps.require_roles(Role.student)),
 ):
     """
-    Lấy dữ liệu thống kê đơn ứng tuyển của chính sinh viên đang đăng nhập:
+    Lấy dữ liệu của chính sinh viên đang đăng nhập và thống kê đơn ứng tuyển:
     - Tổng đơn đã ứng tuyển, việc làm đã lưu.
     - Thống kê đơn theo trạng thái (GROUP BY: pending, reviewed, interview, accepted, rejected).
     - Danh sách đơn ứng tuyển gần nhất kèm tên việc làm và công ty.
