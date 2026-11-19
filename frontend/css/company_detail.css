@@ -1,0 +1,254 @@
+/* ==========================================================================
+   CSS TRANG CÔNG TY CÔNG KHAI
+   ========================================================================== */
+
+/* Hero Banner */
+.company-hero-banner {
+  background: linear-gradient(135deg, #f3f0fb 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0 32px;
+}
+
+.company-hero-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .company-hero-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.company-logo-avatar {
+  width: 104px;
+  height: 104px;
+  min-width: 104px;
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-logo-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.company-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.company-main-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.badge-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--success);
+  background: var(--success-bg);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.company-tagline {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 8px 0 16px;
+}
+
+.company-quick-chips {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* Layout 2 cột */
+.company-body-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  padding-top: 36px;
+}
+
+@media (max-width: 900px) {
+  .company-body-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.section-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-line;
+}
+
+.section-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.jobs-counter-pill {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--indigo);
+  background: var(--info-bg);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* Danh sách Job Cards */
+.company-jobs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.public-job-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  transition: var(--transition);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.public-job-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.job-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.job-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+
+.job-type-badge {
+  background: var(--info-bg);
+  color: var(--indigo);
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.job-card-salary {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--indigo);
+  margin-top: 6px;
+}
+
+/* Cột phải Sidebar */
+.sidebar-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.sidebar-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.info-row {
+  margin-bottom: 14px;
+}
+
+.info-lbl {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+
+.info-val {
+  font-size: 14px;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.safety-box {
+  display: flex;
+  gap: 10px;
+  background: var(--bg);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.empty-jobs-box {
+  text-align: center;
+  padding: 48px 20px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+.empty-jobs-box .empty-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}

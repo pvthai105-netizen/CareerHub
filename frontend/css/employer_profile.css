@@ -1,0 +1,287 @@
+/* ==========================================================================
+   CSS CHO FORM HỒ SƠ DOANH NGHIỆP
+   ========================================================================== */
+
+.page-body {
+  padding: 32px 40px 60px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.page-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 20px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.header-action-btns {
+  display: flex;
+  gap: 12px;
+}
+
+/* Layout 2 cột */
+.profile-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .profile-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card chính */
+.profile-card {
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-head {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Banner Upload Logo */
+.logo-upload-banner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--accent);
+  margin-bottom: 24px;
+}
+
+.logo-preview-box {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-upload-info h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.logo-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.status-msg {
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-msg.success { color: var(--success); }
+.status-msg.error { color: var(--error); }
+
+/* Form inputs & rows */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 600px) {
+  .form-row-2 { grid-template-columns: 1fr; }
+}
+
+.required {
+  color: var(--error);
+}
+
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 4px;
+}
+
+.input-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  display: block;
+}
+
+.form-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 16px;
+}
+
+/* Cột phải */
+.profile-side-card {
+  padding: 24px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.side-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.verify-badge-row {
+  margin-bottom: 18px;
+}
+
+.badge-status.status-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--success-bg);
+  color: var(--success);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.badge-status.status-active .dot {
+  width: 7px;
+  height: 7px;
+  background: var(--success);
+  border-radius: 50%;
+}
+
+/* Progress bar */
+.progress-section {
+  background: var(--bg);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--indigo));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-advice {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 10px 0 0 0;
+  line-height: 1.5;
+}
+
+.side-card-footer {
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 10px;
+}
+
+/* Toast Message */
+.toast-notice {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--success);
+  box-shadow: 0 8px 24px rgba(41, 38, 66, 0.15);
+  transform: translateY(120%);
+  transition: transform 0.3s ease;
+  z-index: 9999;
+}
+
+.toast-notice.show {
+  transform: translateY(0);
+}
+
+.toast-notice.toast-error {
+  border-left-color: var(--error);
+}
+
+.toast-icon {
+  font-size: 18px;
+  color: var(--success);
+}
+.toast-notice.toast-error .toast-icon {
+  color: var(--error);
+}

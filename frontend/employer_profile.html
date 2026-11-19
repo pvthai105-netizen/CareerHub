@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CareerHub – Quản lý hồ sơ công ty</title>
+
+    <!-- CSS dùng chung của hệ thống -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/job_post.css" />
+    <!-- CSS riêng cho trang Hồ sơ công ty (Task T02D27A) -->
+    <link rel="stylesheet" href="css/employer_profile.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <!-- Overlay cho màn hình điện thoại -->
+      <div class="overlay" id="overlay"></div>
+
+      <!-- ====================================================================
+         1. SIDEBAR DOANH NGHIỆP (Đúng chuẩn Nhóm 4 CareerHub & Figma)
+         ==================================================================== -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+          <div class="logo">
+            <a href="index.html">
+              <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+            </a>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-label">NHÀ TUYỂN DỤNG</div>
+            <div class="company-card">
+              <strong class="company-name" id="sidebar-company-name"
+                >Đang tải...</strong
+              >
+              <span class="company-type">Tài khoản doanh nghiệp</span>
+            </div>
+          </div>
+
+          <nav class="sidebar-menu">
+            <ul>
+              <li>
+                <a href="job_post.html" class="menu-item">
+                  <span class="menu-num">01</span>
+                  <span class="menu-text">Tổng quan</span>
+                </a>
+              </li>
+              <li>
+                <a href="job_post.html" class="menu-item">
+                  <span class="menu-num">02</span>
+                  <span class="menu-text">Tin tuyển dụng</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="menu-item">
+                  <span class="menu-num">03</span>
+                  <span class="menu-text">Ứng viên</span>
+                </a>
+              </li>
+              <li>
+                <a href="employer_profile.html" class="menu-item active">
+                  <span class="menu-num">04</span>
+                  <span class="menu-text">Hồ sơ công ty</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="menu-item">
+                  <span class="menu-num">05</span>
+                  <span class="menu-text">Tin nhắn</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <div class="promo-box">
+            <strong>Hồ sơ rõ ràng</strong>
+            <p>Thu hút những nhân tài phù hợp nhất cho doanh nghiệp.</p>
+          </div>
+          <a href="#" class="logout-link" id="btn-sidebar-logout">
+            <span>Đăng xuất</span>
+            <svg
+              class="icon-arrow"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+      </aside>
+
+      <!-- ====================================================================
+         2. NỘI DUNG CHÍNH (KHUNG HỒ SƠ DOANH NGHIỆP)
+         ==================================================================== -->
+      <div class="main-content">
+        <!-- Top header -->
+        <header class="topbar">
+          <div class="topbar-left">
+            <span class="topbar-badge">Không gian tuyển dụng</span>
+          </div>
+          <div class="topbar-right">
+            <span
+              id="user-display-email"
+              style="font-size: 13px; font-weight: 500; color: var(--muted)"
+            ></span>
+            <a
+              href="index.html"
+              class="btn btn-outline"
+              style="padding: 6px 14px; font-size: 13px"
+              >Về trang chủ</a
+            >
+          </div>
+        </header>
+
+        <!-- Nội dung cuộn -->
+        <main class="page-body">
+          <!-- Banner tiêu đề và nút thao tác -->
+          <div class="page-header-row">
+            <div>
+              <h1 class="page-title">Hồ sơ công ty</h1>
+              <p class="page-subtitle">
+                Giới thiệu doanh nghiệp của bạn đến những nhân tài phù hợp.
+              </p>
+            </div>
+            <div class="header-action-btns">
+              <a
+                href="#"
+                id="btn-view-public"
+                target="_blank"
+                class="btn btn-outline"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  ></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Xem trang công khai
+              </a>
+              <button
+                type="submit"
+                form="employer-form"
+                id="btn-save-profile"
+                class="btn btn-primary"
+              >
+                Lưu thay đổi
+              </button>
+            </div>
+          </div>
+
+          <!-- Layout 2 cột: Cột trái (Thông tin) + Cột phải (Tiến độ & Liên hệ) -->
+          <div class="profile-layout-grid">
+            <!-- CỘT TRÁI: FORM THÔNG TIN DOANH NGHIỆP -->
+            <div class="profile-main-col">
+              <form id="employer-form" class="card profile-card" novalidate>
+                <div class="card-head">
+                  <div>
+                    <h2 class="card-title">Thông tin doanh nghiệp</h2>
+                    <p class="card-desc">
+                      Hiển thị trên trang công ty và các tin tuyển dụng của bạn.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Khu vực Upload Logo Công ty -->
+                <div class="logo-upload-banner">
+                  <div class="logo-preview-box">
+                    <img
+                      id="logo-preview"
+                      src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150"
+                      alt="Logo công ty"
+                    />
+                  </div>
+                  <div class="logo-upload-info">
+                    <h3 id="preview-company-name">LUMINA STUDIO</h3>
+                    <p class="muted">
+                      Tải lên logo vuông hoặc ngang (PNG, JPG, WEBP, tối đa
+                      2MB).
+                    </p>
+                    <div class="logo-actions">
+                      <label
+                        for="logo-file-input"
+                        class="btn btn-outline btn-sm"
+                      >
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                          ></path>
+                          <polyline points="17 8 12 3 7 8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Chọn ảnh logo
+                      </label>
+                      <input
+                        type="file"
+                        id="logo-file-input"
+                        accept="image/png,image/jpeg,image/webp"
+                        style="display: none"
+                      />
+                      <span id="logo-upload-status" class="status-msg"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hàng: Tên công ty & Website -->
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label" for="company_name"
+                      >Tên công ty <span class="required">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="company_name"
+                      class="form-control"
+                      placeholder="Ví dụ: Công ty TNHH Lumina Studio"
+                      required
+                    />
+                    <span class="field-error" id="err-company-name"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="company_website"
+                      >Website công ty</label
+                    >
+                    <input
+                      type="url"
+                      id="company_website"
+                      class="form-control"
+                      placeholder="https://company.vn"
+                    />
+                  </div>
+                </div>
+
+                <!-- Hàng: Mã số thuế & Quy mô nhân sự -->
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label" for="tax_code"
+                      >Mã số thuế doanh nghiệp</label
+                    >
+                    <input
+                      type="text"
+                      id="tax_code"
+                      class="form-control"
+                      placeholder="Ví dụ: 0101234567"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="company_size"
+                      >Quy mô nhân sự</label
+                    >
+                    <select id="company_size" class="form-select">
+                      <option value="10-50">10 – 50 nhân sự</option>
+                      <option value="50-100" selected>50 – 100 nhân sự</option>
+                      <option value="100-500">100 – 500 nhân sự</option>
+                      <option value="500+">Trên 500 nhân sự</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Hàng: Địa chỉ văn phòng -->
+                <div class="form-group">
+                  <label class="form-label" for="address"
+                    >Địa chỉ trụ sở / văn phòng
+                    <span class="required">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="address"
+                    class="form-control"
+                    placeholder="Ví dụ: Tầng 5, Tòa nhà FPT, Cầu Giấy, Hà Nội"
+                    required
+                  />
+                  <span class="field-error" id="err-address"></span>
+                </div>
+
+                <!-- Hàng: Giới thiệu công ty -->
+                <div class="form-group">
+                  <label class="form-label" for="description"
+                    >Giới thiệu công ty</label
+                  >
+                  <textarea
+                    id="description"
+                    class="form-control"
+                    rows="5"
+                    placeholder="Chia sẻ về tầm nhìn, sứ mệnh, môi trường làm việc và văn hóa doanh nghiệp..."
+                  ></textarea>
+                  <span class="input-hint"
+                    >Mô tả hấp dẫn giúp tăng 60% tỷ lệ sinh viên nộp hồ
+                    sơ.</span
+                  >
+                </div>
+
+                <p class="form-note">
+                  Thông tin có dấu <span class="required">*</span> là bắt buộc.
+                </p>
+              </form>
+            </div>
+
+            <!-- CỘT PHẢI: TRẠNG THÁI & THÔNG TIN LIÊN HỆ -->
+            <div class="profile-side-col">
+              <!-- Card 1: Sức hút thương hiệu & Tiến độ hồ sơ -->
+              <div class="card profile-side-card">
+                <h3 class="side-card-title">Sức hút thương hiệu</h3>
+                <div class="verify-badge-row">
+                  <span
+                    class="badge-status status-active"
+                    id="badge-verification"
+                  >
+                    <span class="dot"></span> Đang hoạt động
+                  </span>
+                </div>
+
+                <div class="progress-section">
+                  <div class="progress-labels">
+                    <span class="lbl">Hồ sơ hoàn thiện</span>
+                    <strong class="val" id="progress-percent">80%</strong>
+                  </div>
+                  <div class="progress-bar-track">
+                    <div
+                      class="progress-bar-fill"
+                      id="progress-bar-fill"
+                      style="width: 80%"
+                    ></div>
+                  </div>
+                  <p class="progress-advice" id="progress-advice">
+                    Cập nhật đầy đủ website và mã số thuế để hồ sơ đạt độ uy tín
+                    tối đa.
+                  </p>
+                </div>
+
+                <div class="side-card-footer">
+                  <span>Hồ sơ rõ ràng, kết nối đúng người.</span>
+                </div>
+              </div>
+
+              <!-- Card 2: Thông tin liên hệ tuyển dụng -->
+              <div class="card profile-side-card">
+                <h3 class="side-card-title">Thông tin liên hệ</h3>
+
+                <div class="form-group">
+                  <label class="form-label" for="contact_name"
+                    >Người phụ trách tuyển dụng</label
+                  >
+                  <input
+                    type="text"
+                    id="contact_name"
+                    class="form-control"
+                    placeholder="Họ và tên HR / Quản lý"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="company_email"
+                    >Email tuyển dụng</label
+                  >
+                  <input
+                    type="email"
+                    id="company_email"
+                    class="form-control"
+                    disabled
+                    title="Email gắn với tài khoản đăng nhập"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="phone"
+                    >Số điện thoại liên hệ</label
+                  >
+                  <input
+                    type="tel"
+                    id="phone"
+                    class="form-control"
+                    placeholder="0901234567"
+                  />
+                  <span class="field-error" id="err-phone"></span>
+                </div>
+
+                <p class="input-hint">
+                  Dùng để ứng viên hoặc trường đối tác liên hệ khi cần.
+                </p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Thông báo Toast -->
+    <div id="toast-message" class="toast-notice">
+      <span class="toast-icon">✓</span>
+      <div class="toast-body">
+        <strong class="toast-title">Thành công</strong>
+        <p class="toast-desc">Hồ sơ công ty đã được cập nhật.</p>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/employer_profile.js"></script>
+  </body>
+</html>

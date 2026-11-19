@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thông tin công ty – CareerHub</title>
+
+  <!-- CSS chuẩn nhóm -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/company_detail.css" />
+</head>
+<body>
+  <!-- ====================================================================
+       1. HEADER DÙNG CHUNG CỦA CAREERHUB
+       ==================================================================== -->
+  <header class="site-header">
+    <div class="container site-navbar">
+      <a href="index.html" class="brand-logo" title="CareerHub">
+        <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Trang chủ</a></li>
+        <li><a href="home.html" class="nav-link">Tìm việc</a></li>
+        <li><a href="#" class="nav-link active">Công ty</a></li>
+        <li><a href="profile.html" class="nav-link">Hồ sơ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       2. HERO BANNER CÔNG TY
+       ==================================================================== -->
+  <section class="company-hero-banner">
+    <div class="container company-hero-content">
+      <div class="company-logo-avatar">
+        <img id="comp-logo" src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150" alt="Logo công ty" />
+      </div>
+
+      <div class="company-hero-meta">
+        <div class="company-title-row">
+          <h1 id="comp-name" class="company-main-name">LUMINA STUDIO</h1>
+          <span class="badge-verified" title="Doanh nghiệp đã kiểm duyệt pháp lý">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Đã xác thực
+          </span>
+        </div>
+
+        <p id="comp-tagline" class="company-tagline">Thiết kế sản phẩm số với sự thấu cảm và trách nhiệm.</p>
+
+        <div class="company-quick-chips">
+          <span class="chip-item">
+            <span class="icon">📍</span>
+            <span id="comp-address">Hà Nội, Việt Nam</span>
+          </span>
+          <span class="chip-item">
+            <span class="icon">🌐</span>
+            <a href="#" id="comp-website" target="_blank">Chưa có website</a>
+          </span>
+          <span class="chip-item">
+            <span class="icon">💼</span>
+            <span id="comp-jobs-count">0 vị trí đang tuyển</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       3. CHI TIẾT THÔNG TIN VÀ CÁC TIN TUYỂN DỤNG ĐANG MỞ
+       ==================================================================== -->
+  <main class="container company-body-layout">
+    
+    <!-- CỘT TRÁI (CHÍNH): GIỚI THIỆU & DANH SÁCH VIỆC LÀM -->
+    <div class="company-main-col">
+      <!-- Khối Giới thiệu -->
+      <section class="card detail-section">
+        <h2 class="section-title">Về doanh nghiệp</h2>
+        <div id="comp-description" class="section-text">
+          Đang cập nhật nội dung giới thiệu...
+        </div>
+      </section>
+
+      <!-- Khối Tin đang tuyển (Active Jobs) -->
+      <section class="detail-section" style="margin-top: 36px;">
+        <div class="section-head-row">
+          <h2 class="section-title">Vị trí đang tuyển dụng</h2>
+          <span class="jobs-counter-pill" id="jobs-badge">0 công việc</span>
+        </div>
+
+        <!-- Danh sách card việc làm (JS đổ dữ liệu vào đây) -->
+        <div id="company-jobs-list" class="company-jobs-grid">
+          <!-- Hiệu ứng tải -->
+          <div class="loading-state">Đang tải danh sách cơ hội nghề nghiệp...</div>
+        </div>
+
+        <!-- Khung trống khi chưa có tin -->
+        <div id="jobs-empty-state" class="empty-jobs-box" style="display:none;">
+          <div class="empty-icon">📂</div>
+          <h3>Hiện chưa có tin tuyển dụng nào mở</h3>
+          <p class="muted">Doanh nghiệp chưa đăng tin mới hoặc các đợt ứng tuyển đã kết thúc. Vui lòng quay lại sau nhé!</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- CỘT PHẢI (SIDEBAR): TỔNG QUAN PHÁP LÝ & LIÊN HỆ -->
+    <aside class="company-sidebar-col">
+      <div class="card sidebar-card">
+        <h3 class="sidebar-title">Tổng quan doanh nghiệp</h3>
+        
+        <div class="info-row">
+          <span class="info-lbl">Mã số thuế</span>
+          <strong class="info-val" id="comp-tax-code">Đang cập nhật</strong>
+        </div>
+
+        <div class="info-row">
+          <span class="info-lbl">Email liên hệ</span>
+          <strong class="info-val" id="comp-email">hr@company.vn</strong>
+        </div>
+
+        <div class="info-row">
+          <span class="info-lbl">Hotline tuyển dụng</span>
+          <strong class="info-val" id="comp-phone">Đang cập nhật</strong>
+        </div>
+
+        <div class="info-row">
+          <span class="info-lbl">Người liên hệ</span>
+          <strong class="info-val" id="comp-contact-person">Bộ phận Tuyển dụng</strong>
+        </div>
+
+        <div class="safety-box">
+          <span class="icon">🛡️</span>
+          <p>Mọi thông tin doanh nghiệp đều tuân thủ chính sách minh bạch của CareerHub.</p>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- FOOTER CHUẨN NHÓM -->
+  <footer class="container footer" style="margin-top: 60px; padding: 24px 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 13px; color: var(--muted);">
+    <b>© 2026 Career Connect</b>
+    <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/company_detail.js"></script>
+</body>
+</html>
