@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
 from app import models
@@ -48,6 +49,11 @@ app.include_router(application_router.router)
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+def root_redirect():
+    return RedirectResponse(url="/home.html")
 
 
 # Đặt SAU CÙNG: mount "/" khớp mọi đường dẫn còn lại

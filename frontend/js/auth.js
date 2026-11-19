@@ -14,18 +14,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const alertBox = document.getElementById("login-alert");
     const btnSubmit = document.getElementById("btn-submit-login");
 
-    // Nếu đã đăng nhập và token còn hạn, tự chuyển trang luôn
-    const currentUser = AuthGuard.getUser();
-    if (currentUser) {
-      AuthGuard.redirectByRole(currentUser.role);
-      return;
+    // Kiểm tra thông báo token hết hạn trên URL query (?expired=1) hoặc đăng xuất (?logout=1)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("expired") === "1" || urlParams.get("logout") === "1") {
+      Auth.clear();
+      if (alertBox) {
+        alertBox.className = "alert-box info";
+        alertBox.textContent =
+          urlParams.get("logout") === "1"
+            ? "Đã đăng xuất thành công."
+            : "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+      }
     }
 
-    // Kiểm tra thông báo token hết hạn trên URL query (?expired=1)
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("expired") === "1") {
-      alertBox.className = "alert-box info";
-      alertBox.textContent = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+    // Nếu đã đăng nhập và token còn hạn, tự chuyển trang luôn
+    const currentUser = AuthGuard.getUser();
+    if (currentUser && !urlParams.has("force")) {
+      AuthGuard.redirectByRole(currentUser.role);
+      return;
     }
 
     formLogin.addEventListener("submit", async (e) => {
@@ -61,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSubmit.textContent = "Đang đăng nhập...";
 
         const data = await api.post("/auth/login", { email, password });
-        
+
         // Lưu access_token vào localStorage
         Auth.setToken(data.access_token);
 
@@ -70,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (user) {
           AuthGuard.redirectByRole(user.role);
         } else {
-          window.location.href = "/index.html";
+          window.location.href = "/home.html";
         }
       } catch (err) {
         alertBox.className = "alert-box error";
@@ -152,13 +158,41 @@ document.addEventListener("DOMContentLoaded", () => {
           role: selectedRole,
         });
 
-        alertBox.className = "alert-box success";
-        alertBox.textContent = "Đăng ký thành công! Đang chuyển hướng sang trang đăng nhập...";
+        // Tự động đăng nhập để lấy phiên làm việc
+        let autoLoggedIn = false;
+        try {
+          const loginData = await api.post("/auth/login", { email, password });
+          if (loginData && loginData.access_token) {
+            Auth.setToken(loginData.access_token);
+            autoLoggedIn = true;
+          }
+        } catch (_) {}
 
-        // Chờ 1.5 giây để người dùng thấy thông báo rồi chuyển trang
+        alertBox.className = "alert-box success";
+        if (selectedRole === "student") {
+          alertBox.textContent = autoLoggedIn
+            ? "Đăng ký thành công! Đang chuyển sang trang hoàn thiện hồ sơ sinh viên..."
+            : "Đăng ký thành công! Đang chuyển sang trang đăng nhập...";
+        } else {
+          alertBox.textContent = autoLoggedIn
+            ? "Đăng ký thành công! Đang chuyển sang trang hồ sơ công ty..."
+            : "Đăng ký thành công! Đang chuyển sang trang đăng nhập...";
+        }
+
+        // Chờ 1.2 giây để người dùng thấy thông báo rồi chuyển trang theo Phương án 2
         setTimeout(() => {
-          window.location.href = "/login.html";
-        }, 1500);
+          if (autoLoggedIn) {
+            if (selectedRole === "student") {
+              window.location.href = "/profile.html"; // Dẫn sinh viên mới đến hoàn thiện hồ sơ
+            } else if (selectedRole === "employer") {
+              window.location.href = "/employer_profile.html"; // Dẫn doanh nghiệp mới đến cập nhật hồ sơ
+            } else {
+              window.location.href = "/home.html";
+            }
+          } else {
+            window.location.href = "/login.html";
+          }
+        }, 1200);
       } catch (err) {
         alertBox.className = "alert-box error";
         alertBox.textContent = err.message || "Đăng ký không thành công.";
