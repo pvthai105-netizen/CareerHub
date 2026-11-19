@@ -1,6 +1,8 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
+from datetime import date
+from app.models.job import Job, JobStatus
 
 from app import deps
 from app.models.user import Role, User
@@ -59,8 +61,24 @@ def api_upload_my_logo(
 def api_get_employer_profile_by_id(
     profile_id: int,
     db: Session = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user),
 ):
-    """Xem thông tin chi tiết hồ sơ công ty theo ID (dành cho ứng viên & người dùng xem công khai)."""
+    """Xem thông tin chi tiết hồ sơ công ty theo ID (công khai cho mọi người dùng)."""
     return get_employer_profile_by_id(db, profile_id)
 
+@router.get("/{profile_id}/jobs", summary="Lấy các tin tuyển dụng đang mở của công ty")
+def api_get_company_active_jobs(
+    profile_id: int,
+    db: Session = Depends(deps.get_db),
+):
+    """Lấy danh sách các tin tuyển dụng ACTIVE chưa hết hạn của công ty."""
+    profile = get_employer_profile_by_id(db, profile_id)
+    jobs = (
+        db.query(Job)
+        .filter(
+            Job.employer_id == profile.user_id,
+            Job.status == JobStatus.ACTIVE.value,
+            Job.deadline >= date.today(),
+        )
+        .all()
+    )
+    return jobs
