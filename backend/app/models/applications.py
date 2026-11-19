@@ -10,6 +10,7 @@ from app.database import Base
 class ApplicationStatus(str, enum.Enum):
     pending = "pending"        # Đang chờ duyệt
     reviewed = "reviewed"      # Đã xem hồ sơ
+    interview = "interview"    # Mời phỏng vấn
     accepted = "accepted"      # Trúng tuyển / Chấp nhận
     rejected = "rejected"      # Từ chối
     withdrawn = "withdrawn"    # Sinh viên đã rút đơn

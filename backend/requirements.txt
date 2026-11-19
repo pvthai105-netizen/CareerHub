@@ -8,3 +8,4 @@ bcrypt
 pyjwt
 pydantic[email]
 python-multipart
+google-genai
