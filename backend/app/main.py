@@ -13,6 +13,7 @@ from app.routers import dashboard_router
 from app.routers import employer_router
 from app.routers import admin_router
 from app.routers import admin_job_router
+from app.routers import application_router
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -33,6 +34,7 @@ app.add_middleware(
     allow_methods=["*"],              # Cho phép GET, POST, PUT, DELETE, …
     allow_headers=["*"],              # Cho phép bất kỳ header nào (Authorization, Content-Type,…)
 )
+
 app.include_router(auth.router)
 app.include_router(job_router.router)
 app.include_router(student_router.router)
@@ -41,6 +43,7 @@ app.include_router(admin_router.router)
 app.include_router(admin_job_router.router)
 app.include_router(dashboard_router.router)
 app.include_router(chat_router.router)
+app.include_router(application_router.router)
 
 @app.get("/api/health")
 def health():
@@ -53,3 +56,7 @@ FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
 
 # Dòng 2: Phát file frontend cho trình duyệt
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+# Vì sao phải đặt ở cuối file:
+# FastAPI xét các địa chỉ theo thứ tự từ trên xuống. Địa chỉ "/" khớp với mọi đường dẫn. 
+# Nếu mount đứng trước route /api/health, mọi yêu cầu sẽ bị StaticFiles nhận trước, và /api/health sẽ báo 404 vì nó đi tìm file tên api/health. 
+# Đặt ở cuối thì các route /api/... được xử lý trước, những gì còn lại mới chuyển cho frontend.
