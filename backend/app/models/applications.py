@@ -12,7 +12,7 @@ class ApplicationStatus(str, enum.Enum):
     reviewed = "reviewed"      # Đã xem hồ sơ
     accepted = "accepted"      # Trúng tuyển / Chấp nhận
     rejected = "rejected"      # Từ chối
-
+    interview = "interview"
 
 class Application(Base):
     __tablename__ = "applications"
