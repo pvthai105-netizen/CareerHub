@@ -1,538 +1,639 @@
-/* home.css - Giao diện chuẩn Figma "01 · Trang chủ" (Task T02D210) */
-
-.home-container {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 24px;
+/* ===== 1. MÀU SẮC & CÀI ĐẶT CHUNG (lấy từ Design System) ===== */
+:root {
+  --primary: #6255a5;
+  --soft: #eeebf6;
+  --bg: #f8f7fc;
+  --border: #e8e5f0;
+  --ink: #292642;
+  --muted: #77738b;
 }
 
-/* ====================================================================
-   1. HERO SECTION
-   ==================================================================== */
-.hero-section {
-  padding: 44px 0 36px 0;
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.55fr 1fr;
-  gap: 32px;
-  align-items: stretch;
-}
-
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.hero-badge {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: var(--indigo);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.hero-title {
-  font-size: 40px;
-  line-height: 48px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 14px;
-  letter-spacing: -0.5px;
-}
-
-.hero-desc {
-  font-size: 15px;
-  line-height: 24px;
-  color: var(--muted);
-  margin-bottom: 28px;
-  max-width: 520px;
-}
-
-/* Thanh tìm kiếm Hero */
-.hero-search-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 4px 16px rgba(41, 38, 66, 0.05);
-  max-width: 560px;
-}
-
-.search-input-group {
-  display: flex;
-  align-items: center;
-  flex: 1.4;
-  gap: 8px;
-}
-
-.search-input-group input {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-family: var(--font-family);
-  font-size: 13.5px;
-  color: var(--ink);
-  background: transparent;
-}
-
-.search-divider {
-  width: 1px;
-  height: 28px;
-  background-color: var(--border);
-}
-
-.search-location-group {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  position: relative;
-}
-
-.search-location-group select {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-family: var(--font-family);
-  font-size: 13.5px;
-  color: var(--ink);
-  background: transparent;
-  cursor: pointer;
-  appearance: none;
-  padding-right: 18px;
-}
-
-.select-arrow {
-  position: absolute;
-  right: 4px;
-  pointer-events: none;
-  font-size: 10px;
-  color: var(--muted);
-}
-
-.btn-hero-search {
-  background-color: var(--indigo);
-  color: #FFFFFF !important;
-  font-weight: 600;
-  font-size: 13.5px;
-  padding: 10px 22px;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: var(--transition);
-}
-
-.btn-hero-search:hover {
-  background-color: var(--indigo-hover);
-}
-
-/* Thẻ Future Starts Here màu tím */
-.hero-card-future {
-  background: linear-gradient(145deg, #554796 0%, #685AA9 100%);
-  border-radius: 18px;
-  padding: 36px 32px;
-  color: #FFFFFF;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 8px 24px rgba(98, 85, 165, 0.22);
-}
-
-.future-title {
-  font-size: 22px;
-  line-height: 28px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  margin-bottom: 24px;
-}
-
-.future-steps {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 32px 0;
-}
-
-.future-steps li {
-  font-size: 14.5px;
-  line-height: 22px;
-  font-weight: 500;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.future-steps li span.step-num {
-  font-size: 12px;
-  font-weight: 700;
-  opacity: 0.75;
-}
-
-.future-link {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 13px;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-.future-link:hover {
-  color: #FFFFFF;
-  text-decoration: underline;
-}
-
-/* ====================================================================
-   2. STATS BAR
-   ==================================================================== */
-.stats-banner {
-  margin: 36px 0;
-  padding: 24px 32px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.stat-item {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.stat-number {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--ink);
-  line-height: 1;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-/* ====================================================================
-   3. SECTIONS CHUNG (KHÁM PHÁ, VIỆC LÀM)
-   ==================================================================== */
-.section-block {
-  margin-bottom: 44px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-
-.section-header h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
+* {
+  box-sizing: border-box;
   margin: 0;
 }
 
-.section-link {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--indigo);
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
   text-decoration: none;
-  display: inline-flex;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 64px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.link {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 500;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.row-between {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 4px;
+  gap: 16px;
 }
 
-.section-link:hover {
-  color: var(--indigo-hover);
-  text-decoration: underline;
+/* ===== 2. NÚT & Ô NHẬP ===== */
+.btn {
+  background: var(--primary);
+  color: #fff;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  padding: 12px 24px;
+  font: 600 14px "Inter", sans-serif;
+  cursor: pointer;
 }
 
-/* Grid Lĩnh vực */
-.categories-grid {
+.btn:hover {
+  opacity: .9;
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--primary);
+  border-color: var(--border);
+}
+
+.btn-white {
+  background: #fff;
+  color: var(--primary);
+}
+
+.input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 15px;
+  font: 14px "Inter", sans-serif;
+  color: var(--ink);
+}
+
+.input:focus {
+  outline: 2px solid var(--primary);
+}
+
+/* ===== 3. HEADER ===== */
+.header {
+  background: #fff;
+  height: 72px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.logo {
+  display: block;
+}
+
+.logo img {
+  display: block;
+  height: 42px;
+  width: auto;
+}
+
+/* Logo thật, cao 42px như Figma */
+.nav {
+  display: flex;
+  gap: 48px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.nav .active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* ===== 4. TRANG CHỦ ===== */
+.hero {
+  background: var(--soft);
+  padding: 36px 0;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 414px;
+  gap: 48px;
+  align-items: center;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+h1 {
+  font-size: 46px;
+  line-height: 1.3;
+  margin: 16px 0;
+}
+
+.search-box {
+  display: flex;
+  gap: 8px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  margin-top: 32px;
+  max-width: 800px;
+}
+
+.location-select {
+  max-width: 210px;
+}
+
+.search-box .btn {
+  white-space: nowrap;
+}
+
+.hero-card {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 24px;
+  padding: 28px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero-card h2 {
+  font-size: 30px;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.hero-card small {
+  color: var(--border);
+  margin-top: 24px;
+}
+
+.stats {
+  display: flex;
+  gap: 64px;
+  padding: 28px 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stats b {
+  font-size: 27px;
+  color: var(--ink);
+  margin-right: 12px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 32px 0 16px;
+}
+
+.grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
-.category-card {
-  background: var(--surface);
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.field-tile {
+  background: #fff;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
+  border-radius: 12px;
+  padding: 18px 17px;
   font-size: 14px;
-  color: var(--ink);
+  font-weight: 500;
+}
+
+.field-tile:hover,
+.job-card:hover {
+  border-color: var(--primary);
+}
+
+.partners {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin-top: 32px;
+}
+
+.partners small {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.partners div {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  cursor: pointer;
-  transition: var(--transition);
-  text-decoration: none;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--primary);
+  font-size: 24px;
 }
 
-.category-card:hover {
-  border-color: var(--accent);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
+.why {
+  background: var(--soft);
+  border-radius: 12px;
+  padding: 20px 24px 28px;
+  margin-top: 24px;
 }
 
-.category-card strong {
+.why h2 {
+  font-size: 25px;
   font-weight: 600;
 }
 
-.category-card span.count {
-  color: var(--muted);
+.why div {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.cta {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cta h2 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.cta p {
+  color: var(--border);
   font-size: 13px;
 }
 
-/* Grid Việc làm mới */
-.job-cards-grid {
+/* ===== 5. THẺ VIỆC LÀM (dùng ở mọi trang) ===== */
+.job-card {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.home-job-card {
-  background: var(--surface);
+  gap: 8px;
+  background: #fff;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 22px 24px;
-  transition: var(--transition);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
+  border-radius: 12px;
+  padding: 16px 20px;
 }
 
-.home-job-card:hover {
-  border-color: var(--accent);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-3px);
-}
-
-.job-card-company {
+.job-card small {
+  color: var(--primary);
+  font-weight: 600;
   font-size: 11px;
-  font-weight: 700;
-  color: var(--indigo);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 6px;
 }
 
-.job-card-title {
+.job-card h3 {
   font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 8px;
 }
 
-.job-card-meta {
+.job-card span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.job-card b {
+  color: var(--primary);
   font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 14px;
 }
 
-.job-card-salary {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--indigo);
+/* ===== 6. TRANG DANH SÁCH ===== */
+.page-title {
+  font-size: 32px;
+  margin: 40px 0 4px;
 }
 
-/* ====================================================================
-   4. ĐỐI TÁC (LOGOS ROW)
-   ==================================================================== */
-.partners-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px 32px;
-  margin-bottom: 36px;
-  text-align: center;
-}
-
-.partners-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  margin-bottom: 18px;
-  display: block;
-  text-align: left;
-}
-
-.partners-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
-.partner-logo-item {
-  font-size: 18px;
-  font-weight: 700;
-  color: #4C4673;
-  letter-spacing: -0.3px;
-  opacity: 0.85;
-  transition: var(--transition);
-  user-select: none;
-}
-
-.partner-logo-item:hover {
-  opacity: 1;
-  color: var(--indigo);
-}
-
-/* ====================================================================
-   5. CALLOUT BANNER (KHÔNG CHỈ TÌM VIỆC)
-   ==================================================================== */
-.feature-callout-banner {
-  background-color: var(--info-bg);
-  border-radius: 18px;
-  padding: 32px 36px;
-  margin-bottom: 36px;
-}
-
-.feature-callout-banner h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 20px;
-}
-
-.feature-callout-grid {
+.search-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 428px auto;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
   gap: 24px;
+  align-items: start;
 }
 
-.feature-callout-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.feature-callout-item span.num {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--indigo);
-}
-
-/* ====================================================================
-   6. EMPLOYER CTA BANNER (MÀU TÍM ĐẬM)
-   ==================================================================== */
-.employer-cta-banner {
-  background: #554796;
-  border-radius: 18px;
-  padding: 28px 36px;
-  margin-bottom: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  color: #FFFFFF;
-}
-
-.employer-cta-content h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin-bottom: 6px;
-}
-
-.employer-cta-content p {
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-}
-
-.btn-employer-cta {
-  background: #FFFFFF;
-  color: #554796 !important;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 10px 24px;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: var(--transition);
-  text-decoration: none;
-}
-
-.btn-employer-cta:hover {
-  background: #F8F7FC;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* ====================================================================
-   7. FOOTER CHUẨN FIGMA
-   ==================================================================== */
-.figma-footer {
-  border-top: 1px solid var(--border);
-  padding: 28px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.figma-footer-links {
-  display: flex;
-  align-items: center;
+.filters {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  display: grid;
   gap: 8px;
 }
 
-.figma-footer-links a {
+.filters h2 {
+  font-size: 20px;
+}
+
+.filters label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400 !important;
   color: var(--muted);
-  text-decoration: none;
+  margin: 4px 0 0 !important;
 }
 
-.figma-footer-links a:hover {
-  color: var(--indigo);
+.layout h2#result-count {
+  font-size: 20px;
+  font-weight: 600;
 }
 
-/* Responsive */
-@media (max-width: 992px) {
-  .hero-grid {
+.sort {
+  width: auto;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 16px;
+  min-height: 28px;
+}
+
+.chip {
+  background: var(--soft);
+  color: var(--primary);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chip button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.empty {
+  background: #fff;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+  padding: 56px 24px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.empty-icon {
+  font-size: 40px;
+}
+
+.empty .btn {
+  margin-top: 12px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 32px 0;
+}
+
+.pagination button {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  color: var(--primary);
+  font: 500 14px "Inter", sans-serif;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.pagination button:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+/* ===== 7. TRANG CHI TIẾT ===== */
+.crumbs {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 32px 0 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.detail-head small {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.detail-head h1 {
+  font-size: 32px;
+  margin: 4px 0 12px;
+}
+
+.detail-head .badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.detail-buttons {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 24px;
+  margin: 24px 0;
+  align-items: start;
+}
+
+.detail-layout h2 {
+  font-size: 21px;
+  font-weight: 600;
+  margin: 24px 0 12px;
+}
+
+.detail-layout .card>h2:first-child {
+  margin-top: 0;
+}
+
+.detail-layout li {
+  list-style: none;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.detail-layout li::before {
+  content: "• ";
+}
+
+.address {
+  color: var(--primary);
+  font-size: 14px;
+  margin-top: 32px;
+}
+
+.side h3 {
+  font-size: 20px;
+  margin: 24px 0 12px;
+}
+
+.info-row {
+  display: flex;
+  gap: 24px;
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.info-row b {
+  width: 80px;
+  font-weight: 400;
+}
+
+/* ===== 8. FOOTER & MÀN HÌNH NHỎ ===== */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  padding-bottom: 32px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.footer b {
+  color: var(--primary);
+}
+
+@media (max-width: 960px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .nav,
+  .stats,
+  .partners div,
+  .why div {
+    display: none;
+  }
+
+  .hero-inner,
+  .layout,
+  .detail-layout,
+  .search-row {
     grid-template-columns: 1fr;
   }
-  .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .job-cards-grid {
+
+  .grid-4,
+  .grid-3,
+  .grid-2 {
     grid-template-columns: 1fr;
   }
-  .feature-callout-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .employer-cta-banner {
+
+  .search-box,
+  .cta,
+  .detail-head,
+  .footer {
     flex-direction: column;
-    align-items: flex-start;
   }
-  .stats-banner {
-    grid-template-columns: 1fr;
-    gap: 16px;
+
+  .location-select {
+    max-width: none;
   }
+
+  h1 {
+    font-size: 34px;
+  }
+}
+
+/* Tên công ty luôn viết hoa */
+.job-card small,
+.detail-head small {
+  text-transform: uppercase;
 }

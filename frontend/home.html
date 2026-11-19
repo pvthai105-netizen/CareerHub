@@ -1,276 +1,165 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CareerHub - Khám phá cơ hội, Kiến tạo tương lai</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Hub – Tìm việc làm</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/logo.png">
+  <link rel="stylesheet" href="./css/home.css">
+</head>
+<body>
 
-    <!-- CSS dùng chung chuẩn Figma -->
-    <link rel="stylesheet" href="css/style.css" />
-    <!-- CSS riêng cho Trang chủ chuẩn Figma (01 · Trang chủ) -->
-    <link rel="stylesheet" href="css/home.css" />
-  </head>
-  <body>
-    <!-- ====================================================================
-       1. HEADER / THANH ĐIỀU HƯỚNG CHUẨN FIGMA
-       ==================================================================== -->
-    <header class="site-header">
-      <div class="container site-navbar">
-        <a href="home.html" class="brand-logo" title="CareerHub">
-          <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
-        </a>
+  <!-- ===== HEADER (dùng chung cho mọi trang) ===== -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="./home.html" class="logo"><img src="./logoCHT-Photoroom.png" alt="Career Hub"></a>
+      <nav class="nav">
+        <a href="#/" id="nav-home">Trang chủ</a>
+        <a href="#/jobs" id="nav-jobs">Tìm việc</a>
+        <a href="my_applications.html" id="nav-applications">Đơn ứng tuyển</a>
+        <span>Công ty</span>
+        <span>Trợ lý AI</span>
+      </nav>
+      <div class="header-buttons">
+        <button class="btn btn-outline">Đăng nhập</button>
+        <button class="btn">Đăng ký</button>
+      </div>
+    </div>
+  </header>
 
-        <!-- Menu điều hướng chính -->
-        <ul class="nav-menu">
-          <li><a href="home.html" class="nav-link active">Trang chủ</a></li>
-          <li><a href="#" class="nav-link">Tìm việc</a></li>
-          <li><a href="#" class="nav-link">Công ty</a></li>
-          <li><a href="profile.html" class="nav-link">Hồ sơ cá nhân</a></li>
-          <li><a href="my_applications.html" class="nav-link">Đơn ứng tuyển</a></li>
-          <li><a href="#" class="nav-link">Trợ lý AI</a></li>
-        </ul>
-
-        <!-- Nút tài khoản (Được tự động đồng bộ theo AuthGuard) -->
-        <div class="nav-actions">
-          <a href="login.html" class="btn btn-outline">Đăng nhập</a>
-          <a href="register.html" class="btn btn-primary">Đăng ký</a>
+  <!-- ===== TRANG CHỦ ===== -->
+  <main id="page-home">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <span class="tag">KHỞI ĐẦU NHỎ · TƯƠNG LAI LỚN</span>
+          <h1>Khám phá cơ hội –<br>Kiến tạo tương lai</h1>
+          <p class="muted">Kết nối tài năng trẻ với doanh nghiệp phù hợp.<br>Bước tiếp theo trong sự nghiệp bắt đầu từ đây.</p>
+          <div class="search-box">
+            <input id="home-keyword" class="input" placeholder="Vị trí, kỹ năng hoặc công ty">
+            <select id="home-location" class="input location-select">
+              <option value="">Địa điểm</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+            <button id="home-search" class="btn" onclick="homeSearch()">Tìm việc ngay</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2>YOUR FUTURE<br>STARTS HERE</h2>
+          <p>01&nbsp; Khám phá thế mạnh</p>
+          <p>02&nbsp; Kết nối cơ hội phù hợp</p>
+          <p>03&nbsp; Tự tin bước về phía trước</p>
+          <small>Cùng bạn trên mỗi chặng đường ↗</small>
         </div>
       </div>
-    </header>
+    </section>
 
-    <main class="home-container">
-      <!-- ====================================================================
-         2. HERO SECTION (CHUẨN FIGMA 01 · TRANG CHỦ)
-         ==================================================================== -->
-      <section class="hero-section">
-        <div class="hero-grid">
-          <!-- Cột trái: Tiêu đề, giới thiệu và thanh tìm kiếm -->
-          <div class="hero-content">
-            <span class="hero-badge">Khởi đầu nhỏ · Tương lai lớn</span>
-            <h1 class="hero-title">
-              Khám phá cơ hội –<br />
-              Kiến tạo tương lai
-            </h1>
-            <p class="hero-desc">
-              Kết nối tài năng trẻ với doanh nghiệp phù hợp. Bước tiếp theo trong sự nghiệp bắt đầu từ đây.
-            </p>
+    <div class="container">
+      <div class="stats">
+        <div><b>2.400+</b> Việc làm đang tuyển</div>
+        <div><b>850+</b> Doanh nghiệp đồng hành</div>
+        <div><b>12.000+</b> Ứng viên kết nối</div>
+      </div>
 
-            <!-- Khối tìm kiếm -->
-            <div class="hero-search-box">
-              <div class="search-input-group">
-                <input
-                  type="text"
-                  placeholder="Vị trí, kỹ năng hoặc công ty"
-                  aria-label="Vị trí tìm kiếm"
-                />
-              </div>
+      <h2 class="section-title">Khám phá theo lĩnh vực</h2>
+      <div id="home-fields" class="grid-4"></div>
 
-              <div class="search-divider"></div>
+      <div class="row-between">
+        <h2 class="section-title">Cơ hội mới dành cho bạn</h2>
+        <a href="#/jobs" class="link">Xem tất cả việc làm →</a>
+      </div>
+      <div id="home-jobs" class="grid-3"></div>
 
-              <div class="search-location-group">
-                <select aria-label="Chọn địa điểm">
-                  <option value="">Địa điểm</option>
-                  <option value="hcm">TP. Hồ Chí Minh</option>
-                  <option value="hn">Hà Nội</option>
-                  <option value="dn">Đà Nẵng</option>
-                </select>
-                <span class="select-arrow">▼</span>
-              </div>
+      <div class="partners">
+        <small>ĐỒNG HÀNH CÙNG TÀI NĂNG TRẺ</small>
+        <div><b>FPT Software</b><b>VNG Corporation</b><b>Viettel Solutions</b></div>
+      </div>
 
-              <button type="button" class="btn-hero-search">
-                Tìm việc ngay
-              </button>
-            </div>
-          </div>
+      <div class="why">
+        <h2>Không chỉ tìm việc. Tìm đúng hướng đi.</h2>
+        <div><span>01&nbsp; Cơ hội được kiểm duyệt</span><span>02&nbsp; Ứng tuyển chỉ trong vài bước</span><span>03&nbsp; AI đồng hành cùng sự nghiệp</span></div>
+      </div>
 
-          <!-- Cột phải: Card tím Your Future Starts Here -->
-          <aside class="hero-card-future">
-            <div>
-              <div class="future-title">YOUR FUTURE<br />STARTS HERE</div>
-              <ul class="future-steps">
-                <li>
-                  <span class="step-num">01</span>
-                  <span>Khám phá thế mạnh</span>
-                </li>
-                <li>
-                  <span class="step-num">02</span>
-                  <span>Kết nối cơ hội phù hợp</span>
-                </li>
-                <li>
-                  <span class="step-num">03</span>
-                  <span>Tự tin bước về phía trước</span>
-                </li>
-              </ul>
-            </div>
+      <div class="cta">
+        <div><h2>Bạn đang tìm kiếm nhân tài?</h2><p>Kết nối thế hệ tài năng tiếp theo cùng Career Connect.</p></div>
+        <button class="btn btn-white">Đăng tuyển ngay</button>
+      </div>
+    </div>
+  </main>
 
-            <a href="profile.html" class="future-link">
-              Cùng bạn trên mỗi chặng đường ↗
-            </a>
-          </aside>
+  <!-- ===== DANH SÁCH TIN (tìm kiếm + lọc + phân trang) ===== -->
+  <main id="page-jobs" class="container" hidden>
+    <h1 class="page-title">Tìm công việc bạn muốn gắn bó</h1>
+    <p class="muted">Cơ hội phù hợp, khởi đầu xứng đáng.</p>
+
+    <div class="search-row">
+      <input id="keyword" class="input" placeholder="Vị trí, kỹ năng hoặc công ty" onkeydown="if (event.key === 'Enter') doSearch()">
+      <select id="location" class="input" onchange="doSearch()">
+        <option value="">Tất cả địa điểm</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+      <button id="search-btn" class="btn" onclick="doSearch()">Tìm kiếm</button>
+    </div>
+
+    <div class="layout">
+      <aside class="filters">
+        <div class="row-between"><h2>Bộ lọc</h2><button id="clear-btn" class="link" onclick="clearAll()">Xóa bộ lọc</button></div>
+
+        <label>Ngành nghề</label>
+        <select id="f-field" class="input" onchange="onSidebarChange()">
+          <option value="">Tất cả</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+
+        <label>Địa điểm</label>
+        <select id="f-location" class="input" onchange="onSidebarChange()">
+          <option value="">Tất cả</option>
+        <!-- các option được JS điền từ dữ liệu -->
+      </select>
+
+        <label>Mức lương</label>
+        <select id="f-salary" class="input" onchange="onSidebarChange()">
+          <option value="">Tất cả</option>
+          <option value="lt4">Dưới 4 triệu</option><option value="4-5">4 – 5 triệu</option><option value="ge5">Từ 5 triệu trở lên</option>
+        </select>
+
+        <label>Hình thức làm việc</label>
+        <div id="f-types" onchange="onSidebarChange()">
+          <label class="check"><input type="checkbox" value="Thực tập"> Thực tập</label>
+          <label class="check"><input type="checkbox" value="Bán thời gian"> Bán thời gian</label>
         </div>
+      </aside>
+
+      <section>
+        <div class="row-between">
+          <h2 id="result-count"></h2>
+          <select id="sort" class="input sort" onchange="onSortChange()">
+            <option value="new">Sắp xếp: Mới nhất</option>
+            <option value="salary">Sắp xếp: Lương cao nhất</option>
+          </select>
+        </div>
+        <div id="chips" class="chips"></div>
+        <div id="job-list" class="grid-2"></div>
+        <div id="empty" class="empty" hidden>
+          <div class="empty-icon">🔍</div>
+          <h3>Không tìm thấy việc làm phù hợp</h3>
+          <p class="muted">Hãy thử đổi từ khóa hoặc bỏ bớt bộ lọc nhé.</p>
+          <button id="empty-clear" class="btn" onclick="clearAll()">Xóa bộ lọc</button>
+        </div>
+        <div id="pagination" class="pagination"></div>
       </section>
+    </div>
+  </main>
 
-      <!-- ====================================================================
-         3. STATS BANNER
-         ==================================================================== -->
-      <section class="stats-banner">
-        <div class="stat-item">
-          <span class="stat-number">2.400+</span>
-          <span class="stat-label">Việc làm đang tuyển</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">850+</span>
-          <span class="stat-label">Doanh nghiệp đồng hành</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">12.000+</span>
-          <span class="stat-label">Ứng viên kết nối</span>
-        </div>
-      </section>
+  <!-- ===== CHI TIẾT VIỆC LÀM (nội dung do JS đổ vào) ===== -->
+  <main id="page-detail" class="container" hidden></main>
 
-      <!-- ====================================================================
-         4. KHÁM PHÁ THEO LĨNH VỰC
-         ==================================================================== -->
-      <section class="section-block">
-        <div class="section-header">
-          <h2>Khám phá theo lĩnh vực</h2>
-        </div>
+  <footer class="container footer">
+    <b>© 2026 Career Connect</b>
+    <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
+  </footer>
 
-        <div class="categories-grid">
-          <div class="category-card">
-            <strong>Công nghệ thông tin</strong>
-            <span class="count">· 428</span>
-          </div>
-
-          <div class="category-card">
-            <strong>Thiết kế sáng tạo</strong>
-            <span class="count">· 186</span>
-          </div>
-
-          <div class="category-card">
-            <strong>Marketing</strong>
-            <span class="count">· 245</span>
-          </div>
-
-          <div class="category-card">
-            <strong>Kinh doanh</strong>
-            <span class="count">· 312</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ====================================================================
-         5. CƠ HỘI MỚI DÀNH CHO BẠN (JOB CARDS)
-         ==================================================================== -->
-      <section class="section-block">
-        <div class="section-header">
-          <h2>Cơ hội mới dành cho bạn</h2>
-          <a href="#" class="section-link">Xem tất cả việc làm →</a>
-        </div>
-
-        <div class="job-cards-grid">
-          <!-- Card 1: Lumina Studio -->
-          <div class="home-job-card">
-            <div>
-              <div class="job-card-company">LUMINA STUDIO</div>
-              <div class="job-card-title">UI/UX Designer</div>
-              <div class="job-card-meta">TP. Hồ Chí Minh · Toàn thời gian</div>
-            </div>
-            <div class="job-card-salary">12 – 18 triệu</div>
-          </div>
-
-          <!-- Card 2: Novatech -->
-          <div class="home-job-card">
-            <div>
-              <div class="job-card-company">NOVATECH</div>
-              <div class="job-card-title">Frontend Developer</div>
-              <div class="job-card-meta">TP. Hồ Chí Minh · Toàn thời gian</div>
-            </div>
-            <div class="job-card-salary">12 – 18 triệu</div>
-          </div>
-
-          <!-- Card 3: Greenly -->
-          <div class="home-job-card">
-            <div>
-              <div class="job-card-company">GREENLY</div>
-              <div class="job-card-title">Marketing Intern</div>
-              <div class="job-card-meta">TP. Hồ Chí Minh · Toàn thời gian</div>
-            </div>
-            <div class="job-card-salary">12 – 18 triệu</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ====================================================================
-         6. ĐỒNG HÀNH CÙNG TÀI NĂNG TRẺ (PARTNERS ROW)
-         ==================================================================== -->
-      <section class="partners-section">
-        <span class="partners-label">Đồng hành cùng tài năng trẻ</span>
-        <div class="partners-row">
-          <span class="partner-logo-item">novatech</span>
-          <span class="partner-logo-item">lumina</span>
-          <span class="partner-logo-item">greenly</span>
-          <span class="partner-logo-item">orbit labs</span>
-          <span class="partner-logo-item">velora</span>
-        </div>
-      </section>
-
-      <!-- ====================================================================
-         7. FEATURE CALLOUT BANNER
-         ==================================================================== -->
-      <section class="feature-callout-banner">
-        <h3>Không chỉ tìm việc. Tìm đúng hướng đi.</h3>
-        <div class="feature-callout-grid">
-          <div class="feature-callout-item">
-            <span class="num">01</span>
-            <span>Cơ hội được kiểm duyệt</span>
-          </div>
-
-          <div class="feature-callout-item">
-            <span class="num">02</span>
-            <span>Ứng tuyển chỉ trong vài bước</span>
-          </div>
-
-          <div class="feature-callout-item">
-            <span class="num">03</span>
-            <span>AI đồng hành cùng sự nghiệp</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ====================================================================
-         8. EMPLOYER CTA BANNER
-         ==================================================================== -->
-      <section class="employer-cta-banner">
-        <div class="employer-cta-content">
-          <h3>Bạn đang tìm kiếm nhân tài?</h3>
-          <p>Kết nối thế hệ tài năng tiếp theo cùng Career Connect.</p>
-        </div>
-        <a href="job_post.html" class="btn-employer-cta">
-          Đăng tuyển ngay
-        </a>
-      </section>
-
-      <!-- ====================================================================
-         9. FOOTER CHUẨN FIGMA
-         ==================================================================== -->
-      <footer class="figma-footer">
-        <span>© 2026 Career Connect</span>
-        <div class="figma-footer-links">
-          <a href="#">Về chúng tôi</a>
-          <span>·</span>
-          <a href="#">Điều khoản</a>
-          <span>·</span>
-          <a href="#">Bảo mật</a>
-          <span>·</span>
-          <a href="mailto:hello@careerconnect.vn">hello@careerconnect.vn</a>
-        </div>
-      </footer>
-    </main>
-
-    <!-- Scripts đồng bộ trạng thái đăng nhập và điều hướng -->
-    <script src="js/api.js"></script>
-    <script src="js/auth-guard.js"></script>
-    <script src="js/home.js"></script>
-  </body>
+  <script src="./js/home.js"></script>
+</body>
 </html>
