@@ -8,6 +8,7 @@ from app.routers import auth
 from app.routers import job_router
 from utils.exceptions import exception_handlers
 from app.routers import student_router
+from app.routers import chat_router
 from app.routers import dashboard_router
 from app.routers import employer_router
 from app.routers import admin_router
@@ -39,6 +40,7 @@ app.include_router(employer_router.router)
 app.include_router(admin_router.router)
 app.include_router(admin_job_router.router)
 app.include_router(dashboard_router.router)
+app.include_router(chat_router.router)
 
 @app.get("/api/health")
 def health():
