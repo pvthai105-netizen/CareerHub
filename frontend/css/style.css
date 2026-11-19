@@ -88,8 +88,8 @@ a:hover { color: var(--indigo-hover); }
 }
 
 .brand-logo img {
-  height: 38px;             /* Chiều cao chuẩn trong Navbar 72px */
-  width: auto;              /* Giữ đúng tỉ lệ ảnh gốc, không méo hình */
+  height: 38px;             
+  width: auto;              
   object-fit: contain;
   display: block;
   transition: var(--transition);

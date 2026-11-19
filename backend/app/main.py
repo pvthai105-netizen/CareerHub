@@ -9,13 +9,35 @@ from app.routers import job_router
 from utils.exceptions import exception_handlers
 from app.routers import student_router
 from app.routers import dashboard_router
+from app.routers import employer_router
+from app.routers import admin_router
+from app.routers import admin_job_router
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="CareerHub API")
 exception_handlers(app)
+
+# ----- CORS configuration -------------------------------------------------
+# Cho phép frontend chạy ở http://127.0.0.1:5500 (Live Server) truy cập API.
+origins = [
+    "http://127.0.0.1:5500",          # Local development
+    "http://localhost:5500",          # Ngoại lệ nếu dùng localhost
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,            # Chỉ cho phép các origin ở trên
+    allow_credentials=True,           # Nếu có gửi cookie / Authorization header
+    allow_methods=["*"],              # Cho phép GET, POST, PUT, DELETE, …
+    allow_headers=["*"],              # Cho phép bất kỳ header nào (Authorization, Content-Type,…)
+)
 app.include_router(auth.router)
 app.include_router(job_router.router)
 app.include_router(student_router.router)
+app.include_router(employer_router.router)
+app.include_router(admin_router.router)
+app.include_router(admin_job_router.router)
 app.include_router(dashboard_router.router)
 
 @app.get("/api/health")
