@@ -61,8 +61,13 @@ def valid_docx_bytes():
 
 
 def test_student_application_route_is_registered():
-    routes = {route.path: route.methods for route in router.routes}
+    routes = {}
+    for route in router.routes:
+        routes.setdefault(route.path, set()).update(route.methods)
     assert "POST" in routes["/api/jobs/{job_id}/applications"]
+    assert "GET" in routes["/api/jobs/{job_id}/applications"]
+    assert "PATCH" in routes["/api/jobs/{job_id}/applications/{application_id}/status"]
+    assert "GET" in routes["/api/jobs/{job_id}/applications/{application_id}/cv"]
     assert "GET" in routes["/api/applications/my"]
     assert "POST" in routes["/api/applications/{application_id}/withdraw"]
 
@@ -199,3 +204,100 @@ def test_apply_rejects_non_student(application_context):
     with pytest.raises(HTTPException) as error:
         submit(db, employer, job.job_id)
     assert error.value.status_code == 403
+
+
+def test_employer_lists_applicants_and_filters_by_status(application_context):
+    db, student, employer, job, _ = application_context
+    application = submit(db, student, job.job_id)
+
+    pending = application_services.get_job_applications(db, employer, job.job_id)
+    filtered = application_services.get_job_applications(
+        db, employer, job.job_id, application_services.ApplicationStatus.pending
+    )
+    empty = application_services.get_job_applications(
+        db, employer, job.job_id, application_services.ApplicationStatus.interview
+    )
+
+    assert len(pending) == 1
+    assert pending[0]["id"] == application.id
+    assert pending[0]["student_email"] == student.email
+    assert pending[0]["status"] == application_services.ApplicationStatus.pending
+    assert pending[0]["has_cv"] is True
+    assert len(filtered) == 1
+    assert empty == []
+
+
+def test_non_owner_cannot_list_applicants_or_cv(application_context):
+    db, student, _, job, _ = application_context
+    application = submit(db, student, job.job_id)
+    other_employer = User(email="other-employer@example.com", hashed_password="x", role=Role.employer)
+    db.add(other_employer)
+    db.commit()
+    db.refresh(other_employer)
+
+    with pytest.raises(HTTPException) as list_error:
+        application_services.get_job_applications(db, other_employer, job.job_id)
+    with pytest.raises(HTTPException) as cv_error:
+        application_services.get_application_cv_path(db, other_employer, job.job_id, application.id)
+
+    assert list_error.value.status_code == 403
+    assert cv_error.value.status_code == 403
+
+
+def test_employer_applicant_endpoints_reject_missing_job(application_context):
+    db, _, employer, _, _ = application_context
+
+    with pytest.raises(HTTPException) as error:
+        application_services.get_job_applications(db, employer, 99999)
+
+    assert error.value.status_code == 404
+
+
+def test_employer_can_advance_application_status(application_context):
+    db, student, employer, job, _ = application_context
+    application = submit(db, student, job.job_id)
+
+    interview = application_services.update_application_status(
+        db, employer, job.job_id, application.id, application_services.ApplicationStatus.interview
+    )
+    assert interview.status == application_services.ApplicationStatus.interview
+    accepted = application_services.update_application_status(
+        db, employer, job.job_id, application.id, application_services.ApplicationStatus.accepted
+    )
+
+    assert accepted.status == application_services.ApplicationStatus.accepted
+
+
+@pytest.mark.parametrize(
+    ("initial_status", "new_status"),
+    [
+        ("pending", "accepted"),
+        ("accepted", "rejected"),
+        ("rejected", "interview"),
+    ],
+)
+def test_employer_cannot_skip_or_reverse_status_flow(application_context, initial_status, new_status):
+    db, student, employer, job, _ = application_context
+    application = submit(db, student, job.job_id)
+    application.status = application_services.ApplicationStatus(initial_status)
+    db.commit()
+
+    with pytest.raises(HTTPException) as error:
+        application_services.update_application_status(
+            db, employer, job.job_id, application.id, application_services.ApplicationStatus(new_status)
+        )
+
+    assert error.value.status_code == 409
+
+
+def test_employer_cv_path_is_safe_and_file_exists(application_context):
+    db, student, employer, job, upload_dir = application_context
+    application = submit(db, student, job.job_id, filename="../../private.pdf")
+
+    cv_path, media_type = application_services.get_application_cv_path(
+        db, employer, job.job_id, application.id
+    )
+
+    assert cv_path.parent == upload_dir.resolve()
+    assert cv_path.is_file()
+    assert media_type == application_services.PDF_MIME_TYPE

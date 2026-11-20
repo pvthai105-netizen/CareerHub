@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý ứng viên - CareerHub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/employer_applications.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-navbar">
+        <a href="home.html" class="brand-logo" title="CareerHub">
+          <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a href="job_post.html" class="nav-link">Tin tuyển dụng</a></li>
+          <li><a href="employer_applications.html" class="nav-link active" aria-current="page">Ứng viên</a></li>
+          <li><a href="employer_profile.html" class="nav-link">Hồ sơ công ty</a></li>
+        </ul>
+        <div class="nav-actions"></div>
+      </div>
+    </header>
+
+    <main class="container employer-applications-page">
+      <section class="applications-heading">
+        <div>
+          <p class="eyebrow">KHÔNG GIAN NHÀ TUYỂN DỤNG</p>
+          <h1>Quản lý ứng viên</h1>
+          <p class="page-intro">Xem hồ sơ và cập nhật tiến trình tuyển dụng theo từng tin của bạn.</p>
+        </div>
+        <a class="heading-link" href="job_post.html">Quản lý tin tuyển dụng <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <section class="applicants-panel" aria-labelledby="applicants-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">HỒ SƠ ỨNG TUYỂN</p>
+            <h2 id="applicants-title">Ứng viên theo tin tuyển dụng</h2>
+          </div>
+          <span id="applicant-count" class="applicant-count">— ứng viên</span>
+        </div>
+
+        <div class="applicant-filters">
+          <label class="filter-field" for="job-select">
+            <span>Tin tuyển dụng</span>
+            <select id="job-select" class="form-select" disabled>
+              <option value="">Đang tải tin tuyển dụng...</option>
+            </select>
+          </label>
+          <label class="filter-field" for="status-filter">
+            <span>Trạng thái</span>
+            <select id="status-filter" class="form-select" disabled>
+              <option value="">Tất cả trạng thái</option>
+              <option value="pending">Chờ</option>
+              <option value="interview">Phỏng vấn</option>
+              <option value="accepted">Đã nhận</option>
+              <option value="rejected">Từ chối</option>
+              <option value="reviewed">Đã xem</option>
+              <option value="withdrawn">Đã rút</option>
+            </select>
+          </label>
+        </div>
+
+        <p id="applicants-feedback" class="applicants-feedback" role="status" aria-live="polite">Đang tải dữ liệu...</p>
+        <div id="applicants-table-wrap" class="applicants-table-wrap" hidden>
+          <table class="applicants-table">
+            <thead>
+              <tr>
+                <th scope="col">ỨNG VIÊN</th>
+                <th scope="col">NGÀY ỨNG TUYỂN</th>
+                <th scope="col">THƯ GIỚI THIỆU</th>
+                <th scope="col">CV</th>
+                <th scope="col">TRẠNG THÁI</th>
+                <th scope="col">CẬP NHẬT</th>
+              </tr>
+            </thead>
+            <tbody id="applicants-list"></tbody>
+          </table>
+        </div>
+      </section>
+      <p class="page-footnote">Chỉ chủ tin tuyển dụng mới có thể xem và xử lý hồ sơ ứng tuyển.</p>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/employer_applications.js"></script>
+  </body>
+</html>
