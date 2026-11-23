@@ -511,15 +511,314 @@ const Dashboard = {
   // =========================================================================
   // 3. SINH VIÊN (STUDENT DASHBOARD - "VIỆC LÀM CỦA TÔI")
   // =========================================================================
+  studentState: {
+    currentTab: "applied",
+    applications: [],
+    savedJobs: [],
+  },
+
+  switchStudentTab(tab) {
+    this.studentState.currentTab = tab;
+    const searchInput = document.getElementById("studentSearchInput");
+    if (searchInput) searchInput.value = "";
+
+    const tabApplied = document.getElementById("tabApplied");
+    const tabSaved = document.getElementById("tabSaved");
+    const tabViewed = document.getElementById("tabViewed");
+
+    tabApplied?.classList.toggle("active", tab === "applied");
+    tabSaved?.classList.toggle("active", tab === "saved");
+    tabViewed?.classList.toggle("active", tab === "viewed");
+
+    const statusFilter = document.getElementById("studentStatusFilter");
+    if (statusFilter) {
+      if (tab === "applied") {
+        statusFilter.style.display = "block";
+        statusFilter.innerHTML = `
+          <option value="">Tất cả trạng thái</option>
+          <option value="pending">Đang chờ</option>
+          <option value="reviewed">Đã xem</option>
+          <option value="interview">Phỏng vấn</option>
+          <option value="accepted">Được nhận</option>
+          <option value="rejected">Từ chối</option>
+        `;
+      } else if (tab === "saved") {
+        statusFilter.style.display = "block";
+        statusFilter.innerHTML = `
+          <option value="">Tất cả trạng thái</option>
+          <option value="ACTIVE">Đang tuyển</option>
+          <option value="CLOSED">Đã đóng</option>
+        `;
+      } else {
+        statusFilter.style.display = "none";
+      }
+    }
+
+    const tableTitle = document.getElementById("applicationsTableTitle");
+    const tableSub = document.getElementById("applicationsTableSub");
+    const colDateHeader = document.getElementById("colDateHeader");
+    const colStatusHeader = document.getElementById("colStatusHeader");
+    const chartSection = document.getElementById("studentChartSection");
+
+    if (tab === "applied") {
+      if (tableTitle) tableTitle.textContent = "Lịch sử ứng tuyển";
+      if (tableSub) tableSub.textContent = "Danh sách công việc đã nộp hồ sơ";
+      if (colDateHeader) colDateHeader.textContent = "NGÀY ỨNG TUYỂN";
+      if (colStatusHeader) colStatusHeader.textContent = "TRẠNG THÁI";
+      if (searchInput) searchInput.placeholder = "Tìm công việc hoặc công ty đã ứng tuyển...";
+      if (chartSection) chartSection.style.display = "block";
+    } else if (tab === "saved") {
+      if (tableTitle) tableTitle.textContent = "Công việc đã lưu";
+      if (tableSub) tableSub.textContent = "Danh sách các cơ hội nghề nghiệp bạn đã đánh dấu";
+      if (colDateHeader) colDateHeader.textContent = "NGÀY LƯU";
+      if (colStatusHeader) colStatusHeader.textContent = "TRẠNG THÁI TIN";
+      if (searchInput) searchInput.placeholder = "Tìm kiếm công việc đã lưu hoặc công ty...";
+      if (chartSection) chartSection.style.display = "none";
+    } else {
+      if (tableTitle) tableTitle.textContent = "Công việc đã xem";
+      if (tableSub) tableSub.textContent = "Lịch sử duyệt tin tuyển dụng của bạn";
+      if (colDateHeader) colDateHeader.textContent = "THỜI GIAN";
+      if (colStatusHeader) colStatusHeader.textContent = "TRẠNG THÁI";
+      if (searchInput) searchInput.placeholder = "Tìm kiếm việc đã xem...";
+      if (chartSection) chartSection.style.display = "none";
+    }
+
+    this.renderStudentTable();
+  },
+
+  renderStudentTable() {
+    const { currentTab, applications, savedJobs } = this.studentState;
+    const tbody = document.getElementById("studentApplicationsTableBody");
+    const footerCount = document.getElementById("studentTableFooterCount");
+    const searchInput = document.getElementById("studentSearchInput");
+    const statusFilter = document.getElementById("studentStatusFilter");
+
+    if (!tbody) return;
+
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    const selectedStatus = statusFilter?.value || "";
+
+    // TAB 1: ĐÃ ỨNG TUYỂN
+    if (currentTab === "applied") {
+      const filtered = (applications || []).filter((item) => {
+        const matchQuery =
+          !query ||
+          (item.job_title && item.job_title.toLowerCase().includes(query)) ||
+          (item.company_name && item.company_name.toLowerCase().includes(query));
+
+        const matchStatus = !selectedStatus || item.status === selectedStatus;
+        return matchQuery && matchStatus;
+      });
+
+      if (footerCount) {
+        footerCount.textContent = `Hiển thị ${filtered.length} trên ${(applications || []).length} công việc đã ứng tuyển`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 48px 16px;">
+              <div class="dash-empty-state" style="padding: 0;">
+                <span class="dash-empty-icon">🔍</span>
+                <p>Không tìm thấy đơn ứng tuyển nào phù hợp</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map((app) => {
+          const badge = this.getStatusBadge(app.status);
+          return `
+          <tr>
+            <td>
+              <div class="table-job-info">
+                <strong>${escapeHtml(app.job_title)}</strong>
+                <span>${escapeHtml(app.company_name)}</span>
+              </div>
+            </td>
+            <td>${this.formatDate(app.applied_at)}</td>
+            <td>
+              <span class="badge ${badge.class}">${badge.label}</span>
+            </td>
+            <td>
+              <a href="company_detail.html?id=${app.job_id || 1}" class="table-action-link" title="Xem chi tiết việc làm">
+                Chi tiết <span aria-hidden="true">→</span>
+              </a>
+            </td>
+          </tr>
+        `;
+        })
+        .join("");
+      return;
+    }
+
+    // TAB 2: ĐÃ LƯU
+    if (currentTab === "saved") {
+      const filtered = (savedJobs || []).filter((item) => {
+        const matchQuery =
+          !query ||
+          (item.job_title && item.job_title.toLowerCase().includes(query)) ||
+          (item.company_name && item.company_name.toLowerCase().includes(query)) ||
+          (item.location && item.location.toLowerCase().includes(query));
+
+        const matchStatus =
+          !selectedStatus || (item.status || "").toUpperCase() === selectedStatus.toUpperCase();
+        return matchQuery && matchStatus;
+      });
+
+      if (footerCount) {
+        footerCount.textContent = `Hiển thị ${filtered.length} trên ${(savedJobs || []).length} công việc đã lưu`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 48px 16px;">
+              <div class="dash-empty-state" style="padding: 0;">
+                <span class="dash-empty-icon">🔖</span>
+                <p style="margin-bottom: 8px; font-weight: 600; color: var(--ink);">Bạn chưa lưu công việc nào</p>
+                <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px; max-width: 480px; margin-left: auto; margin-right: auto;">
+                  Hãy khám phá danh sách việc làm để lưu lại các cơ hội tiềm năng, hoặc bấm nút dưới đây để lưu ngay một việc làm mẫu trải nghiệm.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-primary" onclick="Dashboard.quickSaveSampleJob()" style="padding: 9px 18px; font-size: 13px;">
+                    + Lưu nhanh việc làm mẫu
+                  </button>
+                  <a href="home.html#jobs" class="btn btn-outline" style="padding: 9px 18px; font-size: 13px;">
+                    Tìm việc làm ngay →
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map((item) => {
+          const isJobActive = (item.status || "ACTIVE").toUpperCase() === "ACTIVE";
+          const badgeClass = isJobActive ? "badge-accepted" : "badge-rejected";
+          const badgeLabel = isJobActive ? "Đang tuyển" : "Đã đóng";
+
+          return `
+          <tr>
+            <td>
+              <div class="table-job-info">
+                <strong>${escapeHtml(item.job_title)}</strong>
+                <span>
+                  ${escapeHtml(item.company_name)}
+                  ${item.location ? ` · <span>${escapeHtml(item.location)}</span>` : ""}
+                  ${item.salary ? ` · <span style="color: var(--indigo); font-weight: 600;">${escapeHtml(item.salary)}</span>` : ""}
+                </span>
+              </div>
+            </td>
+            <td>${this.formatDate(item.saved_at)}</td>
+            <td>
+              <span class="badge ${badgeClass}">${badgeLabel}</span>
+            </td>
+            <td>
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
+                <a href="company_detail.html?id=${item.job_id || 1}" class="table-action-link" title="Xem chi tiết việc làm">
+                  Chi tiết <span aria-hidden="true">→</span>
+                </a>
+                <button
+                  type="button"
+                  class="btn-unsave"
+                  onclick="Dashboard.unsaveJob(${item.job_id})"
+                  title="Bỏ lưu công việc này"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  <span>Bỏ lưu</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        })
+        .join("");
+      return;
+    }
+
+    // TAB 3: ĐÃ XEM
+    if (currentTab === "viewed") {
+      if (footerCount) footerCount.textContent = "Hiển thị 0 công việc đã xem";
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 48px 16px;">
+            <div class="dash-empty-state" style="padding: 0;">
+              <span class="dash-empty-icon">👁️</span>
+              <p style="margin-bottom: 8px;">Chưa có dữ liệu việc làm đã xem</p>
+              <a href="home.html#jobs" class="table-action-link" style="font-weight: 700;">
+                Khám phá tin tuyển dụng <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+  },
+
+  async unsaveJob(jobId) {
+    try {
+      const res = await api.delete(`/dashboard/saved-jobs/${jobId}`);
+      const idx = this.studentState.savedJobs.findIndex((j) => Number(j.job_id) === Number(jobId));
+      if (idx !== -1) {
+        this.studentState.savedJobs.splice(idx, 1);
+      }
+      const elSaved = document.getElementById("studentSavedCount");
+      const newCount = res && res.saved_count !== undefined ? res.saved_count : this.studentState.savedJobs.length;
+      if (elSaved) elSaved.textContent = String(newCount).padStart(2, "0");
+      this.renderStudentTable();
+    } catch (err) {
+      console.error("Lỗi bỏ lưu:", err);
+      alert("Không thể bỏ lưu: " + (err.message || "Vui lòng thử lại"));
+    }
+  },
+
+  async quickSaveSampleJob() {
+    try {
+      await api.post("/dashboard/saved-jobs/1");
+      const data = await api.get("/dashboard/student");
+      this.studentState.savedJobs = data.saved_jobs || [];
+      const elSaved = document.getElementById("studentSavedCount");
+      if (elSaved) elSaved.textContent = String(this.studentState.savedJobs.length).padStart(2, "0");
+      this.renderStudentTable();
+    } catch (err) {
+      console.error("Lỗi lưu việc làm mẫu:", err);
+      this.studentState.savedJobs = [
+        {
+          saved_job_id: 1,
+          job_id: 1,
+          job_title: "Thực tập sinh Lập trình Frontend (ReactJS/HTML/CSS)",
+          company_name: "Công ty Cổ phần Công nghệ FPT",
+          saved_at: new Date().toISOString(),
+          status: "ACTIVE",
+          location: "Hà Nội",
+          salary: "6 - 10 triệu",
+        },
+      ];
+      const elSaved = document.getElementById("studentSavedCount");
+      if (elSaved) elSaved.textContent = "01";
+      this.renderStudentTable();
+    }
+  },
+
   async initStudentDashboard() {
     const user = AuthGuard.requireRoles(["student"]);
     if (!user) return;
     this.setupLogout();
 
-    let allApplications = [];
-
     try {
       const data = await api.get("/dashboard/student");
+      this.studentState.applications = data.recent_applications || [];
+      this.studentState.savedJobs = data.saved_jobs || [];
 
       // 1. Render Summary KPI numbers
       const summary = data.summary || {};
@@ -587,75 +886,325 @@ const Dashboard = {
         });
       }
 
-      // 3. Render Applications Table with Search & Filter
-      allApplications = data.recent_applications || [];
+      // 3. Bind search & filter inputs
+      const searchInput = document.getElementById("studentSearchInput");
+      const statusFilter = document.getElementById("studentStatusFilter");
+      if (searchInput) {
+        searchInput.oninput = () => this.renderStudentTable();
+      }
+      if (statusFilter) {
+        statusFilter.onchange = () => this.renderStudentTable();
+      }
+
+      // 4. Kích hoạt tab ban đầu theo URL query hoặc hash
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get("tab") || window.location.hash.replace("#", "");
+      if (tabParam === "saved") {
+        this.switchStudentTab("saved");
+      } else if (tabParam === "viewed") {
+        this.switchStudentTab("viewed");
+      } else {
+        this.switchStudentTab("applied");
+      }
+
+      /* (Deprecated local variables - refactored to Dashboard methods)
+      const allSavedJobs = data.saved_jobs || [];
+
+      let currentTab = "applied"; // 'applied' | 'saved' | 'viewed'
+
+      const tabApplied = document.getElementById("tabApplied");
+      const tabSaved = document.getElementById("tabSaved");
+      const tabViewed = document.getElementById("tabViewed");
+
       const tbody = document.getElementById("studentApplicationsTableBody");
       const footerCount = document.getElementById("studentTableFooterCount");
       const searchInput = document.getElementById("studentSearchInput");
       const statusFilter = document.getElementById("studentStatusFilter");
+      const colDateHeader = document.getElementById("colDateHeader");
+      const colStatusHeader = document.getElementById("colStatusHeader");
+      const tableTitle = document.getElementById("applicationsTableTitle");
+      const tableSub = document.getElementById("applicationsTableSub");
+      const chartSection = document.getElementById("studentChartSection");
+
+      const updateFilterOptions = () => {
+        if (!statusFilter) return;
+        if (currentTab === "applied") {
+          statusFilter.style.display = "block";
+          statusFilter.innerHTML = `
+            <option value="">Tất cả trạng thái</option>
+            <option value="pending">Đang chờ</option>
+            <option value="reviewed">Đã xem</option>
+            <option value="interview">Phỏng vấn</option>
+            <option value="accepted">Được nhận</option>
+            <option value="rejected">Từ chối</option>
+          `;
+        } else if (currentTab === "saved") {
+          statusFilter.style.display = "block";
+          statusFilter.innerHTML = `
+            <option value="">Tất cả trạng thái</option>
+            <option value="ACTIVE">Đang tuyển</option>
+            <option value="CLOSED">Đã đóng</option>
+          `;
+        } else {
+          statusFilter.style.display = "none";
+        }
+      };
+
+      const switchTab = (tab) => {
+        currentTab = tab;
+        if (searchInput) searchInput.value = "";
+
+        tabApplied?.classList.toggle("active", tab === "applied");
+        tabSaved?.classList.toggle("active", tab === "saved");
+        tabViewed?.classList.toggle("active", tab === "viewed");
+
+        updateFilterOptions();
+
+        if (tab === "applied") {
+          if (tableTitle) tableTitle.textContent = "Lịch sử ứng tuyển";
+          if (tableSub) tableSub.textContent = "Danh sách công việc đã nộp hồ sơ";
+          if (colDateHeader) colDateHeader.textContent = "NGÀY ỨNG TUYỂN";
+          if (colStatusHeader) colStatusHeader.textContent = "TRẠNG THÁI";
+          if (searchInput) searchInput.placeholder = "Tìm công việc hoặc công ty đã ứng tuyển...";
+          if (chartSection) chartSection.style.display = "block";
+        } else if (tab === "saved") {
+          if (tableTitle) tableTitle.textContent = "Công việc đã lưu";
+          if (tableSub) tableSub.textContent = "Danh sách các cơ hội nghề nghiệp bạn đã đánh dấu";
+          if (colDateHeader) colDateHeader.textContent = "NGÀY LƯU";
+          if (colStatusHeader) colStatusHeader.textContent = "TRẠNG THÁI TIN";
+          if (searchInput) searchInput.placeholder = "Tìm kiếm công việc đã lưu hoặc công ty...";
+          if (chartSection) chartSection.style.display = "none";
+        } else {
+          if (tableTitle) tableTitle.textContent = "Công việc đã xem";
+          if (tableSub) tableSub.textContent = "Lịch sử duyệt tin tuyển dụng của bạn";
+          if (colDateHeader) colDateHeader.textContent = "THỜI GIAN";
+          if (colStatusHeader) colStatusHeader.textContent = "TRẠNG THÁI";
+          if (searchInput) searchInput.placeholder = "Tìm kiếm việc đã xem...";
+          if (chartSection) chartSection.style.display = "none";
+        }
+
+        renderTable();
+      };
 
       const renderTable = () => {
         const query = (searchInput?.value || "").trim().toLowerCase();
         const selectedStatus = statusFilter?.value || "";
 
-        const filtered = allApplications.filter((item) => {
-          const matchQuery =
-            !query ||
-            (item.job_title && item.job_title.toLowerCase().includes(query)) ||
-            (item.company_name && item.company_name.toLowerCase().includes(query));
-
-          const matchStatus = !selectedStatus || item.status === selectedStatus;
-          return matchQuery && matchStatus;
-        });
-
-        if (footerCount) {
-          footerCount.textContent = `Hiển thị ${filtered.length} trên ${allApplications.length} công việc`;
-        }
-
         if (!tbody) return;
 
-        if (filtered.length === 0) {
+        // TAB 1: ĐÃ ỨNG TUYỂN
+        if (currentTab === "applied") {
+          const filtered = allApplications.filter((item) => {
+            const matchQuery =
+              !query ||
+              (item.job_title && item.job_title.toLowerCase().includes(query)) ||
+              (item.company_name && item.company_name.toLowerCase().includes(query));
+
+            const matchStatus = !selectedStatus || item.status === selectedStatus;
+            return matchQuery && matchStatus;
+          });
+
+          if (footerCount) {
+            footerCount.textContent = `Hiển thị ${filtered.length} trên ${allApplications.length} công việc đã ứng tuyển`;
+          }
+
+          if (filtered.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 48px 16px;">
+                  <div class="dash-empty-state" style="padding: 0;">
+                    <span class="dash-empty-icon">🔍</span>
+                    <p>Không tìm thấy đơn ứng tuyển nào phù hợp</p>
+                  </div>
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = filtered
+            .map((app) => {
+              const badge = this.getStatusBadge(app.status);
+              return `
+              <tr>
+                <td>
+                  <div class="table-job-info">
+                    <strong>${escapeHtml(app.job_title)}</strong>
+                    <span>${escapeHtml(app.company_name)}</span>
+                  </div>
+                </td>
+                <td>${this.formatDate(app.applied_at)}</td>
+                <td>
+                  <span class="badge ${badge.class}">${badge.label}</span>
+                </td>
+                <td>
+                  <a href="company_detail.html?id=${app.job_id || 1}" class="table-action-link" title="Xem chi tiết việc làm">
+                    Chi tiết <span aria-hidden="true">→</span>
+                  </a>
+                </td>
+              </tr>
+            `;
+            })
+            .join("");
+          return;
+        }
+
+        // TAB 2: ĐÃ LƯU
+        if (currentTab === "saved") {
+          const filtered = allSavedJobs.filter((item) => {
+            const matchQuery =
+              !query ||
+              (item.job_title && item.job_title.toLowerCase().includes(query)) ||
+              (item.company_name && item.company_name.toLowerCase().includes(query)) ||
+              (item.location && item.location.toLowerCase().includes(query));
+
+            const matchStatus =
+              !selectedStatus || (item.status || "").toUpperCase() === selectedStatus.toUpperCase();
+            return matchQuery && matchStatus;
+          });
+
+          if (footerCount) {
+            footerCount.textContent = `Hiển thị ${filtered.length} trên ${allSavedJobs.length} công việc đã lưu`;
+          }
+
+          if (filtered.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 48px 16px;">
+                  <div class="dash-empty-state" style="padding: 0;">
+                    <span class="dash-empty-icon">🔖</span>
+                    <p style="margin-bottom: 8px;">Bạn chưa lưu công việc nào phù hợp</p>
+                    <a href="home.html#jobs" class="table-action-link" style="font-weight: 700;">
+                      Khám phá các việc làm mới ngay <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = filtered
+            .map((item) => {
+              const isJobActive = (item.status || "ACTIVE").toUpperCase() === "ACTIVE";
+              const badgeClass = isJobActive ? "badge-accepted" : "badge-rejected";
+              const badgeLabel = isJobActive ? "Đang tuyển" : "Đã đóng";
+
+              return `
+              <tr>
+                <td>
+                  <div class="table-job-info">
+                    <strong>${escapeHtml(item.job_title)}</strong>
+                    <span>
+                      ${escapeHtml(item.company_name)}
+                      ${item.location ? ` · <span>${escapeHtml(item.location)}</span>` : ""}
+                      ${item.salary ? ` · <span style="color: var(--indigo); font-weight: 600;">${escapeHtml(item.salary)}</span>` : ""}
+                    </span>
+                  </div>
+                </td>
+                <td>${this.formatDate(item.saved_at)}</td>
+                <td>
+                  <span class="badge ${badgeClass}">${badgeLabel}</span>
+                </td>
+                <td>
+                  <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
+                    <a href="company_detail.html?id=${item.job_id || 1}" class="table-action-link" title="Xem chi tiết việc làm">
+                      Chi tiết <span aria-hidden="true">→</span>
+                    </a>
+                    <button
+                      type="button"
+                      class="btn-unsave"
+                      data-job-id="${item.job_id}"
+                      title="Bỏ lưu công việc này"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                      <span>Bỏ lưu</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+            })
+            .join("");
+
+          // Gắn sự kiện click Bỏ lưu
+          const unsaveBtns = tbody.querySelectorAll(".btn-unsave");
+          unsaveBtns.forEach((btn) => {
+            btn.addEventListener("click", async (e) => {
+              e.preventDefault();
+              const jobId = btn.getAttribute("data-job-id");
+              if (!jobId) return;
+
+              btn.disabled = true;
+              btn.innerHTML = `<span>Đang xử lý...</span>`;
+
+              try {
+                const res = await api.delete(`/dashboard/saved-jobs/${jobId}`);
+                // Xóa khỏi danh sách client
+                const idx = allSavedJobs.findIndex((j) => String(j.job_id) === String(jobId));
+                if (idx !== -1) {
+                  allSavedJobs.splice(idx, 1);
+                }
+                // Cập nhật số lượng trên tab card
+                const newCount = res && res.saved_count !== undefined ? res.saved_count : allSavedJobs.length;
+                if (elSaved) elSaved.textContent = String(newCount).padStart(2, "0");
+
+                renderTable();
+              } catch (err) {
+                console.error("Lỗi bỏ lưu:", err);
+                alert("Không thể bỏ lưu công việc: " + (err.message || "Vui lòng thử lại"));
+                btn.disabled = false;
+                btn.innerHTML = `
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  <span>Bỏ lưu</span>
+                `;
+              }
+            });
+          });
+          return;
+        }
+
+        // TAB 3: ĐÃ XEM
+        if (currentTab === "viewed") {
+          if (footerCount) footerCount.textContent = "Hiển thị 0 công việc đã xem";
           tbody.innerHTML = `
             <tr>
               <td colspan="4" style="text-align: center; padding: 48px 16px;">
                 <div class="dash-empty-state" style="padding: 0;">
-                  <span class="dash-empty-icon">🔍</span>
-                  <p>Không tìm thấy đơn ứng tuyển nào phù hợp</p>
+                  <span class="dash-empty-icon">👁️</span>
+                  <p style="margin-bottom: 8px;">Chưa có dữ liệu việc làm đã xem</p>
+                  <a href="home.html#jobs" class="table-action-link" style="font-weight: 700;">
+                    Khám phá tin tuyển dụng <span aria-hidden="true">→</span>
+                  </a>
                 </div>
               </td>
             </tr>
           `;
           return;
         }
-
-        tbody.innerHTML = filtered
-          .map((app) => {
-            const badge = this.getStatusBadge(app.status);
-            return `
-            <tr>
-              <td>
-                <div class="table-job-info">
-                  <strong>${escapeHtml(app.job_title)}</strong>
-                  <span>${escapeHtml(app.company_name)}</span>
-                </div>
-              </td>
-              <td>${this.formatDate(app.applied_at)}</td>
-              <td>
-                <span class="badge ${badge.class}">${badge.label}</span>
-              </td>
-              <td>
-                <a href="company_detail.html?id=${app.job_id || 1}" class="table-action-link" title="Xem chi tiết việc làm">
-                  Chi tiết <span aria-hidden="true">→</span>
-                </a>
-              </td>
-            </tr>
-          `;
-          })
-          .join("");
       };
 
-      // Initial render
-      renderTable();
+      // Gắn sự kiện chuyển tab
+      tabApplied?.addEventListener("click", () => switchTab("applied"));
+      tabSaved?.addEventListener("click", () => switchTab("saved"));
+      tabViewed?.addEventListener("click", () => switchTab("viewed"));
+
+      // Check URL query hoặc hash để kích hoạt tab
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get("tab") || window.location.hash.replace("#", "");
+      if (tabParam === "saved") {
+        switchTab("saved");
+      } else if (tabParam === "viewed") {
+        switchTab("viewed");
+      } else {
+        switchTab("applied");
+      }
 
       // Bind search & filter inputs
       if (searchInput) {
@@ -664,6 +1213,7 @@ const Dashboard = {
       if (statusFilter) {
         statusFilter.addEventListener("change", () => renderTable());
       }
+      */
     } catch (err) {
       console.error("Lỗi tải student dashboard:", err);
       this.renderError("studentErrorSlot", err.message || "Không thể tải dữ liệu đơn ứng tuyển", "Dashboard.initStudentDashboard");

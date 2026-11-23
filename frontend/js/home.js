@@ -1033,7 +1033,7 @@ function removeFilter(key, value) {
 }
 
 // Hàm bật hoặc tắt trạng thái lưu công việc.
-function toggleSave(id) {
+async function toggleSave(id) {
 
   // Đảo ngược trạng thái lưu của công việc.
   // Nếu đang true thì thành false, nếu false thì thành true.
@@ -1041,6 +1041,20 @@ function toggleSave(id) {
 
   // Vẽ lại trang chi tiết để cập nhật chữ Đã lưu/Lưu công việc.
   renderDetail(id);
+
+  // Đồng bộ với API backend nếu sinh viên đã đăng nhập
+  const token = typeof Auth !== "undefined" ? Auth.getToken() : localStorage.getItem("access_token");
+  if (token && typeof api !== "undefined") {
+    try {
+      if (savedJobs[id]) {
+        await api.post(`/dashboard/saved-jobs/${id}`);
+      } else {
+        await api.delete(`/dashboard/saved-jobs/${id}`);
+      }
+    } catch (e) {
+      console.warn("Không thể đồng bộ trạng thái lưu việc làm với server:", e);
+    }
+  }
 }
 
 /* =====================================================

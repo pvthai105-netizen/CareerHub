@@ -945,6 +945,39 @@ a {
   color: var(--indigo-hover);
 }
 
+.btn-unsave {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--error-text);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-family);
+}
+
+.btn-unsave:hover {
+  background-color: var(--error-bg);
+  border-color: rgba(217, 121, 121, 0.4);
+  transform: translateY(-1px);
+}
+
+.table-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
 .dash-table-footer {
   padding: 14px 20px;
   background-color: #FAF9FD;
