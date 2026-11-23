@@ -91,7 +91,15 @@ def get_my_jobs(
     items = query.offset(skip).limit(limit).all()
 
     # Trả về tổng số tin và danh sách tin tuyển dụng
-    return {"total": total, "items": items}
+    page = (skip // limit) + 1 if limit else 1
+    total_pages = ceil(total / limit) if total and limit else 0
+    return {
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "total_pages": total_pages,
+        "items": items,
+    }
 
 
 # Hàm lấy chi tiết một tin tuyển dụng của nhà tuyển dụng
