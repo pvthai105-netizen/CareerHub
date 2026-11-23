@@ -14,6 +14,7 @@ class SavedJobDetailResponse(BaseModel):
     job_type: str
     deadline: datetime | None = None
     status: str
+    company_name: str = ""          # ên công ty hiển thị ở tab Đã lưu
 
     model_config = ConfigDict(from_attributes=True)
 
