@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Hub – Tìm việc cùng AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/home.css">
+  <link rel="stylesheet" href="./css/ai_job_search.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="./home.html" class="logo"><img src="./logoCHT-Photoroom.png" alt="Career Hub"></a>
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a href="./home.html#/">Trang chủ</a>
+        <a href="./home.html#/jobs">Tìm việc</a>
+        <a href="./my_applications.html">Đơn ứng tuyển</a>
+        <span>Công ty</span>
+        <a href="./ai_job_search.html" class="active" aria-current="page">Trợ lý AI</a>
+      </nav>
+      <div class="header-buttons">
+        <a class="btn btn-outline" href="./login.html">Đăng nhập</a>
+        <a class="btn" href="./register.html">Đăng ký</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container ai-search-page">
+    <div class="ai-search-intro">
+      <span class="ai-search-eyebrow">CAREER HUB · AI JOB MATCHING</span>
+      <h1>Tìm công việc phù hợp với bạn</h1>
+      <p class="muted">Chia sẻ mong muốn của bạn. AI sẽ phân tích và xếp hạng những cơ hội phù hợp nhất.</p>
+    </div>
+
+    <form id="ai-search-form" class="ai-search-form">
+      <label for="ai-search-query">Bạn đang tìm công việc như thế nào?</label>
+      <textarea
+        id="ai-search-query"
+        name="query"
+        class="input ai-search-query"
+        minlength="3"
+        maxlength="1000"
+        placeholder="Ví dụ: Mình muốn tìm thực tập ngành công nghệ thông tin ở Hà Nội, biết Python và có lương từ 5 triệu..."
+        required
+      ></textarea>
+      <div class="ai-search-form-footer">
+        <span class="muted">Có thể nêu ngành nghề, địa điểm, mức lương, hình thức hoặc kỹ năng.</span>
+        <button id="ai-search-submit" class="btn" type="submit">Tìm việc phù hợp</button>
+      </div>
+    </form>
+
+    <p id="ai-search-status" class="ai-search-status" role="status" aria-live="polite"></p>
+    <section id="ai-search-results" class="ai-search-results" aria-label="Top việc làm phù hợp"></section>
+  </main>
+
+  <footer class="container footer ai-search-footer">
+    <b>© 2026 Career Connect</b>
+    <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
+  </footer>
+
+  <script src="./js/ai_job_search.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+.ai-search-page {
+  max-width: 1040px;
+  min-height: calc(100vh - 150px);
+  padding-top: 48px;
+}
+
+.ai-search-intro {
+  margin-bottom: 28px;
+}
+
+.ai-search-eyebrow {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.ai-search-intro h1 {
+  margin: 10px 0 8px;
+  font-size: 36px;
+}
+
+.ai-search-intro .muted {
+  max-width: 680px;
+}
+
+.ai-search-form {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(41, 38, 66, .05);
+}
+
+.ai-search-form > label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ai-search-query {
+  min-height: 132px;
+  resize: vertical;
+  font: 14px/1.6 "Inter", sans-serif;
+}
+
+.ai-search-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ai-search-form-footer .muted {
+  font-size: 13px;
+}
+
+.ai-search-status {
+  min-height: 24px;
+  margin: 20px 0 12px;
+  color: var(--primary);
+}
+
+.ai-search-status.error {
+  color: #b42318;
+}
+
+.ai-search-results {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 40px;
+}
+
+.ai-recommendation {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.ai-recommendation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ai-rank,
+.ai-match {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ai-rank {
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.ai-match {
+  color: #387c53;
+  background: #eaf5ee;
+}
+
+.ai-job-company {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ai-job-title {
+  margin: 4px 0 6px;
+  font-size: 20px;
+}
+
+.ai-job-title a:hover,
+.ai-detail-link:hover {
+  color: var(--primary);
+}
+
+.ai-job-meta,
+.ai-job-salary {
+  margin: 0;
+  color: var(--muted);
+}
+
+.ai-job-salary {
+  margin-top: 6px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.ai-match-reasons {
+  margin: 18px 0;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.ai-match-reasons h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.ai-match-reasons ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.ai-detail-link {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ai-search-empty {
+  padding: 36px 24px;
+  background: #fff;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.ai-search-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 20px;
+  padding-bottom: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ai-search-footer b {
+  color: var(--primary);
+}
+
+@media (max-width: 960px) {
+  .ai-search-page {
+    padding-top: 32px;
+  }
+
+  .ai-search-intro h1 {
+    font-size: 30px;
+  }
+
+  .ai-search-form-footer,
+  .ai-search-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ai-search-form-footer .btn {
+    width: 100%;
+  }
+}
