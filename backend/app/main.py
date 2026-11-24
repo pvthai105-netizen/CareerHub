@@ -15,6 +15,8 @@ from app.routers import employer_router
 from app.routers import admin_router
 from app.routers import admin_job_router
 from app.routers import application_router
+from app.routers import notification_router
+from app.routers import save_router
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -45,6 +47,8 @@ app.include_router(admin_job_router.router)
 app.include_router(dashboard_router.router)
 app.include_router(chat_router.router)
 app.include_router(application_router.router)
+app.include_router(notification_router.router)
+app.include_router(save_router.router)
 
 @app.get("/api/health")
 def health():
