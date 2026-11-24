@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.models.applications import Application, ApplicationStatus
 from app.models.job import Job
+from app.models.notifications import Notification
 from app.models.user import Role, User
 from app.models.student_profiles import StudentProfile
 
@@ -97,6 +98,11 @@ def apply_to_job(
     )
     try:
         db.add(application)
+        db.add(Notification(
+            user_id=job.employer_id,
+            title="Có đơn ứng tuyển mới",
+            message=f"Bạn vừa nhận được đơn ứng tuyển cho vị trí {job.title}.",
+        ))
         db.commit()
         db.refresh(application)
     except IntegrityError as exc:
@@ -158,6 +164,11 @@ def withdraw_application(db: Session, student: User, application_id: int) -> App
         db.rollback()
         raise HTTPException(status_code=409, detail="Trạng thái đơn đã thay đổi, không thể rút")
 
+    db.add(Notification(
+        user_id=existing.job.employer_id,
+        title="Ứng viên đã rút đơn",
+        message=f"Ứng viên đã rút đơn ứng tuyển vị trí {existing.job.title}.",
+    ))
     db.commit()
     db.expire_all()
     return db.query(Application).filter(Application.id == application_id).one()
@@ -232,7 +243,13 @@ def update_application_status(
     if new_status not in allowed_transitions.get(application.status, set()):
         raise HTTPException(status_code=409, detail="Không thể chuyển đơn sang trạng thái này")
 
+    previous_status = application.status
     application.status = new_status
+    db.add(Notification(
+        user_id=application.student_id,
+        title="Trạng thái đơn ứng tuyển đã thay đổi",
+        message=f"Đơn ứng tuyển vị trí {application.job.title} chuyển từ {previous_status.value} sang {new_status.value}.",
+    ))
     db.commit()
     db.refresh(application)
     return application
