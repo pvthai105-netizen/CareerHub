@@ -45,16 +45,16 @@ const AuthGuard = {
   redirectByRole(role) {
     switch (role) {
       case "student":
-        window.location.href = "/home.html"; // Dẫn về trang tìm việc làm (sinh viên đăng nhập)
+        window.location.href = "home.html"; // Dẫn về trang tìm việc làm (sinh viên đăng nhập)
         break;
       case "employer":
-        window.location.href = "/employer_dashboard.html"; // Dashboard doanh nghiệp
+        window.location.href = "employer_dashboard.html"; // Dashboard doanh nghiệp
         break;
       case "admin":
-        window.location.href = "/admin_dashboard.html"; // Dashboard quản trị viên
+        window.location.href = "admin_dashboard.html"; // Dashboard quản trị viên
         break;
       default:
-        window.location.href = "/home.html";
+        window.location.href = "home.html";
     }
   },
 
@@ -67,13 +67,13 @@ const AuthGuard = {
       // Chưa đăng nhập hoặc token đã hết hạn
       Auth.clear();
       const currentUrl = encodeURIComponent(window.location.pathname);
-      window.location.href = `/login.html?expired=1&redirect=${currentUrl}`;
+      window.location.href = `login.html?expired=1&redirect=${currentUrl}`;
       return null;
     }
 
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
       alert("Bạn không có quyền truy cập vào trang này!");
-      window.location.href = "/home.html";
+      window.location.href = "home.html";
       return null;
     }
 

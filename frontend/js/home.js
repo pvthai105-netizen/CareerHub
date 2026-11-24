@@ -63,6 +63,16 @@ let currentPage = 1;
 // Ví dụ: savedJobs[1] = true nghĩa là đã lưu công việc ID 1.
 let savedJobs = {};
 
+
+// Hàm hỏi backend xem người dùng đã lưu những việc nào, rồi ghi vào savedJobs
+async function loadSavedState() {
+  savedJobs = {};
+  const ids = await SavedJobs.getIds();      // ví dụ [3, 7]; nếu chưa đăng nhập thì là []
+  for (let i = 0; i < ids.length; i++) {
+    savedJobs[ids[i]] = true;
+  }
+}
+
 // Hàm đưa tất cả bộ lọc về trạng thái ban đầu.
 function resetFilters() {
 
@@ -202,6 +212,7 @@ async function loadJobs() {
     // Mỗi item được đưa vào hàm convertJob().
     // Kết quả được lưu vào mảng JOBS.
     JOBS = allItems.map(convertJob);
+    await loadSavedState();  
 
     // In tổng số việc làm backend báo cáo ra Console.
     console.log("Tổng việc làm từ API:", totalJobs);
@@ -446,8 +457,7 @@ function renderJobs() {
   }
 
   // Hiển thị tổng số việc làm phù hợp.
-  document.getElementById("result-count").textContent =
-    list.length + " việc làm phù hợp";
+  document.getElementById("result-count").textContent = list.length + " việc làm phù hợp";
 
   // Hiển thị các bộ lọc đang được áp dụng.
   renderChips();
@@ -1033,14 +1043,20 @@ function removeFilter(key, value) {
 }
 
 // Hàm bật hoặc tắt trạng thái lưu công việc.
-function toggleSave(id) {
-
-  // Đảo ngược trạng thái lưu của công việc.
-  // Nếu đang true thì thành false, nếu false thì thành true.
-  savedJobs[id] = !savedJobs[id];
-
-  // Vẽ lại trang chi tiết để cập nhật chữ Đã lưu/Lưu công việc.
-  renderDetail(id);
+async function toggleSave(id) {
+  try {
+    if (savedJobs[id]) {
+      await SavedJobs.unsave(id);   // đã lưu → gọi API bỏ lưu
+      savedJobs[id] = false;
+    } else {
+      await SavedJobs.save(id);     // chưa lưu → gọi API lưu
+      savedJobs[id] = true;
+    }
+    renderDetail(id);               // vẽ lại để đổi chữ ♡ / ♥
+  } catch (error) {
+    // Lỗi hay gặp: chưa đăng nhập (401)
+    alert(error.message || "Không lưu được. Hãy đăng nhập rồi thử lại.");
+  }
 }
 
 /* =====================================================
