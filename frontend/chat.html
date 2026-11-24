@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#F8F7FC" />
     <title>Trợ lý nghề nghiệp | CareerHub</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/ai_assistant_nav.css" />
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
     <style>
@@ -1063,6 +1064,22 @@
         </div>
     </header>
 
+    <button class="ai-assistant-menu-toggle" type="button" aria-label="Mở menu trợ lý AI" aria-expanded="false" aria-controls="ai-assistant-sidebar">
+        <span aria-hidden="true">☰</span>
+    </button>
+    <div class="ai-assistant-backdrop" id="ai-assistant-backdrop" hidden></div>
+    <aside class="ai-assistant-sidebar" id="ai-assistant-sidebar" aria-label="Điều hướng trợ lý AI" aria-hidden="true">
+        <div class="ai-assistant-sidebar-header">
+            <h2>Trợ lý AI</h2>
+            <button class="ai-assistant-menu-close" type="button" aria-label="Đóng menu">×</button>
+        </div>
+        <p>Chọn công cụ bạn cần</p>
+        <nav class="ai-assistant-sidebar-links" aria-label="Công cụ trợ lý AI">
+            <a class="ai-assistant-sidebar-link active" href="/chat.html" aria-current="page">Trò chuyện</a>
+            <a class="ai-assistant-sidebar-link" href="/ai_job_search.html">Tìm việc bằng AI</a>
+        </nav>
+    </aside>
+
     <main class="chat-page">
         <div class="container">
             <section class="chat-heading" aria-labelledby="chat-page-title">
@@ -1361,6 +1378,7 @@
             });
         })();
     </script>
+    <script src="js/ai_assistant_nav.js"></script>
 </body>
 
 </html>

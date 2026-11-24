@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/home.css">
   <link rel="stylesheet" href="./css/ai_job_search.css">
+  <link rel="stylesheet" href="./css/ai_assistant_nav.css">
 </head>
 <body>
   <header class="header">
@@ -17,7 +18,7 @@
         <a href="./home.html#/jobs">Tìm việc</a>
         <a href="./my_applications.html">Đơn ứng tuyển</a>
         <span>Công ty</span>
-        <a href="./ai_job_search.html" class="active" aria-current="page">Trợ lý AI</a>
+        <a href="./chat.html">Trợ lý AI</a>
       </nav>
       <div class="header-buttons">
         <a class="btn btn-outline" href="./login.html">Đăng nhập</a>
@@ -25,6 +26,22 @@
       </div>
     </div>
   </header>
+
+  <button class="ai-assistant-menu-toggle" type="button" aria-label="Mở menu trợ lý AI" aria-expanded="false" aria-controls="ai-assistant-sidebar">
+    <span aria-hidden="true">☰</span>
+  </button>
+  <div class="ai-assistant-backdrop" id="ai-assistant-backdrop" hidden></div>
+  <aside class="ai-assistant-sidebar" id="ai-assistant-sidebar" aria-label="Điều hướng trợ lý AI" aria-hidden="true">
+    <div class="ai-assistant-sidebar-header">
+      <h2>Trợ lý AI</h2>
+      <button class="ai-assistant-menu-close" type="button" aria-label="Đóng menu">×</button>
+    </div>
+    <p>Chọn công cụ bạn cần</p>
+    <nav class="ai-assistant-sidebar-links" aria-label="Công cụ trợ lý AI">
+      <a class="ai-assistant-sidebar-link" href="./chat.html">Trò chuyện</a>
+      <a class="ai-assistant-sidebar-link active" href="./ai_job_search.html" aria-current="page">Tìm việc bằng AI</a>
+    </nav>
+  </aside>
 
   <main class="container ai-search-page">
     <div class="ai-search-intro">
@@ -59,6 +76,7 @@
     <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
   </footer>
 
+  <script src="./js/ai_assistant_nav.js"></script>
   <script src="./js/ai_job_search.js"></script>
 </body>
 </html>
