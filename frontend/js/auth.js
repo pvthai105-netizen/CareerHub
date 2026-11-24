@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSubmit.disabled = true;
         btnSubmit.textContent = "Đang đăng nhập...";
 
-        const data = await api.post("/auth/login", { email, password });
+        const data = await api.post("/api/auth/login", { email, password });
 
         // Lưu access_token vào localStorage
         Auth.setToken(data.access_token);
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (user) {
           AuthGuard.redirectByRole(user.role);
         } else {
-          window.location.href = "/home.html";
+          window.location.href = "home.html";
         }
       } catch (err) {
         alertBox.className = "alert-box error";
@@ -183,14 +183,14 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           if (autoLoggedIn) {
             if (selectedRole === "student") {
-              window.location.href = "/profile.html"; // Dẫn sinh viên mới đến hoàn thiện hồ sơ
+              window.location.href = "profile.html"; // Dẫn sinh viên mới đến hoàn thiện hồ sơ
             } else if (selectedRole === "employer") {
-              window.location.href = "/employer_profile.html"; // Dẫn doanh nghiệp mới đến cập nhật hồ sơ
+              window.location.href = "employer_profile.html"; // Dẫn doanh nghiệp mới đến cập nhật hồ sơ
             } else {
-              window.location.href = "/home.html";
+              window.location.href = "home.html";
             }
           } else {
-            window.location.href = "/login.html";
+            window.location.href = "login.html";
           }
         }, 1200);
       } catch (err) {
