@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Việc Làm Của Tôi – CareerHub</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/dashboard.css?v=20261120_5" />
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -43,24 +43,24 @@
 
     <!-- 3 Summary Tabs (Figma [32:426], [32:428], [32:430]) -->
     <section class="student-tabs-row" aria-label="Phân loại việc làm">
-      <div class="student-tab-card active" id="tabApplied">
+      <div class="student-tab-card active" id="tabApplied" role="button" tabindex="0" onclick="Dashboard.switchStudentTab('applied')">
         <span class="student-tab-label">Đã ứng tuyển</span>
         <span class="student-tab-badge" id="studentAppliedCount">—</span>
       </div>
 
-      <div class="student-tab-card" id="tabSaved">
+      <div class="student-tab-card" id="tabSaved" role="button" tabindex="0" onclick="Dashboard.switchStudentTab('saved')">
         <span class="student-tab-label">Đã lưu</span>
         <span class="student-tab-badge" id="studentSavedCount">—</span>
       </div>
 
-      <div class="student-tab-card" id="tabViewed">
+      <div class="student-tab-card" id="tabViewed" role="button" tabindex="0" onclick="Dashboard.switchStudentTab('viewed')">
         <span class="student-tab-label">Đã xem</span>
         <span class="student-tab-badge" id="studentViewedCount">—</span>
       </div>
     </section>
 
     <!-- Row with Chart & Overview -->
-    <section class="dash-card">
+    <section class="dash-card" id="studentChartSection">
       <div class="dash-card-header">
         <div>
           <h2 class="dash-card-title">Phân bổ trạng thái ứng tuyển</h2>
@@ -99,15 +99,18 @@
       </select>
     </section>
 
-    <!-- Applications History Table (Figma [32:438]) -->
+    <!-- Applications / Saved Jobs Table (Figma [32:438]) -->
     <section class="dash-table-wrap" aria-labelledby="applicationsTableTitle">
-      <h2 id="applicationsTableTitle" class="visually-hidden" style="display: none;">Lịch sử ứng tuyển</h2>
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background-color: #FAF9FD;">
+        <h2 id="applicationsTableTitle" style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0;">Lịch sử ứng tuyển</h2>
+        <span id="applicationsTableSub" style="font-size: 13px; color: var(--muted);">Danh sách công việc đã nộp hồ sơ</span>
+      </div>
       <table class="dash-table">
         <thead>
           <tr>
             <th scope="col" style="width: 45%;">CÔNG VIỆC / CÔNG TY</th>
-            <th scope="col" style="width: 20%;">NGÀY ỨNG TUYỂN</th>
-            <th scope="col" style="width: 20%;">TRẠNG THÁI</th>
+            <th scope="col" id="colDateHeader" style="width: 20%;">NGÀY ỨNG TUYỂN</th>
+            <th scope="col" id="colStatusHeader" style="width: 20%;">TRẠNG THÁI</th>
             <th scope="col" style="width: 15%; text-align: right;">THAO TÁC</th>
           </tr>
         </thead>
@@ -132,7 +135,7 @@
   <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/auth-guard.js"></script>
-  <script src="js/dashboard.js"></script>
+  <script src="js/dashboard.js?v=20261120_5"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       Dashboard.initStudentDashboard();

@@ -20,6 +20,19 @@ class StudentApplicationItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class StudentSavedJobItem(BaseModel):
+    saved_job_id: int
+    job_id: int
+    job_title: str
+    company_name: str
+    saved_at: datetime
+    status: str = "ACTIVE"
+    location: Optional[str] = None
+    salary: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class StudentSummary(BaseModel):
     applied_count: int = Field(0, description="Tổng số đơn đã ứng tuyển")
     saved_count: int = Field(0, description="Tổng số tin việc làm đã lưu")
@@ -31,6 +44,10 @@ class StudentDashboardResponse(BaseModel):
     status_distribution: Dict[str, int] = Field(
         ...,
         description="Số lượng đơn theo từng trạng thái (pending, reviewed, interview, accepted, rejected)",
+    )
+    saved_jobs: List[StudentSavedJobItem] = Field(
+        default_factory=list,
+        description="Danh sách các công việc đã lưu của sinh viên",
     )
     recent_applications: List[StudentApplicationItem] = Field(
         default_factory=list,
