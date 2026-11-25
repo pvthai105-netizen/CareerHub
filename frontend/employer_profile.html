@@ -40,7 +40,7 @@
           <nav class="sidebar-menu">
             <ul>
               <li>
-                <a href="job_post.html" class="menu-item">
+                <a href="employer_dashboard.html" class="menu-item">
                   <span class="menu-num">01</span>
                   <span class="menu-text">Tổng quan</span>
                 </a>
@@ -52,7 +52,7 @@
                 </a>
               </li>
               <li>
-                <a href="#" class="menu-item">
+                <a href="employer_applications.html" class="menu-item">
                   <span class="menu-num">03</span>
                   <span class="menu-text">Ứng viên</span>
                 </a>
@@ -64,7 +64,7 @@
                 </a>
               </li>
               <li>
-                <a href="#" class="menu-item">
+                <a href="chat.html" class="menu-item">
                   <span class="menu-num">05</span>
                   <span class="menu-text">Tin nhắn</span>
                 </a>
@@ -105,6 +105,13 @@
         <!-- Top header -->
         <header class="topbar">
           <div class="topbar-left">
+            <button type="button" class="hamburger-btn" id="hamburger" aria-label="Mở menu điều hướng" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
             <span class="topbar-badge">Không gian tuyển dụng</span>
           </div>
           <div class="topbar-right">
@@ -123,6 +130,7 @@
 
         <!-- Nội dung cuộn -->
         <main class="page-body">
+          <div id="employer-profile-status" style="margin-bottom: 16px;" hidden></div>
           <!-- Banner tiêu đề và nút thao tác -->
           <div class="page-header-row">
             <div>
@@ -422,6 +430,7 @@
     <!-- Scripts -->
     <script src="js/api.js"></script>
     <script src="js/auth-guard.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/employer_profile.js"></script>
   </body>
 </html>

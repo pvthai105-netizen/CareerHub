@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
@@ -138,6 +138,11 @@ app.include_router(application_router.router)
 app.include_router(notification_router.router)
 app.include_router(save_router.router)
 
+
+
+@app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], include_in_schema=False)
+def api_not_found(path: str):
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy API endpoint")
 
 
 @app.get("/", include_in_schema=False)

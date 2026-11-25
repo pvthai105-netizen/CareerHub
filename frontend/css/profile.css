@@ -1,7 +1,8 @@
 /* profile.css - Giao diện cập nhật hồ sơ sinh viên (Task T02D210) */
 
 .profile-page-wrapper {
-  padding: 32px 0 60px 0;
+  padding-top: 32px;
+  padding-bottom: 60px;
 }
 
 .profile-header-banner {
@@ -102,6 +103,7 @@
 .summary-meta-item strong {
   color: var(--ink);
   font-weight: 600;
+  word-break: break-word;
 }
 
 .summary-skills-preview {
@@ -402,5 +404,37 @@
   }
   .desired-job-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-page-wrapper {
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+  .profile-header-banner h1 {
+    font-size: 24px;
+    line-height: 32px;
+  }
+  .profile-summary-card,
+  .profile-form-card {
+    padding: 20px 16px;
+  }
+  .skill-tag-input {
+    min-width: 100px;
+  }
+  .form-action-bar {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .form-action-bar .btn {
+    width: 100%;
+  }
+  .toast-notice {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
   }
 }

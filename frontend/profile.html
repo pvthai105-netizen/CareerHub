@@ -23,11 +23,11 @@
         <!-- Menu điều hướng chính -->
         <ul class="nav-menu">
           <li><a href="home.html" class="nav-link">Trang chủ</a></li>
-          <li><a href="#" class="nav-link">Tìm việc</a></li>
-          <li><a href="#" class="nav-link">Công ty</a></li>
-          <li><a href="profile.html" class="nav-link active">Hồ sơ cá nhân</a></li>
+          <li><a href="home.html#/jobs" class="nav-link">Tìm việc</a></li>
+          <li><a href="company_detail.html" class="nav-link">Công ty</a></li>
+          <li><a href="profile.html" class="nav-link active" aria-current="page">Hồ sơ cá nhân</a></li>
           <li><a href="my_applications.html" class="nav-link">Đơn ứng tuyển</a></li>
-          <li><a href="#" class="nav-link" id="nav-ai-assistant">Trợ lý AI</a></li>
+          <li><a href="chat.html" class="nav-link" id="nav-ai-assistant">Trợ lý AI</a></li>
         </ul>
 
         <!-- Nút tài khoản -->
@@ -165,7 +165,7 @@
 
             <!-- Giới thiệu bản thân -->
             <div class="form-group">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px;">
                 <label class="form-label" for="bio" style="margin-bottom: 0;">Giới thiệu bản thân (Bio)</label>
                 <button
                   type="button"
@@ -341,18 +341,18 @@
           <div>
             <h4 class="footer-col-title">Ứng viên</h4>
             <ul class="footer-links">
-              <li><a href="#">Tìm việc làm</a></li>
+              <li><a href="home.html#/jobs">Tìm việc làm</a></li>
               <li><a href="profile.html">Hồ sơ cá nhân</a></li>
-              <li><a href="#">Cẩm nang nghề nghiệp</a></li>
+              <li><a href="my_applications.html">Đơn ứng tuyển</a></li>
             </ul>
           </div>
 
           <div>
             <h4 class="footer-col-title">Nhà tuyển dụng</h4>
             <ul class="footer-links">
+              <li><a href="employer_dashboard.html">Tổng quan doanh nghiệp</a></li>
               <li><a href="job_post.html">Đăng tin tuyển dụng</a></li>
-              <li><a href="#">Tìm kiếm hồ sơ</a></li>
-              <li><a href="#">Bảng giá dịch vụ</a></li>
+              <li><a href="employer_profile.html">Hồ sơ công ty</a></li>
             </ul>
           </div>
 
@@ -380,6 +380,7 @@
     <!-- Các kịch bản JavaScript -->
     <script src="js/api.js"></script>
     <script src="js/auth-guard.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/profile.js"></script>
   </body>
 </html>

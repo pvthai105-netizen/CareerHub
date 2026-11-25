@@ -92,6 +92,8 @@
   border: 1px solid var(--border);
   padding: 5px 12px;
   border-radius: var(--radius-sm);
+  max-width: 100%;
+  word-break: break-word;
 }
 
 /* Layout 2 cột */
@@ -251,4 +253,44 @@
 .empty-jobs-box .empty-icon {
   font-size: 36px;
   margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .company-title-row {
+    justify-content: center;
+  }
+  .company-quick-chips {
+    justify-content: center;
+    gap: 8px;
+  }
+  .section-head-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .company-hero-banner {
+    padding: 24px 0;
+  }
+  .company-main-name {
+    font-size: 22px;
+  }
+  .company-body-layout {
+    padding-top: 24px;
+    gap: 20px;
+  }
+  .public-job-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    gap: 14px;
+  }
+  .public-job-card .btn {
+    width: 100%;
+    text-align: center;
+  }
+  .sidebar-card {
+    padding: 18px 16px;
+  }
 }
