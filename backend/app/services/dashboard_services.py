@@ -20,6 +20,7 @@ from app.schemas.dashboard import (
     RecentActivityItem,
     RecentApplicantItem,
     StudentApplicationItem,
+    StudentSavedJobItem,
     StudentDashboardResponse,
     StudentSummary,
 )
@@ -96,6 +97,50 @@ def get_student_dashboard_data(db: Session, current_user: User) -> StudentDashbo
             )
         )
 
+    # 5. Danh sách các tin việc làm đã lưu (kèm tên công ty và chi tiết công việc)
+    saved_rows = (
+        db.query(
+            SavedJob.saved_job_id.label("saved_job_id"),
+            Job.job_id.label("job_id"),
+            Job.title.label("job_title"),
+            EmployerProfile.company_name.label("company_name"),
+            SavedJob.saved_at.label("saved_at"),
+            Job.status.label("status"),
+            Job.location.label("location"),
+            Job.salary_min.label("salary_min"),
+            Job.salary_max.label("salary_max"),
+        )
+        .join(Job, SavedJob.job_id == Job.job_id)
+        .outerjoin(EmployerProfile, Job.employer_id == EmployerProfile.user_id)
+        .filter(SavedJob.user_id == current_user.id)
+        .order_by(SavedJob.saved_at.desc())
+        .all()
+    )
+
+    saved_jobs_list: List[StudentSavedJobItem] = []
+    for s in saved_rows:
+        job_st_str = s.status.value if hasattr(s.status, "value") else str(s.status or "ACTIVE")
+        salary_str = None
+        if s.salary_min and s.salary_max:
+            salary_str = f"{int(s.salary_min / 1_000_000)} - {int(s.salary_max / 1_000_000)} triệu"
+        elif s.salary_min:
+            salary_str = f"Từ {int(s.salary_min / 1_000_000)} triệu"
+        elif s.salary_max:
+            salary_str = f"Đến {int(s.salary_max / 1_000_000)} triệu"
+
+        saved_jobs_list.append(
+            StudentSavedJobItem(
+                saved_job_id=s.saved_job_id,
+                job_id=s.job_id,
+                job_title=s.job_title,
+                company_name=s.company_name or "Nhà tuyển dụng",
+                saved_at=s.saved_at,
+                status=job_st_str,
+                location=s.location or "",
+                salary=salary_str or "Thỏa thuận",
+            )
+        )
+
     return StudentDashboardResponse(
         summary=StudentSummary(
             applied_count=applied_count,
@@ -104,6 +149,7 @@ def get_student_dashboard_data(db: Session, current_user: User) -> StudentDashbo
         ),
         status_distribution=status_dist,
         recent_applications=recent_apps,
+        saved_jobs=saved_jobs_list,
     )
 
 
