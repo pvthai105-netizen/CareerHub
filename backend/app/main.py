@@ -10,6 +10,8 @@ from app.routers import job_router
 from utils.exceptions import exception_handlers
 from app.routers import student_router
 from app.routers import chat_router
+from app.routers import ai_job_search_router
+from app.routers import cv_analysis_router
 from app.routers import dashboard_router
 from app.routers import employer_router
 from app.routers import admin_router
@@ -132,6 +134,8 @@ app.include_router(admin_router.router)
 app.include_router(admin_job_router.router)
 app.include_router(dashboard_router.router)
 app.include_router(chat_router.router)
+app.include_router(ai_job_search_router.router)
+app.include_router(cv_analysis_router.router)
 app.include_router(application_router.router)
 
 @app.get("/", include_in_schema=False)

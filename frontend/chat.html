@@ -380,6 +380,34 @@
             margin-top: 3px;
         }
 
+        .chat-table-wrap {
+            max-width: 100%;
+            margin: 10px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .chat-bubble table {
+            width: 100%;
+            min-width: 580px;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .chat-bubble th,
+        .chat-bubble td {
+            padding: 9px 10px;
+            border: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .chat-bubble th {
+            background: var(--surface);
+            font-weight: 700;
+        }
+
         .chat-composer {
             padding: 17px 20px 14px;
             background: var(--surface);
@@ -1209,7 +1237,7 @@
                             </button>
                         </div>
                         <div class="chat-composer-footer">
-                            <span>Demo: câu trả lời mẫu, không gửi dữ liệu tới backend. Tránh nhập thông tin cá nhân nhạy cảm.</span>
+                            <span>Tin nhắn được gửi đến trợ lý AI và lưu trong lịch sử tài khoản.</span>
                             <span class="chat-composer-hint">Enter để gửi · Shift + Enter để xuống dòng</span>
                         </div>
                     </form>
@@ -1218,167 +1246,8 @@
         </div>
     </main>
 
-    <script>
-        (() => {
-            const form = document.querySelector("[data-chat-form]");
-            const input = document.querySelector("[data-chat-input]");
-            const transcript = document.querySelector("[data-chat-transcript]");
-            const welcome = document.querySelector(".chat-welcome");
-            const loading = document.querySelector("[data-chat-loading]");
-            const sendButton = form?.querySelector('button[type="submit"]');
-            const promptButtons = document.querySelectorAll("[data-chat-prompt]");
-
-            if (!form || !input || !transcript || !loading || !sendButton) return;
-
-            const demoReplies = [
-                {
-                    keywords: ["cv", "kinh nghiệm", "kinh nghiem", "hồ sơ", "ho so"],
-                    reply: "Bạn có thể làm CV nổi bật dù chưa có kinh nghiệm làm việc bằng cách tập trung vào dự án và kỹ năng thực hành.\n\n• Chọn 1–3 dự án tiêu biểu, nêu mục tiêu, vai trò, công nghệ và kết quả.\n• Đưa kỹ năng liên quan đến vị trí ứng tuyển lên gần đầu CV.\n• Giữ CV gọn trong một trang và điều chỉnh nội dung theo từng công việc.\n\nBạn đang ứng tuyển vị trí nào? Mình có thể gợi ý cách trình bày dự án phù hợp hơn."
-                },
-                {
-                    keywords: ["phỏng vấn", "phong van", "interview"],
-                    reply: "Để chuẩn bị cho buổi phỏng vấn thực tập, bạn có thể bắt đầu với ba việc sau:\n\n• Đọc kỹ mô tả công việc và tìm hiểu sản phẩm, lĩnh vực của công ty.\n• Chuẩn bị 2–3 ví dụ về dự án hoặc tình huống bạn đã xử lý; kể theo cách STAR: tình huống, nhiệm vụ, hành động, kết quả.\n• Chuẩn bị một vài câu hỏi về công việc, người hướng dẫn và cách đánh giá thực tập sinh.\n\nHãy luyện nói thành tiếng để câu trả lời tự nhiên, không cần học thuộc từng chữ."
-                },
-                {
-                    keywords: ["thực tập", "thuc tap", "vị trí", "vi tri", "ngành", "nganh", "nghề", "nghe"],
-                    reply: "Để chọn vị trí thực tập phù hợp, hãy đối chiếu điều bạn muốn học với yêu cầu thực tế của công việc.\n\n• Liệt kê 2–3 kỹ năng bạn đã có và 1–2 kỹ năng muốn phát triển.\n• So sánh chúng với nhiệm vụ trong mô tả tuyển dụng, không chỉ dựa vào tên vị trí.\n• Ưu tiên nơi có nhiệm vụ rõ ràng, người hướng dẫn và cơ hội thực hành.\n\nNếu cho biết ngành học và kỹ năng hiện tại, bạn có thể thu hẹp lựa chọn cụ thể hơn."
-                }
-            ];
-
-            const getDemoReply = (question) => {
-                const normalized = question.toLocaleLowerCase("vi");
-                const match = demoReplies.find(({ keywords }) =>
-                    keywords.some((keyword) => normalized.includes(keyword))
-                );
-
-                return match?.reply
-                    || "Đây là câu trả lời minh họa trong chế độ demo. Để nhận gợi ý sát hơn, hãy thử hỏi về cách viết CV, chuẩn bị phỏng vấn hoặc chọn vị trí thực tập phù hợp.";
-            };
-
-            const scrollTranscriptToEnd = (smooth = false) => {
-                transcript.scrollTo({
-                    top: transcript.scrollHeight,
-                    behavior: smooth && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                        ? "smooth"
-                        : "auto"
-                });
-            };
-
-            const createMessage = (sender, message, isTyping = false) => {
-                const isUser = sender === "user";
-                const article = document.createElement("article");
-                article.className = `chat-message chat-message--${isUser ? "user" : "assistant"}`;
-
-                const avatar = document.createElement("div");
-                avatar.className = "chat-message-avatar";
-                avatar.setAttribute("aria-hidden", "true");
-                if (isUser) {
-                    avatar.textContent = "BẠN";
-                } else {
-                    const icon = document.createElement("span");
-                    icon.className = "material-symbols-outlined";
-                    icon.textContent = "smart_toy";
-                    avatar.append(icon);
-                }
-
-                const content = document.createElement("div");
-                content.className = "chat-message-content";
-
-                const meta = document.createElement("div");
-                meta.className = "chat-message-meta";
-                const author = document.createElement("span");
-                author.className = "chat-message-author";
-                author.textContent = isUser ? "Bạn" : "CareerHub AI";
-
-                const timestamp = new Date();
-                const time = document.createElement("time");
-                time.dateTime = timestamp.toISOString();
-                time.textContent = new Intl.DateTimeFormat("vi-VN", {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }).format(timestamp);
-                meta.append(...(isUser ? [time, author] : [author, time]));
-
-                const bubble = document.createElement("div");
-                bubble.className = `chat-bubble${isTyping ? " is-typing" : ""}`;
-                bubble.textContent = message;
-
-                content.append(meta, bubble);
-                article.append(avatar, content);
-                transcript.insertBefore(article, loading);
-                return bubble;
-            };
-
-            const typeReply = (bubble, reply) => {
-                const characters = Array.from(reply);
-                const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-                if (reducedMotion) {
-                    bubble.textContent = reply;
-                    form.setAttribute("aria-busy", "false");
-                    sendButton.disabled = false;
-                    return;
-                }
-
-                let position = 0;
-                const timer = window.setInterval(() => {
-                    position = Math.min(position + 3, characters.length);
-                    bubble.textContent = characters.slice(0, position).join("");
-                    scrollTranscriptToEnd();
-
-                    if (position === characters.length) {
-                        window.clearInterval(timer);
-                        bubble.classList.remove("is-typing");
-                        form.setAttribute("aria-busy", "false");
-                        sendButton.disabled = false;
-                    }
-                }, 24);
-            };
-
-            promptButtons.forEach((button) => {
-                button.addEventListener("click", () => {
-                    input.value = button.dataset.chatPrompt || "";
-                    input.focus();
-                });
-            });
-
-            form.addEventListener("submit", (event) => {
-                event.preventDefault();
-
-                const question = input.value.trim();
-                if (!question) {
-                    input.focus();
-                    return;
-                }
-
-                if (sendButton.disabled) return;
-
-                welcome?.remove();
-                input.value = "";
-                createMessage("user", question);
-                loading.hidden = false;
-                loading.classList.add("is-visible");
-                sendButton.disabled = true;
-                form.setAttribute("aria-busy", "true");
-                scrollTranscriptToEnd(true);
-
-                window.setTimeout(() => {
-                    loading.hidden = true;
-                    loading.classList.remove("is-visible");
-                    const replyBubble = createMessage("assistant", "", true);
-                    typeReply(replyBubble, getDemoReply(question));
-                    scrollTranscriptToEnd();
-                }, 900);
-            });
-
-            input.addEventListener("keydown", (event) => {
-                if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    form.requestSubmit();
-                }
-            });
-        })();
-    </script>
+    <script src="./js/ai_assistant_nav.js"></script>
+    <script src="./js/chat.js"></script>
 </body>
 
 </html>

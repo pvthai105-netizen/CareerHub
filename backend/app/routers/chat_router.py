@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 
 @router.post("", response_model=ChatReply, summary="Chat tư vấn nghề nghiệp")
-def api_send_chat_message(payload: ChatRequest=Depends(), db: Session = Depends(get_db), current_user: User = Depends(require_roles(Role.student)),):
+def api_send_chat_message(payload: ChatRequest, db: Session = Depends(get_db), current_user: User = Depends(require_roles(Role.student)),):
     """Gửi câu hỏi cho trợ lý AI và lưu lượt chat vào lịch sử sinh viên."""
     # Dùng user lấy từ JWT, không nhận user_id từ request để tránh xem/ghi chéo tài khoản.
     reply = send_chat_message(db, current_user, payload.message)
