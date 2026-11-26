@@ -5,24 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Career Hub – Tìm việc cùng AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/home.css">
   <link rel="stylesheet" href="./css/ai_job_search.css">
   <link rel="stylesheet" href="./css/ai_assistant_nav.css">
 </head>
-<body>
+<body class="ai-job-search">
   <header class="header">
     <div class="container header-inner">
       <a href="./home.html" class="logo"><img src="./logoCHT-Photoroom.png" alt="Career Hub"></a>
-      <nav class="nav" aria-label="Điều hướng chính">
-        <a href="./home.html#/">Trang chủ</a>
-        <a href="./home.html#/jobs">Tìm việc</a>
-        <a href="./my_applications.html">Đơn ứng tuyển</a>
+      <nav class="nav">
+        <a href="./home.html" id="nav-home">Trang chủ</a>
+        <a href="#/jobs" id="nav-jobs">Tìm việc</a>
+        <a href="./student_dashboard.html" id="nav-dashboard">Việc làm của tôi</a>
+        <a href="./my_applications.html" id="nav-applications">Nộp đơn</a>
         <span>Công ty</span>
         <a href="./chat.html">Trợ lý AI</a>
       </nav>
       <div class="header-buttons">
-        <a class="btn btn-outline" href="./login.html">Đăng nhập</a>
-        <a class="btn" href="./register.html">Đăng ký</a>
+        <a href="./login.html" class="btn btn-outline" style="text-decoration:none; display:inline-flex; align-items:center;">Đăng nhập</a>
+        <a href="./register.html" class="btn" style="text-decoration:none; display:inline-flex; align-items:center;">Đăng ký</a>
       </div>
     </div>
   </header>
@@ -77,6 +79,8 @@
     <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
   </footer>
 
+  <script src="./js/api.js"></script>
+  <script src="./js/auth-guard.js"></script>
   <script src="./js/ai_assistant_nav.js"></script>
   <script src="./js/ai_job_search.js"></script>
 </body>
