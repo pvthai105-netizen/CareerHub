@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Tabler Icons (optional fallback) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.22.1/iconfont/tabler-icons.min.css" />
+  <!-- Đg dẫn để dùng Bootsrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Stylesheet -->
   <link rel="stylesheet" href="./css/job_post.css" />
 </head>
@@ -18,7 +20,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
         <div class="logo">
-          <img src="./Logo Career Connect.png" alt="Career Connect Logo" />
+          <img src="./logoCHT-Photoroom.png" alt="Career Connect Logo" />
         </div>
 
         <div class="sidebar-section">
@@ -32,31 +34,31 @@
         <nav class="sidebar-menu">
           <ul>
             <li>
-              <a href="#" class="menu-item">
+              <a href="./admin_dashboard.html" class="menu-item">
                 <span class="menu-num">01</span>
                 <span class="menu-text">Tổng quan</span>
               </a>
             </li>
             <li>
-              <a href="#" class="menu-item active">
+              <a href="./job_post.html" class="menu-item active">
                 <span class="menu-num">02</span>
                 <span class="menu-text">Tin tuyển dụng</span>
               </a>
             </li>
             <li>
-              <a href="./employer_applications.html" class="menu-item">
+              <a href="./employer_dashboard.html" class="menu-item">
                 <span class="menu-num">03</span>
                 <span class="menu-text">Ứng viên</span>
               </a>
             </li>
             <li>
-              <a href="#" class="menu-item">
+              <a href="employer_dashboard.html#applicants" class="menu-item">
                 <span class="menu-num">04</span>
                 <span class="menu-text">Hồ sơ công ty</span>
               </a>
             </li>
             <li>
-              <a href="#" class="menu-item">
+              <a href="chat.html" class="menu-item">
                 <span class="menu-num">05</span>
                 <span class="menu-text">Tin nhắn</span>
               </a>
@@ -70,7 +72,7 @@
           <strong>Cùng tuyển đúng người</strong>
           <p>Mẹo viết tin tuyển dụng thu hút ứng viên phù hợp.</p>
         </div>
-        <a href="#" class="logout-link">
+        <a href="./login.html" class="logout-link">
           <span>Đăng xuất</span>
           <svg class="icon-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -332,9 +334,54 @@
     </div>
   </div>
 
+  
+  <!-- Popup xác nhận đăng xuất -->
+  <div class="modal fade" id="logoutModal" tabindex="-1"
+      aria-labelledby="logoutModalLabel" aria-hidden="true">
+
+      <div class="modal-dialog modal-dialog-centered logout-modal-dialog">
+          <div class="modal-content logout-modal-content">
+
+              <div class="modal-body logout-modal-body">
+
+                  <!-- Biểu tượng cảnh báo -->
+                  <div class="logout-warning-icon">
+                      !
+                  </div>
+
+                  <!-- Tiêu đề -->
+                  <h5 class="logout-modal-title" id="logoutModalLabel">
+                      Xác nhận đăng xuất?
+                  </h5>
+
+                  <!-- Nội dung -->
+                  <p class="logout-modal-text">
+                      Bạn có chắc chắn muốn kết thúc phiên đăng nhập hiện tại?
+                  </p>
+
+                  <!-- Nút thao tác -->
+                  <div class="logout-modal-actions">
+                      <button type="button" class="btn-logout-confirm"
+                              id="confirmLogoutBtn">
+                          Đăng xuất ngay
+                      </button>
+
+                      <button type="button" class="btn-logout-cancel"
+                              data-bs-dismiss="modal">
+                          Hủy bỏ
+                      </button>
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  </div>
+
   <!-- JavaScript -->
   <script src="./js/api.js"></script>
   <script src="./js/auth-guard.js"></script>
   <script src="./js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/job_post.js"></script>
 </body>
 </html>
