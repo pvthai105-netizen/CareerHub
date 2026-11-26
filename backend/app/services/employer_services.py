@@ -193,19 +193,19 @@ def upload_company_logo(
         if not profile:
             profile = get_my_employer_profile(db, current_user)
 
-    # 2. KIỂM TRA ĐỊNH DẠNG FILE: Chỉ chấp nhận ảnh
+    # 2. KIỂM TRA ĐỊNH DẠNG FILE: Chỉ chấp nhận ảnh (whitelist đuôi file và content-type)
     content_type = (file.content_type or "").lower()
     file_ext = Path(file.filename or "").suffix.lower()
 
-    if content_type not in ALLOWED_IMAGE_TYPES and file_ext not in ALLOWED_IMAGE_TYPES.values():
+    if content_type not in ALLOWED_IMAGE_TYPES or file_ext not in ALLOWED_IMAGE_TYPES.values():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Tệp không hợp lệ. Hệ thống chỉ chấp nhận định dạng ảnh (.png, .jpg, .jpeg, .webp).",
         )
 
-    # 3. KIỂM TRA DUNG LƯỢNG FILE: Giới hạn tối đa 2MB
+    # 3. KIỂM TRA DUNG LƯỢNG FILE: Giới hạn tối đa 2MB (đọc buffer an toàn chống cạn kiệt RAM)
     try:
-        content = file.file.read()
+        content = file.file.read(MAX_LOGO_SIZE_BYTES + 1)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -224,6 +224,21 @@ def upload_company_logo(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Tệp tải lên rỗng (0 bytes). Vui lòng chọn tệp ảnh hợp lệ.",
+        )
+
+    # 4. KIỂM TRA CHỮ KÝ TỆP (MAGIC BYTES): Chống giả mạo đuôi file
+    is_valid_image = False
+    if file_ext == ".png" and content.startswith(b"\x89PNG\r\n\x1a\n"):
+        is_valid_image = True
+    elif file_ext in [".jpg", ".jpeg"] and content.startswith(b"\xff\xd8\xff"):
+        is_valid_image = True
+    elif file_ext == ".webp" and content.startswith(b"RIFF") and b"WEBP" in content[8:16]:
+        is_valid_image = True
+
+    if not is_valid_image:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Tệp không hợp lệ. Hệ thống chỉ chấp nhận định dạng ảnh (.png, .jpg, .jpeg, .webp).",
         )
 
     # 4. LƯU ẢNH VÀO THƯ MỤC UPLOADS

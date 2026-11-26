@@ -1,6 +1,7 @@
-const API_BASE = "http://127.0.0.1:8000"; // Lý do: Frontend chạy bằng Live Server cổng 5500, còn Backend FastAPI chạy cổng 8000
-// Thêm tiền tố API chung để đồng nhất các endpoint backend
-// Removed API_PREFIX as backend does not use a /api prefix.
+// Tự động nhận diện: Nếu chạy Live Server (port 5500) thì trỏ port 8000, 
+// nếu chạy qua FastAPI hoặc đã deploy lên Render thì dùng domain hiện tại ("")
+const API_BASE = window.location.port === "5500" ? "http://127.0.0.1:8000" : "";// Thêm tiền tố API chung để đồng nhất các endpoint backend
+const API_PREFIX = "/api"; // ← đã thêm cơ chế xử lý tiền tố API
 
 /**
  * Xây dựng URL hoàn chỉnh cho các request.
