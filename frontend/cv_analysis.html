@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Hub – Phân tích CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/home.css">
+  <link rel="stylesheet" href="./css/ai_assistant_nav.css">
+  <link rel="stylesheet" href="./css/cv_analysis.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="./home.html" class="logo"><img src="./logoCHT-Photoroom.png" alt="Career Hub"></a>
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a href="./home.html#/">Trang chủ</a>
+        <a href="./home.html#/jobs">Tìm việc</a>
+        <a href="./my_applications.html">Đơn ứng tuyển</a>
+        <span>Công ty</span>
+        <a href="./chat.html">Trợ lý AI</a>
+      </nav>
+      <div class="header-buttons">
+        <a class="btn btn-outline" href="./login.html">Đăng nhập</a>
+        <a class="btn" href="./register.html">Đăng ký</a>
+      </div>
+    </div>
+  </header>
+
+  <button class="ai-assistant-menu-toggle" type="button" aria-label="Mở menu trợ lý AI" aria-expanded="false" aria-controls="ai-assistant-sidebar">
+    <span aria-hidden="true">☰</span>
+  </button>
+  <div class="ai-assistant-backdrop" id="ai-assistant-backdrop" hidden></div>
+  <aside class="ai-assistant-sidebar" id="ai-assistant-sidebar" aria-label="Điều hướng trợ lý AI" aria-hidden="true">
+    <div class="ai-assistant-sidebar-header">
+      <h2>Trợ lý AI</h2>
+      <button class="ai-assistant-menu-close" type="button" aria-label="Đóng menu">×</button>
+    </div>
+    <p>Chọn công cụ bạn cần</p>
+    <nav class="ai-assistant-sidebar-links" aria-label="Công cụ trợ lý AI">
+      <a class="ai-assistant-sidebar-link" href="./chat.html">Trò chuyện</a>
+      <a class="ai-assistant-sidebar-link" href="./ai_job_search.html">Tìm việc bằng AI</a>
+      <a class="ai-assistant-sidebar-link active" href="./cv_analysis.html" aria-current="page">Phân tích CV</a>
+    </nav>
+  </aside>
+
+  <main class="container cv-analysis-page">
+    <div class="cv-analysis-intro">
+      <span class="cv-analysis-eyebrow">CAREER HUB · AI CAREER ASSISTANT</span>
+      <h1>Phân tích CV cùng AI</h1>
+      <p class="muted">Nhận đánh giá rõ ràng về điểm mạnh, kỹ năng và cách cải thiện CV của bạn.</p>
+    </div>
+
+    <form id="cv-analysis-form" class="cv-upload-card">
+      <label class="cv-upload-label" for="cv-analysis-file">Tải CV của bạn lên</label>
+      <input
+        id="cv-analysis-file"
+        class="cv-file-input"
+        type="file"
+        name="file"
+        accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        aria-describedby="cv-file-help"
+        required
+      >
+      <label class="cv-upload-area" for="cv-analysis-file">
+        <span class="cv-upload-icon" aria-hidden="true">↑</span>
+        <span>
+          <strong id="cv-file-name">Chọn CV từ thiết bị</strong>
+          <small>Định dạng PDF hoặc DOCX · Tối đa 5 MB</small>
+        </span>
+      </label>
+      <p id="cv-file-help" class="cv-file-help">PDF scan không có văn bản có thể chọn sẽ không đọc được.</p>
+      <p id="cv-analysis-error" class="cv-analysis-error" role="alert" hidden></p>
+      <button id="cv-analysis-submit" class="btn" type="submit" disabled>Phân tích CV</button>
+    </form>
+
+    <section id="cv-analysis-results" class="cv-analysis-results" aria-labelledby="cv-results-title" hidden>
+      <div class="cv-results-heading">
+        <div>
+          <span class="cv-analysis-eyebrow">KẾT QUẢ PHÂN TÍCH</span>
+          <h2 id="cv-results-title">Đánh giá CV của bạn</h2>
+          <p id="cv-result-filename" class="muted"></p>
+        </div>
+        <div class="cv-score-card">
+          <span>Điểm tổng</span>
+          <strong><span id="cv-score">0</span><small>/100</small></strong>
+          <div class="cv-score-track" role="progressbar" aria-label="Điểm CV" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="cv-score-progress"></span>
+          </div>
+        </div>
+      </div>
+
+      <article class="cv-result-card cv-summary-card">
+        <h3>Tóm tắt</h3>
+        <p id="cv-summary"></p>
+      </article>
+
+      <div class="cv-result-grid">
+        <article class="cv-result-card">
+          <h3>Điểm mạnh</h3>
+          <ul id="cv-strengths"></ul>
+        </article>
+        <article class="cv-result-card">
+          <h3>Điểm cần cải thiện</h3>
+          <ul id="cv-weaknesses"></ul>
+        </article>
+        <article class="cv-result-card">
+          <h3>Kỹ năng còn thiếu</h3>
+          <ul id="cv-missing-skills"></ul>
+        </article>
+        <article class="cv-result-card">
+          <h3>Gợi ý cải thiện</h3>
+          <ul id="cv-improvement-suggestions"></ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer cv-analysis-footer">
+    <b>© 2026 Career Connect</b>
+    <span>Về chúng tôi · Điều khoản · Bảo mật · hello@careerconnect.vn</span>
+  </footer>
+
+  <script src="./js/ai_assistant_nav.js"></script>
+  <script src="./js/cv_analysis.js"></script>
+</body>
+</html>
