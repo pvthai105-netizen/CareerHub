@@ -109,7 +109,7 @@ Sau khi chạy, kiểm tra các địa chỉ:
 - **Figma Design / Prototype:** [Xem bản thiết kế CareerHub trên Figma](https://www.figma.com/design/ZOI0e2EpPElIK4PQvOzZzW/Wireframe-Figma?node-id=0-1&p=f&t=oV3zrzk4q8oNlbAo-0)
 
 ## 🌐 Bản Demo Trực Tuyến (Render Deployment)
-- **Link Website:** https://careerhub-nhom4.onrender.com *(thay bằng link thực tế của bạn sau khi tạo)*
+- **Link Website:** https://careerhub-zcbm.onrender.com *(thay bằng link thực tế của bạn sau khi tạo)*
 - **Tài khoản dùng thử (Seed Data):**
   - **Admin:** `admin@careerhub.vn` | Mật khẩu: `Admin@123`
   - **Doanh nghiệp:** `employer@careerhub.vn` | Mật khẩu: `Employer@123`
