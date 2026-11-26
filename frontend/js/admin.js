@@ -3,6 +3,16 @@
  * Quản lý tài khoản (Users) & Kiểm duyệt tin tuyển dụng (Jobs)
  */
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Kiểm tra quyền Admin (Chặn nếu không phải Admin)
   const currentUser = AuthGuard.requireRoles(["admin"]);
@@ -149,15 +159,15 @@ document.addEventListener("DOMContentLoaded", () => {
           return `
             <tr>
               <td><strong>#${u.id}</strong></td>
-              <td>${u.email}</td>
-              <td>${u.display_name || '<em style="color: var(--muted)">Chưa cập nhật</em>'}</td>
+              <td>${escapeHtml(u.email)}</td>
+              <td>${u.display_name ? escapeHtml(u.display_name) : '<em style="color: var(--muted)">Chưa cập nhật</em>'}</td>
               <td><span class="badge-role ${roleClass}">${roleName}</span></td>
               <td>${new Date(u.created_at).toLocaleDateString("vi-VN")}</td>
               <td>${statusBadge}</td>
               <td style="text-align: center;">
                 <div class="action-btn-group" style="justify-content: center;">
                   <button type="button" class="btn btn-outline btn-sm" onclick="viewUserDetail(${u.id})">Chi tiết</button>
-                  <button type="button" class="btn ${lockBtnClass} btn-sm" onclick="toggleLockUser(${u.id}, '${u.email}', ${u.is_locked})">
+                  <button type="button" class="btn ${lockBtnClass} btn-sm" onclick="toggleLockUser(${u.id}, '${escapeQuote(u.email)}', ${u.is_locked})">
                     ${lockBtnText}
                   </button>
                 </div>
@@ -207,26 +217,26 @@ document.addEventListener("DOMContentLoaded", () => {
         const sp = u.student_profile;
         profileHtml = `
           <h4 style="color: var(--indigo); margin-top: 16px; margin-bottom: 12px;">🎓 Hồ sơ sinh viên</h4>
-          <div class="detail-group"><div class="detail-label">Họ và tên:</div><div class="detail-value">${sp.full_name || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Số điện thoại:</div><div class="detail-value">${sp.phone || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Trường đại học:</div><div class="detail-value">${sp.university || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Chuyên ngành:</div><div class="detail-value">${sp.major || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Kỹ năng:</div><div class="detail-value">${sp.skills || "Chưa có"}</div></div>
+          <div class="detail-group"><div class="detail-label">Họ và tên:</div><div class="detail-value">${escapeHtml(sp.full_name || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Số điện thoại:</div><div class="detail-value">${escapeHtml(sp.phone || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Trường đại học:</div><div class="detail-value">${escapeHtml(sp.university || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Chuyên ngành:</div><div class="detail-value">${escapeHtml(sp.major || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Kỹ năng:</div><div class="detail-value">${escapeHtml(sp.skills || "Chưa có")}</div></div>
         `;
       } else if (u.employer_profile) {
         const ep = u.employer_profile;
         profileHtml = `
           <h4 style="color: var(--indigo); margin-top: 16px; margin-bottom: 12px;">🏢 Hồ sơ doanh nghiệp</h4>
-          <div class="detail-group"><div class="detail-label">Tên công ty:</div><div class="detail-value">${ep.company_name || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Website:</div><div class="detail-value">${ep.company_website || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Địa chỉ:</div><div class="detail-value">${ep.address || "Chưa có"}</div></div>
-          <div class="detail-group"><div class="detail-label">Điện thoại liên hệ:</div><div class="detail-value">${ep.phone || "Chưa có"}</div></div>
+          <div class="detail-group"><div class="detail-label">Tên công ty:</div><div class="detail-value">${escapeHtml(ep.company_name || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Website:</div><div class="detail-value">${escapeHtml(ep.company_website || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Địa chỉ:</div><div class="detail-value">${escapeHtml(ep.address || "Chưa có")}</div></div>
+          <div class="detail-group"><div class="detail-label">Điện thoại liên hệ:</div><div class="detail-value">${escapeHtml(ep.phone || "Chưa có")}</div></div>
         `;
       }
 
       const content = `
-        <div class="detail-group"><div class="detail-label">Email tài khoản:</div><div class="detail-value"><strong>${u.email}</strong></div></div>
-        <div class="detail-group"><div class="detail-label">Vai trò:</div><div class="detail-value">${u.role}</div></div>
+        <div class="detail-group"><div class="detail-label">Email tài khoản:</div><div class="detail-value"><strong>${escapeHtml(u.email)}</strong></div></div>
+        <div class="detail-group"><div class="detail-label">Vai trò:</div><div class="detail-value">${escapeHtml(u.role)}</div></div>
         <div class="detail-group"><div class="detail-label">Trạng thái tài khoản:</div><div class="detail-value">${u.is_locked ? "Đã bị khóa" : "Đang hoạt động"}</div></div>
         <div class="detail-group"><div class="detail-label">Ngày đăng ký:</div><div class="detail-value">${new Date(u.created_at).toLocaleString("vi-VN")}</div></div>
         ${profileHtml}
@@ -298,11 +308,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <tr>
               <td><strong>#${j.job_id}</strong></td>
               <td>
-                <div style="font-weight: 600; color: var(--ink);">${j.title}</div>
-                <div style="font-size: 12px; color: var(--muted);">${j.industry}</div>
+                <div style="font-weight: 600; color: var(--ink);">${escapeHtml(j.title)}</div>
+                <div style="font-size: 12px; color: var(--muted);">${escapeHtml(j.industry)}</div>
               </td>
-              <td>${j.company_name || j.employer_email || '<em style="color: var(--muted)">Doanh nghiệp</em>'}</td>
-              <td>${j.location}</td>
+              <td>${escapeHtml(j.company_name || j.employer_email || "Doanh nghiệp")}</td>
+              <td>${escapeHtml(j.location)}</td>
               <td>${new Date(j.deadline).toLocaleDateString("vi-VN")}</td>
               <td>${statusBadge}</td>
               <td style="text-align: center;">
@@ -371,15 +381,15 @@ document.addEventListener("DOMContentLoaded", () => {
           : "Thỏa thuận";
 
       const content = `
-        <div class="detail-group"><div class="detail-label">Tiêu đề:</div><div class="detail-value" style="font-size: 16px; font-weight: 700; color: var(--indigo);">${j.title}</div></div>
-        <div class="detail-group"><div class="detail-label">Công ty đăng tuyển:</div><div class="detail-value">${j.company_name || "Chưa rõ"} (${j.employer_email})</div></div>
-        <div class="detail-group"><div class="detail-label">Địa điểm / Hình thức:</div><div class="detail-value">${j.location} · ${j.job_type}</div></div>
-        <div class="detail-group"><div class="detail-label">Mức lương:</div><div class="detail-value">${salary}</div></div>
+        <div class="detail-group"><div class="detail-label">Tiêu đề:</div><div class="detail-value" style="font-size: 16px; font-weight: 700; color: var(--indigo);">${escapeHtml(j.title)}</div></div>
+        <div class="detail-group"><div class="detail-label">Công ty đăng tuyển:</div><div class="detail-value">${escapeHtml(j.company_name || "Chưa rõ")} (${escapeHtml(j.employer_email)})</div></div>
+        <div class="detail-group"><div class="detail-label">Địa điểm / Hình thức:</div><div class="detail-value">${escapeHtml(j.location)} · ${escapeHtml(j.job_type)}</div></div>
+        <div class="detail-group"><div class="detail-label">Mức lương:</div><div class="detail-value">${escapeHtml(salary)}</div></div>
         <div class="detail-group"><div class="detail-label">Hạn nộp hồ sơ:</div><div class="detail-value">${new Date(j.deadline).toLocaleDateString("vi-VN")}</div></div>
-        <div class="detail-group"><div class="detail-label">Trạng thái:</div><div class="detail-value"><strong>${j.status}</strong></div></div>
+        <div class="detail-group"><div class="detail-label">Trạng thái:</div><div class="detail-value"><strong>${escapeHtml(j.status)}</strong></div></div>
         <div class="detail-group">
           <div class="detail-label">Mô tả công việc:</div>
-          <div class="detail-value" style="background: var(--bg); padding: 12px; border-radius: var(--radius-sm); white-space: pre-wrap;">${j.description}</div>
+          <div class="detail-value" style="background: var(--bg); padding: 12px; border-radius: var(--radius-sm); white-space: pre-wrap;">${escapeHtml(j.description)}</div>
         </div>
       `;
 

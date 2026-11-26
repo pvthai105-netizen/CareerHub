@@ -1,7 +1,20 @@
 __pycache__/
 *.pyc
 .venv/
-.env
 *.db
 .vscode/
 .idea/
+
+# Environment and Secret files
+.env*
+!.env.example
+*.pem
+*.key
+
+# User uploads (chống commit nhầm file người dùng tải lên)
+uploads/applications/*
+!uploads/applications/.gitkeep
+backend/uploads/applications/*
+!backend/uploads/applications/.gitkeep
+frontend/uploads/logos/*
+!frontend/uploads/logos/.gitkeep
