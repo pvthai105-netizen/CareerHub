@@ -107,3 +107,43 @@ Sau khi chạy, kiểm tra các địa chỉ:
 
 ## Thiết kế Giao diện (UI/UX)
 - **Figma Design / Prototype:** [Xem bản thiết kế CareerHub trên Figma](https://www.figma.com/design/ZOI0e2EpPElIK4PQvOzZzW/Wireframe-Figma?node-id=0-1&p=f&t=oV3zrzk4q8oNlbAo-0)
+
+## 🌐 Bản Demo Trực Tuyến (Render Deployment)
+- **Link Website:** https://careerhub-nhom4.onrender.com *(thay bằng link thực tế của bạn sau khi tạo)*
+- **Tài khoản dùng thử (Seed Data):**
+  - **Admin:** `admin@careerhub.vn` | Mật khẩu: `Admin@123`
+  - **Doanh nghiệp:** `employer@careerhub.vn` | Mật khẩu: `Employer@123`
+  - **Sinh viên:** `student@careerhub.vn` | Mật khẩu: `Student@123`
+
+> **Lưu ý:** Gói miễn phí của Render sẽ tạm "ngủ" sau 15 phút không có người truy cập. Lần mở đầu tiên có thể mất khoảng 30–50 giây để server khởi động lại.
+
+---
+
+## 💻 Hướng Dẫn Chạy Local Dự Phòng (Local Fallback)
+Trong trường hợp dịch vụ Cloud gặp sự cố hoặc hết băng thông, hội đồng có thể chạy kiểm thử trực tiếp trên máy local:
+
+1. **Clone mã nguồn:**
+   ```bash
+   git clone https://github.com/pvthai105-netizen/CareerHub.git
+   cd CareerHub/backend
+   ```
+2. **Khởi tạo môi trường ảo và cài đặt thư viện:**
+   ```bash
+   python -m venv .venv
+   # Windows:
+   .venv\Scripts\activate
+   # Linux/macOS:
+   source .venv/bin/activate
+
+   pip install -r requirements.txt
+   ```
+3. **Cấu hình môi trường:**
+   - Copy file `.env.example` thành `.env`. Nếu không cài MySQL, hệ thống sẽ tự động sử dụng SQLite dự phòng (`sqlite:///./careerhub.db`).
+4. **Khởi tạo dữ liệu mẫu và chạy ứng dụng:**
+   ```bash
+   python seed.py
+   uvicorn app.main:app --reload
+   ```
+5. **Truy cập hệ thống:**
+   - Giao diện: `http://127.0.0.1:8000`
+   - Tài liệu API (Swagger UI): `http://127.0.0.1:8000/docs`
