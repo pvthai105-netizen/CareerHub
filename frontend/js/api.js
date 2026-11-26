@@ -1,4 +1,32 @@
-const API_BASE = "/api";
+const API_BASE = "http://127.0.0.1:8000"; // Lý do: Frontend chạy bằng Live Server cổng 5500, còn Backend FastAPI chạy cổng 8000
+// Thêm tiền tố API chung để đồng nhất các endpoint backend
+const API_PREFIX = "/api"; // ← đã thêm cơ chế xử lý tiền tố API
+
+/**
+ * Xây dựng URL hoàn chỉnh cho các request.
+ * Nếu path bắt đầu bằng "/user" (đường dẫn đã có tiền tố riêng), không thêm API_PREFIX.
+ * Ngược lại, tự động chèn "/api" để trùng khớp với các router FastAPI.
+ */
+
+function buildUrl(path) {
+  // Đảm bảo đường dẫn luôn bắt đầu bằng dấu /
+  const cleanPath = path.startsWith("/") ? path : "/" + path;
+
+  // Nếu đường dẫn đã có /api hoặc /user thì giữ nguyên
+  if (
+    cleanPath.startsWith("/api/") ||
+    cleanPath === "/api" ||
+    cleanPath.startsWith("/user/") ||
+    cleanPath === "/user"
+  ) {
+    return cleanPath;
+  }
+
+  // Nếu chưa có tiền tố thì tự thêm /api
+  return API_PREFIX + cleanPath;
+}
+
+
 const TOKEN_KEY = "careerhub_token";
 
 const Auth = {
@@ -22,7 +50,7 @@ async function apiFetch(path, options = {}) {
 
   let response;
   try {
-    response = await fetch(API_BASE + path, { ...options, headers, body });
+    response = await fetch(API_BASE + buildUrl(path), { ...options, headers, body });
   } catch (netErr) {
     throw new Error("Không thể kết nối đến máy chủ Backend (hãy kiểm tra xem uvicorn đã chạy chưa)");
   }
@@ -30,9 +58,9 @@ async function apiFetch(path, options = {}) {
   if (response.status === 401) {
     Auth.clear();
     // Nếu đang không ở trang login hay register thì tự chuyển về login
-    if (!window.location.pathname.includes("login.html") && !window.location.pathname.includes("register.html")) {
-      window.location.href = "/login.html?expired=1";
-    }
+    // if (!window.location.pathname.includes("login.html") && !window.location.pathname.includes("register.html")) {
+    //   window.location.href = "/login.html?expired=1";
+    // }
   }
 
   let data = null;
@@ -68,6 +96,7 @@ const api = {
   get: (path) => apiFetch(path),
   post: (path, body) => apiFetch(path, { method: "POST", body }),
   put: (path, body) => apiFetch(path, { method: "PUT", body }),
+  patch: (path, body) => apiFetch(path, { method: "PATCH", body }),
   delete: (path) => apiFetch(path, { method: "DELETE" }),
 };
 

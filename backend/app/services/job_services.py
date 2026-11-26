@@ -91,7 +91,15 @@ def get_my_jobs(
     items = query.offset(skip).limit(limit).all()
 
     # Trả về tổng số tin và danh sách tin tuyển dụng
-    return {"total": total, "items": items}
+    page = (skip // limit) + 1 if limit else 1
+    total_pages = ceil(total / limit) if total and limit else 0
+    return {
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "total_pages": total_pages,
+        "items": items,
+    }
 
 
 # Hàm lấy chi tiết một tin tuyển dụng của nhà tuyển dụng
@@ -187,6 +195,81 @@ def change_status(
     # Gán trạng thái mới vào tin tuyển dụng
     # .value lấy giá trị chuỗi để lưu vào Database
     job.status = new_status.value
+
+    # Cập nhật thời gian chỉnh sửa
+    job.updated_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(job)
+    return job
+
+
+# Hàm TỰ ĐỘNG ĐÓNG TIN TUYỂN DỤNG QUÁ HẠN
+
+def close_expired_jobs(db: Session) -> int:
+    # Lấy ngày hiện tại của máy chủ
+    today = date.today()
+
+    # Tìm những tin tuyển dụng thỏa mãn 2 điều kiện:
+    count = db.query(Job).filter(              # filter() dùng để lọc các bản ghi trong Database
+        Job.status == JobStatus.ACTIVE.value,  # Trạng thái tin đang là ACTIVE (đang tuyển dụng)
+        Job.deadline < today                   # Deadline nhỏ hơn ngày hiện tại (đã quá hạn).
+    ).update(                                  # update() dùng để cập nhật trực tiếp các bản ghi tìm được
+        {
+            # Chuyển trạng thái tin tuyển dụng thành CLOSED
+            Job.status: JobStatus.CLOSED.value,
+
+            # Cập nhật thời gian chỉnh sửa tin
+            Job.updated_at: datetime.utcnow()
+        },
+
+        # Không cần đồng bộ lại các đối tượng Job trong bộ nhớ Python
+        # Vì hàm này chỉ cập nhật hàng loạt trực tiếp trong Database
+        # synchronize_session là tham số của SQLAlchemy
+        # dùng để quyết định có cập nhật lại những đối tượng đang được lưu trong bộ nhớ Python sau khi Database được cập nhật hay không
+        synchronize_session=False   # giúp SQLAlchemy không phải đồng bộ lại các đối tượng trong bộ nhớ Python sau khi cập nhật hàng loạt Database
+    )
+
+    db.commit()
+
+    # trả về số lượng tin tuyển dụng đã được cập nhật
+    # Ví dụ: Có 3 tin quá hạn thì trả về số 3
+    return count
+
+
+
+# Hàm CẬP NHẬT TRẠNG THÁI TIN TUYỂN DỤNG
+def update_job_status(
+    db: Session,                         # Phiên làm việc với Database
+    employer: User,                      # Nhà tuyển dụng đang đăng nhập
+    job_id: int,                          # ID tin tuyển dụng cần cập nhật
+    payload: JobStatusPatchSchema        # Dữ liệu trạng thái mới
+) -> Job:
+    # Lấy tin tuyển dụng thuộc quyền quản lý của nhà tuyển dụng
+    job = get_my_job(db, employer, job_id)
+
+    # Lấy trạng thái mới từ dữ liệu đầu vào
+    # Chuẩn hóa để xử lý được cả Enum và chuỗi
+    new_status = payload.status
+
+    if isinstance(new_status, JobStatus):
+        new_status = new_status.value
+
+    # Kiểm tra nếu muốn chuyển tin sang ACTIVE
+    # nhưng deadline đã qua thì không cho phép
+    if (
+        new_status == JobStatus.ACTIVE.value
+        and job.deadline < date.today()
+    ):
+
+        # Trả về lỗi 400 Bad Request
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Không thể đặt ACTIVE khi deadline đã qua. Cập nhật deadline trước."
+        )
+
+    # Cập nhật trạng thái mới vào Database
+    job.status = new_status
 
     # Cập nhật thời gian chỉnh sửa
     job.updated_at = datetime.utcnow()

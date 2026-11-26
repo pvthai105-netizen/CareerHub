@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – CareerHub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="dashboard-body">
+  <div class="dash-layout">
+    <!-- Left Sidebar (240px) -->
+    <aside class="dash-sidebar" id="adminSidebar">
+      <div class="dash-sidebar-top">
+        <a href="home.html" class="dash-brand-logo" title="CareerHub">
+          <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+        </a>
+
+        <div>
+          <div class="sidebar-label">ADMIN WORKSPACE</div>
+          <div class="sidebar-user-card">
+            <span class="sidebar-user-name">Hệ Thống CareerHub</span>
+            <span class="sidebar-user-role">Quản trị viên cấp cao</span>
+          </div>
+        </div>
+
+        <nav>
+          <ul class="dash-nav-menu">
+            <li class="dash-nav-item active">
+              <a href="admin_dashboard.html">
+                <span class="dash-nav-num">01</span>
+                <span>Tổng quan hệ thống</span>
+              </a>
+            </li>
+            <li class="dash-nav-item">
+              <a href="admin.html">
+                <span class="dash-nav-num">02</span>
+                <span>Quản lý & Duyệt tin</span>
+              </a>
+            </li>
+            <li class="dash-nav-item">
+              <a href="#">
+                <span class="dash-nav-num">04</span>
+                <span>Báo cáo & khiếu nại</span>
+              </a>
+            </li>
+            <li class="dash-nav-item">
+              <a href="#">
+                <span class="dash-nav-num">05</span>
+                <span>Cài đặt hệ thống</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="dash-sidebar-bottom">
+        <div class="sidebar-status-pill">
+          <span class="status-dot-pulse"></span>
+          <span>Hệ thống ổn định</span>
+        </div>
+        <button type="button" class="sidebar-logout-btn" id="btnLogout">
+          <span>Đăng xuất</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dash-main">
+      <!-- Topbar Header -->
+      <header class="dash-topbar">
+        <div class="dash-topbar-breadcrumb">
+          <span>Quản trị nền tảng</span>
+          <span>/</span>
+          <span class="current">Tổng quan hệ thống</span>
+        </div>
+
+        <div class="dash-topbar-actions">
+          <button type="button" class="dash-icon-btn" title="Thông báo" aria-label="Thông báo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="badge-dot"></span>
+          </button>
+
+          <div class="dash-user-chip">
+            <div class="dash-avatar-circle" style="background-color: var(--indigo);">AD</div>
+            <span>Admin</span>
+            <span aria-hidden="true" style="font-size: 10px; color: var(--muted);">▾</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="dash-content" id="adminContent">
+        <div id="adminErrorSlot"></div>
+
+        <!-- Heading & Filter -->
+        <div class="dash-header-section">
+          <div>
+            <h1 class="dash-greeting-title">Tổng quan hệ thống</h1>
+            <p class="dash-greeting-subtitle">Dữ liệu tổng hợp thời gian thực · Cập nhật mới nhất từ cơ sở dữ liệu.</p>
+          </div>
+          <div class="dash-select" style="display: flex; align-items: center; justify-content: center; min-width: 150px; background-color: var(--surface);">
+            Tháng 11/2026
+          </div>
+        </div>
+
+        <!-- 4 KPI Cards -->
+        <section class="dash-kpi-grid" aria-label="Chỉ số hệ thống">
+          <article class="kpi-card">
+            <div class="kpi-title">
+              <span>Người dùng</span>
+            </div>
+            <div class="kpi-value" id="kpiTotalUsers">—</div>
+            <div class="kpi-meta trend-accent" id="kpiStudentsSub">— sinh viên</div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-title">
+              <span>Doanh nghiệp</span>
+            </div>
+            <div class="kpi-value" id="kpiEmployersCount">—</div>
+            <div class="kpi-meta" id="kpiAdminsSub">— quản trị viên</div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-title">
+              <span>Tin tuyển dụng</span>
+            </div>
+            <div class="kpi-value" id="kpiTotalJobs">—</div>
+            <div class="kpi-meta trend-up" id="kpiActiveJobsSub">— đang hoạt động</div>
+          </article>
+
+          <article class="kpi-card" style="border-left: 3px solid var(--warning);">
+            <div class="kpi-title">
+              <span>Tin chờ duyệt</span>
+            </div>
+            <div class="kpi-value" id="kpiDraftJobs" style="color: var(--warning-text);">—</div>
+            <div class="kpi-meta" style="color: var(--warning-text); font-weight: 600;">Cần kiểm tra hôm nay</div>
+          </article>
+        </section>
+
+        <!-- Charts Row (User Growth Line Chart + Job Status Doughnut) -->
+        <div class="dash-grid-2col">
+          <!-- Left: User Growth Smooth Line Chart -->
+          <section class="dash-card">
+            <div class="dash-card-header">
+              <h2 class="dash-card-title">Tăng trưởng người dùng</h2>
+              <span class="dash-card-badge">6 tháng gần nhất</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="adminUserGrowthChart"></canvas>
+            </div>
+          </section>
+
+          <!-- Right: Job Status Breakdown -->
+          <section class="dash-card">
+            <div class="dash-card-header">
+              <h2 class="dash-card-title">Tình trạng tin tuyển dụng</h2>
+              <span class="dash-card-badge">Toàn hệ thống</span>
+            </div>
+            <div class="chart-wrapper" style="height: 140px; margin-bottom: 16px;">
+              <canvas id="adminJobStatusChart"></canvas>
+            </div>
+            <div class="status-progress-list">
+              <!-- Active -->
+              <div class="status-progress-item">
+                <div class="status-progress-info">
+                  <span class="status-progress-label">
+                    <span class="status-dot" style="background-color: var(--success);"></span>
+                    <span>Đang hoạt động</span>
+                  </span>
+                  <span class="status-progress-value" id="valActiveJobs">0</span>
+                </div>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill" id="barActiveJobsFill" style="width: 0%; background-color: var(--success);"></div>
+                </div>
+              </div>
+
+              <!-- Closed -->
+              <div class="status-progress-item">
+                <div class="status-progress-info">
+                  <span class="status-progress-label">
+                    <span class="status-dot" style="background-color: var(--muted);"></span>
+                    <span>Đã đóng</span>
+                  </span>
+                  <span class="status-progress-value" id="valClosedJobs">0</span>
+                </div>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill" id="barClosedJobsFill" style="width: 0%; background-color: var(--muted);"></div>
+                </div>
+              </div>
+
+              <!-- Draft / Pending -->
+              <div class="status-progress-item">
+                <div class="status-progress-info">
+                  <span class="status-progress-label">
+                    <span class="status-dot" style="background-color: var(--warning);"></span>
+                    <span>Chờ duyệt</span>
+                  </span>
+                  <span class="status-progress-value" id="valDraftJobs">0</span>
+                </div>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill" id="barDraftJobsFill" style="width: 0%; background-color: var(--warning);"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Bottom Lists Row (Activities + Action Callout) -->
+        <div class="dash-grid-2col">
+          <!-- Left: Recent Activities -->
+          <section class="dash-card">
+            <div class="dash-card-header">
+              <h2 class="dash-card-title">Hoạt động gần đây</h2>
+              <span class="dash-card-badge">Thời gian thực</span>
+            </div>
+            <div class="dash-list" id="adminRecentActivities">
+              <div class="dash-loading">
+                <div class="dash-spinner"></div>
+                <span>Đang tải hoạt động hệ thống...</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Right: Action Callout Card (Giữ cộng đồng an toàn) -->
+          <section class="dash-action-card">
+            <div>
+              <h3>Giữ cộng đồng an toàn</h3>
+              <p id="actionDraftCount">Các tin tuyển dụng mới nộp cần quản trị viên xem xét và duyệt trước khi xuất bản lên nền tảng.</p>
+            </div>
+            <button type="button" class="btn-white" onclick="alert('Chức năng kiểm duyệt tin đang được hoàn thiện.')">
+              Kiểm duyệt ngay <span aria-hidden="true">→</span>
+            </button>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      Dashboard.initAdminDashboard();
+    });
+  </script>
+</body>
+</html>

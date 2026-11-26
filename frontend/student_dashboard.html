@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Việc Làm Của Tôi – CareerHub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css?v=20261120_5" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="dashboard-body">
+  <!-- Top Navigation Bar (Figma [32:417]) -->
+  <header class="site-header">
+    <div class="container site-navbar">
+      <a href="home.html" class="brand-logo" title="CareerHub">
+        <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a href="home.html" class="nav-link">Trang chủ</a></li>
+        <li><a href="home.html#jobs" class="nav-link">Tìm việc</a></li>
+        <li><a href="student_dashboard.html" class="nav-link active" aria-current="page">Việc làm của tôi</a></li>
+        <li><a href="chat.html" class="nav-link">Trợ lý AI</a></li>
+        <li><a href="profile.html" class="nav-link">Hồ sơ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button type="button" id="btnLogout" class="btn btn-outline" style="padding: 7px 16px; font-size: 13px;">
+          Đăng xuất
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Student Dashboard Container (Figma [32:63] 1312px container) -->
+  <main class="student-dash-page">
+    <div id="studentErrorSlot"></div>
+
+    <!-- Hero / Greeting Banner -->
+    <section class="student-hero-banner">
+      <h1 class="student-hero-title">Mỗi ứng tuyển là một cơ hội mới</h1>
+      <p class="student-hero-subtitle">Theo dõi hành trình nghề nghiệp của bạn ở một nơi.</p>
+    </section>
+
+    <!-- 3 Summary Tabs (Figma [32:426], [32:428], [32:430]) -->
+    <section class="student-tabs-row" aria-label="Phân loại việc làm">
+      <div class="student-tab-card active" id="tabApplied" role="button" tabindex="0" onclick="Dashboard.switchStudentTab('applied')">
+        <span class="student-tab-label">Đã ứng tuyển</span>
+        <span class="student-tab-badge" id="studentAppliedCount">—</span>
+      </div>
+
+      <div class="student-tab-card" id="tabSaved" role="button" tabindex="0" onclick="Dashboard.switchStudentTab('saved')">
+        <span class="student-tab-label">Đã lưu</span>
+        <span class="student-tab-badge" id="studentSavedCount">—</span>
+      </div>
+
+      <div class="student-tab-card" id="tabViewed" role="button" tabindex="0" onclick="Dashboard.switchStudentTab('viewed')">
+        <span class="student-tab-label">Đã xem</span>
+        <span class="student-tab-badge" id="studentViewedCount">—</span>
+      </div>
+    </section>
+
+    <!-- Row with Chart & Overview -->
+    <section class="dash-card" id="studentChartSection">
+      <div class="dash-card-header">
+        <div>
+          <h2 class="dash-card-title">Phân bổ trạng thái ứng tuyển</h2>
+          <p style="font-size: 13px; color: var(--muted); margin: 4px 0 0 0;">Tiến độ phản hồi từ các nhà tuyển dụng đối với hồ sơ của bạn</p>
+        </div>
+        <span class="dash-card-badge">Chart.js Realtime</span>
+      </div>
+      <div class="chart-wrapper" style="height: 220px;">
+        <canvas id="studentStatusChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Filter Bar (Search + Status Filter) -->
+    <section class="student-filter-bar">
+      <div class="dash-search-input-wrap">
+        <svg class="dash-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          id="studentSearchInput"
+          class="dash-search-input"
+          placeholder="Tìm công việc hoặc công ty..."
+          aria-label="Tìm kiếm việc làm đã ứng tuyển"
+        />
+      </div>
+
+      <select id="studentStatusFilter" class="dash-select" aria-label="Lọc theo trạng thái">
+        <option value="">Tất cả trạng thái</option>
+        <option value="pending">Đang chờ</option>
+        <option value="reviewed">Đã xem</option>
+        <option value="interview">Phỏng vấn</option>
+        <option value="accepted">Được nhận</option>
+        <option value="rejected">Từ chối</option>
+      </select>
+    </section>
+
+    <!-- Applications / Saved Jobs Table (Figma [32:438]) -->
+    <section class="dash-table-wrap" aria-labelledby="applicationsTableTitle">
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background-color: #FAF9FD;">
+        <h2 id="applicationsTableTitle" style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0;">Lịch sử ứng tuyển</h2>
+        <span id="applicationsTableSub" style="font-size: 13px; color: var(--muted);">Danh sách công việc đã nộp hồ sơ</span>
+      </div>
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 45%;">CÔNG VIỆC / CÔNG TY</th>
+            <th scope="col" id="colDateHeader" style="width: 20%;">NGÀY ỨNG TUYỂN</th>
+            <th scope="col" id="colStatusHeader" style="width: 20%;">TRẠNG THÁI</th>
+            <th scope="col" style="width: 15%; text-align: right;">THAO TÁC</th>
+          </tr>
+        </thead>
+        <tbody id="studentApplicationsTableBody">
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 40px 16px;">
+              <div class="dash-loading">
+                <div class="dash-spinner"></div>
+                <span>Đang tải lịch sử ứng tuyển...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="dash-table-footer">
+        <span id="studentTableFooterCount">Đang tải dữ liệu...</span>
+        <span style="font-size: 12px; color: var(--muted);">Dữ liệu cập nhật từ máy chủ</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/dashboard.js?v=20261120_5"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      Dashboard.initStudentDashboard();
+    });
+  </script>
+</body>
+</html>

@@ -1,12 +1,16 @@
-from fastapi import APIRouter, Depends
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import deps
+from app.models.saved_jobs import SavedJob
 from app.models.user import Role, User
 from app.schemas.dashboard import (
     AdminDashboardResponse,
     EmployerDashboardResponse,
     StudentDashboardResponse,
+    StudentSavedJobItem,
 )
 from app.services.dashboard_services import (
     get_admin_dashboard_data,
@@ -36,6 +40,106 @@ def api_get_student_dashboard(
     - Danh sách đơn ứng tuyển gần nhất kèm tên việc làm và công ty.
     """
     return get_student_dashboard_data(db, current_user)
+
+
+@router.get(
+    "/saved-jobs",
+    response_model=List[StudentSavedJobItem],
+    summary="Lấy danh sách việc làm đã lưu",
+)
+def api_get_saved_jobs(
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.require_roles(Role.student)),
+):
+    """Lấy danh sách tất cả công việc đã lưu của sinh viên."""
+    data = get_student_dashboard_data(db, current_user)
+    return data.saved_jobs
+
+
+@router.delete(
+    "/saved-jobs/{job_id}",
+    summary="Bỏ lưu công việc",
+)
+def api_unsave_job(
+    job_id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.require_roles(Role.student)),
+):
+    """Xóa công việc khỏi danh sách đã lưu của sinh viên."""
+    saved = (
+        db.query(SavedJob)
+        .filter(SavedJob.user_id == current_user.id, SavedJob.job_id == job_id)
+        .first()
+    )
+    if not saved:
+        saved = (
+            db.query(SavedJob)
+            .filter(SavedJob.user_id == current_user.id, SavedJob.saved_job_id == job_id)
+            .first()
+        )
+    if not saved:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy việc làm đã lưu",
+        )
+    db.delete(saved)
+    db.commit()
+
+    new_count = (
+        db.query(func.count(SavedJob.saved_job_id))
+        .filter(SavedJob.user_id == current_user.id)
+        .scalar()
+        or 0
+    )
+    return {
+        "success": True,
+        "message": "Đã bỏ lưu công việc thành công",
+        "saved_count": new_count,
+    }
+
+
+@router.post(
+    "/saved-jobs/{job_id}",
+    summary="Lưu công việc",
+)
+def api_save_job(
+    job_id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.require_roles(Role.student)),
+):
+    """Thêm công việc vào danh sách đã lưu của sinh viên."""
+    existing = (
+        db.query(SavedJob)
+        .filter(SavedJob.user_id == current_user.id, SavedJob.job_id == job_id)
+        .first()
+    )
+    if existing:
+        count = (
+            db.query(func.count(SavedJob.saved_job_id))
+            .filter(SavedJob.user_id == current_user.id)
+            .scalar()
+            or 0
+        )
+        return {
+            "success": True,
+            "message": "Công việc đã có trong danh sách lưu",
+            "saved_count": count,
+        }
+    new_saved = SavedJob(user_id=current_user.id, job_id=job_id)
+    db.add(new_saved)
+    db.commit()
+
+    new_count = (
+        db.query(func.count(SavedJob.saved_job_id))
+        .filter(SavedJob.user_id == current_user.id)
+        .scalar()
+        or 0
+    )
+    return {
+        "success": True,
+        "message": "Đã lưu công việc thành công",
+        "saved_count": new_count,
+    }
 
 
 @router.get(

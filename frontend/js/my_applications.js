@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const applicationsTable = document.getElementById("applications-table-wrap");
   const applicationCount = document.getElementById("application-count");
   const MAX_CV_SIZE = 5 * 1024 * 1024;
+  const STATUS_REFRESH_INTERVAL_MS = 5000;
+  let applicationsSnapshot = null;
+  let applicationsRequestInFlight = false;
+  let refreshQueued = false;
   const MIME_TYPES = {
     ".pdf": "application/pdf",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -139,32 +143,56 @@ document.addEventListener("DOMContentLoaded", () => {
     return row;
   }
 
-  async function loadApplications() {
-    listFeedback.className = "list-feedback";
-    listFeedback.textContent = "Đang tải đơn ứng tuyển...";
-    listFeedback.hidden = false;
-    applicationsTable.hidden = true;
-    applicationsList.replaceChildren();
+  async function loadApplications({ silent = false } = {}) {
+    if (applicationsRequestInFlight) {
+      if (!silent) refreshQueued = true;
+      return;
+    }
+    applicationsRequestInFlight = true;
+
+    if (!silent) {
+      listFeedback.className = "list-feedback";
+      listFeedback.textContent = "Đang tải đơn ứng tuyển...";
+      listFeedback.hidden = false;
+      applicationsTable.hidden = true;
+      applicationsList.replaceChildren();
+    }
 
     try {
       const result = await api.get("/applications/my");
       const applications = Array.isArray(result) ? result : [];
       applicationCount.textContent = `${applications.length} đơn`;
+      const snapshot = JSON.stringify(applications);
+
+      if (snapshot !== applicationsSnapshot) {
+        applicationsSnapshot = snapshot;
+        applicationsList.replaceChildren();
+        applications.forEach((application) => {
+          applicationsList.append(createApplicationRow(application));
+        });
+      }
 
       if (applications.length === 0) {
+        applicationsTable.hidden = true;
         listFeedback.textContent = "Bạn chưa gửi đơn ứng tuyển nào. Hãy chọn một công việc phù hợp ở biểu mẫu phía trên.";
+        listFeedback.className = "list-feedback";
+        listFeedback.hidden = false;
         return;
       }
 
-      applications.forEach((application) => {
-        applicationsList.append(createApplicationRow(application));
-      });
       listFeedback.hidden = true;
       applicationsTable.hidden = false;
     } catch (error) {
+      if (silent && applicationsSnapshot !== null) return;
       listFeedback.className = "list-feedback is-error";
       listFeedback.textContent = error.message || "Không tải được danh sách đơn ứng tuyển.";
       applicationCount.textContent = "— đơn";
+    } finally {
+      applicationsRequestInFlight = false;
+      if (refreshQueued) {
+        refreshQueued = false;
+        loadApplications({ silent: true });
+      }
     }
   }
 
@@ -246,4 +274,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadJobs();
   loadApplications();
+  window.setInterval(() => {
+    if (!document.hidden) loadApplications({ silent: true });
+  }, STATUS_REFRESH_INTERVAL_MS);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) loadApplications({ silent: true });
+  });
 });
