@@ -144,7 +144,12 @@ document.addEventListener("DOMContentLoaded", () => {
     author.className = "chat-message-author";
     author.textContent = isUser ? "Bạn" : "CareerHub AI";
     const time = document.createElement("time");
-    const date = createdAt ? new Date(createdAt) : new Date();
+    const timestamp = createdAt ? String(createdAt) : "";
+    const hasTimezone = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(timestamp);
+    // SQLite may return a UTC timestamp without its timezone suffix; treat it as UTC.
+    const date = timestamp
+      ? new Date(hasTimezone ? timestamp : `${timestamp}Z`)
+      : new Date();
     if (!Number.isNaN(date.getTime())) {
       time.dateTime = date.toISOString();
       time.textContent = new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(date);
