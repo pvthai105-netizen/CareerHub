@@ -107,15 +107,24 @@ const AuthGuard = {
       }
 
       const profileUrl = user.role === "student" ? "profile.html" : user.role === "employer" ? "employer_profile.html" : "admin_dashboard.html";
+      const escapeHtml = (str) =>
+        String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      const safeDisplayName = escapeHtml(displayName);
+      const safeInitials = escapeHtml(initials);
 
       navActions.innerHTML = `
         <div style="display: inline-flex; align-items: center; gap: 10px;">
           <a href="${profileUrl}" title="Xem hồ sơ cá nhân" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 4px 12px; background: #F2EFF9; border-radius: 9999px; transition: all 0.2s; border: 1px solid #E8E5F0;">
             <span style="width: 26px; height: 26px; border-radius: 50%; background-color: #8176B5; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">
-              ${initials}
+              ${safeInitials}
             </span>
             <span style="font-size: 13px; font-weight: 600; color: #292642; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-              ${displayName}
+              ${safeDisplayName}
             </span>
           </a>
           <button type="button" id="btn-navbar-logout" class="btn btn-outline" style="padding: 7px 16px; font-size: 13px; cursor: pointer;">
