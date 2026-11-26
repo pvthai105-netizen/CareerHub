@@ -41,7 +41,7 @@
 
 .ai-search-query {
   min-height: 132px;
-  resize: vertical;
+  resize: none;
   font: 14px/1.6 "Inter", sans-serif;
 }
 

@@ -15,6 +15,7 @@ from app.routers import admin_router
 from app.routers import admin_job_router
 from app.routers import application_router
 from app.routers import ai_job_search_router
+from app.routers import cv_analysis_router
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -46,6 +47,7 @@ app.include_router(dashboard_router.router)
 app.include_router(chat_router.router)
 app.include_router(application_router.router)
 app.include_router(ai_job_search_router.router)
+app.include_router(cv_analysis_router.router)
 
 @app.get("/api/health")
 def health():

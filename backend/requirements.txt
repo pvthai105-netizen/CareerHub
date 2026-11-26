@@ -9,4 +9,6 @@ pyjwt
 pydantic[email]
 python-multipart
 google-genai
+pdfplumber
+python-docx
 pytest
