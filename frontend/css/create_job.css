@@ -1,0 +1,552 @@
+/* =====================================================
+   1. BIẾN MÀU (lấy từ Design System trong Figma)
+   Muốn đổi màu cả trang chỉ cần sửa ở đây.
+   ===================================================== */
+:root {
+  --primary: #8176b5;
+  --indigo: #6255a5;
+  /* màu chính: nút, chữ nhấn */
+  --tint: #eeebf6;
+  /* nền tím nhạt */
+  --bg: #f8f7fc;
+  /* nền trang */
+  --surface: #ffffff;
+  /* nền thẻ (card) */
+  --border: #e8e5f0;
+  --ink: #292642;
+  /* chữ đậm */
+  --muted: #77738b;
+  /* chữ phụ */
+  --success: #6eaa87;
+  --error: #d97979;
+}
+
+/* =====================================================
+   2. CÀI ĐẶT CHUNG
+   ===================================================== */
+* {
+  box-sizing: border-box;
+  /* padding không làm phần tử phình to */
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =====================================================
+   3. SIDEBAR (menu bên trái, cố định)
+   ===================================================== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  padding: 24px 16px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  display: block;
+  margin: 0 0 24px 4px;
+  font-family: "Montserrat", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.4px;
+  color: var(--indigo);
+}
+
+.logo span {
+  color: #804dc7;
+}
+
+.sidebar-label {
+  margin: 12px 0 12px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.company-box,
+.tip-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--tint);
+}
+
+.company-box strong {
+  font-size: 14px;
+  color: var(--indigo);
+}
+
+.company-box span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 8px;
+  color: var(--muted);
+}
+
+.menu-number {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.menu a:hover {
+  background: var(--bg);
+}
+
+.menu a.active {
+  background: var(--tint);
+  color: var(--indigo);
+  font-weight: 600;
+}
+
+/* margin-top: auto đẩy hộp mẹo và nút đăng xuất xuống đáy */
+.tip-box {
+  margin-top: auto;
+}
+
+.tip-box strong {
+  color: var(--indigo);
+}
+
+.tip-box span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.logout {
+  margin: 32px 0 0 8px;
+  color: var(--muted);
+}
+
+.logout:hover {
+  color: var(--indigo);
+}
+
+/* =====================================================
+   4. KHUNG CHÍNH + THANH CÔNG CỤ
+   ===================================================== */
+.main {
+  margin-left: 240px;
+  /* chừa chỗ cho sidebar */
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  padding: 0 40px;
+  background: var(--surface);
+}
+
+.topbar-title {
+  color: var(--muted);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-notif {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #4A4760;
+  font-size: 13px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.header-notif i {
+  font-size: 16px;
+  color: #6B6882;
+}
+
+.notif-badge {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+  line-height: 1.3;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.content {
+  padding: 36px 40px 48px;
+}
+
+.content h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+/* =====================================================
+   5. CÁC BƯỚC (01, 02, 03)
+   ===================================================== */
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  padding: 3px 12px;
+  border-radius: 6px;
+  background: var(--tint);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Bước đang đi tới thì đổi sang màu tím đậm */
+.steps li.active {
+  background: var(--indigo);
+  color: #fff;
+}
+
+/* =====================================================
+   6. BỐ CỤC 2 CỘT: form (co giãn) + cột phải (286px)
+   ===================================================== */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 286px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.card {
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+/* Form chính: các hàng cách nhau 20px */
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Hàng có nhiều ô: dùng grid chia cột */
+.row {
+  display: grid;
+  gap: 24px;
+}
+
+.two-columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+.three-columns {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* =====================================================
+   7. Ô NHẬP LIỆU (input, select, textarea)
+   ===================================================== */
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.field input,
+.field select {
+  height: 48px;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 82px;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted);
+}
+
+/* Mũi tên cho ô select (tự vẽ vì đã tắt giao diện mặc định) */
+.field select {
+  appearance: none;
+  padding-right: 36px;
+  color: var(--ink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2377738b'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+/* Khi bấm vào ô: viền chuyển sang màu tím */
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 2px solid var(--accent, #b9aedb);
+  outline-offset: 1px;
+  border-color: var(--indigo);
+}
+
+/* Thông báo lỗi: mặc định ẩn, có lỗi thì JS thêm class "has-error" */
+.error {
+  display: none;
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--error);
+}
+
+.field.has-error .error {
+  display: block;
+}
+
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea {
+  border-color: var(--error);
+}
+
+/* =====================================================
+   8. CỘT PHẢI
+   ===================================================== */
+.side-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.side-card h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.side-text {
+  margin: -8px 0 0;
+  color: var(--muted);
+}
+
+.note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* margin-top: auto đẩy cụm nút xuống đáy thẻ */
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: auto;
+}
+
+/* =====================================================
+   9. NÚT BẤM
+   ===================================================== */
+.btn {
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary {
+  background: var(--indigo);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #4f4488;
+}
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--indigo);
+}
+
+.btn-outline:hover {
+  background: var(--tint);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   10. HỘP THOẠI XEM TRƯỚC
+   ===================================================== */
+.dialog {
+  width: min(560px, 92vw);
+  max-height: 90vh;
+  padding: 28px;
+  border: none;
+  border-radius: 16px;
+  color: var(--ink);
+  overflow-y: auto;
+}
+
+.dialog::backdrop {
+  background: rgba(41, 38, 66, 0.45);
+  /* lớp nền mờ phía sau */
+}
+
+.dialog h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.dialog-hint {
+  margin: 4px 0 20px;
+  color: var(--muted);
+}
+
+.preview-list {
+  margin: 0;
+}
+
+.preview-list div {
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.preview-list dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.preview-list dd {
+  margin: 2px 0 0;
+  font-weight: 500;
+  white-space: pre-line;
+  /* giữ xuống dòng người dùng đã gõ */
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* =====================================================
+   11. THÔNG BÁO NHỎ (TOAST)
+   ===================================================== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translate(-50%, 20px);
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+/* JS thêm class "show" để hiện thông báo */
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* =====================================================
+   12. MÀN HÌNH NHỎ (tablet / điện thoại)
+   ===================================================== */
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+    /* cột phải rớt xuống dưới */
+  }
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    display: none;
+    /* ẩn menu để nhường chỗ cho form */
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .topbar,
+  .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .two-columns,
+  .three-columns {
+    grid-template-columns: 1fr;
+    /* mỗi ô một hàng */
+  }
+}

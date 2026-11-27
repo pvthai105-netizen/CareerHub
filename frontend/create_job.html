@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Đăng tin tuyển dụng · Career Hub</title>
+
+  <!-- Font chữ: Inter (nội dung) và Montserrat (logo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet" />
+
+  <!-- File CSS -->
+  <link rel="stylesheet" href="./css/create_job.css" />
+</head>
+<body>
+
+  <!-- ============ 1. THANH MENU BÊN TRÁI ============ -->
+  <aside class="sidebar">
+    <a href="#" class="logo">Career <span>Hub</span></a>
+
+    <p class="sidebar-label">NHÀ TUYỂN DỤNG</p>
+
+    <div class="company-box">
+      <strong>LUMINA STUDIO</strong>
+      <span>Tài khoản doanh nghiệp</span>
+    </div>
+
+    <nav class="menu">
+      <a href="employer_dashboard.html"><span class="menu-number">01</span> Tổng quan</a>
+      <!-- class "active" = mục đang được chọn -->
+      <a href="job_post.html" class="active"><span class="menu-number">02</span> Tin tuyển dụng</a>
+      <a href="employer_dashboard.html#applicants"><span class="menu-number">03</span> Ứng viên</a>
+      <a href="employer_profile.html"><span class="menu-number">04</span> Hồ sơ công ty</a>
+      <a href="chat.html"><span class="menu-number">05</span> Tin nhắn</a>
+    </nav>
+
+    <div class="tip-box">
+      <strong>Cùng tuyển đúng người</strong>
+      <span>Mẹo viết tin tuyển dụng thu hút ứng viên phù hợp.</span>
+    </div>
+
+    <a href="#" class="logout">Đăng xuất →</a>
+  </aside>
+
+  <!-- ============ 2. PHẦN NỘI DUNG CHÍNH ============ -->
+  <div class="main">
+
+    <!-- Thanh công cụ phía trên -->
+    <header class="topbar">
+      <span class="topbar-title">Không gian tuyển dụng</span>
+      <div class="topbar-right">
+      <!-- Chuông thông báo -->
+      <div class="header-notif">
+        <svg width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+
+        <span class="notif-text">Thông báo</span>
+        <span class="notif-badge">03</span>
+      </div>
+
+      <span class="user-name">Lan Phương ▾</span>
+    </div>
+    </header>
+
+    <main class="content">
+      <h1>Đăng tin tuyển dụng</h1>
+      <p class="subtitle">Một tin tuyển dụng rõ ràng sẽ tìm được người phù hợp.</p>
+
+      <!-- Các bước (JS sẽ thêm/bỏ class "active") -->
+      <ol class="steps" id="steps">
+        <li>01 Thông tin cơ bản</li>
+        <li>02 Nội dung &amp; yêu cầu</li>
+        <li>03 Xem trước &amp; đăng</li>
+      </ol>
+
+      <!-- Form gồm 2 cột: bên trái là form chính, bên phải là hướng dẫn + nút -->
+      <form id="job-form" class="layout" novalidate>
+
+        <!-- ---------- CỘT TRÁI: biểu mẫu ---------- -->
+        <section class="card form-card">
+
+          <div class="field">
+            <label for="title">Tên vị trí tuyển dụng</label>
+            <input type="text" id="title" name="title" placeholder="UI/UX Designer" />
+            <p class="error" id="title-error"></p>
+          </div>
+
+          <div class="row two-columns">
+            <div class="field">
+              <label for="category">Ngành nghề</label>
+              <select id="category" name="category">
+                <option value="">Chọn ngành nghề</option>
+                <option>Thiết kế &amp; sáng tạo</option>
+                <option>Công nghệ thông tin</option>
+                <option>Marketing</option>
+                <option>Kinh doanh</option>
+              </select>
+              <p class="error" id="category-error"></p>
+            </div>
+
+            <div class="field">
+              <label for="location">Địa điểm làm việc</label>
+              <select id="location" name="location">
+                <option value="">Chọn địa điểm</option>
+                <option>TP. Hồ Chí Minh</option>
+                <option>Hà Nội</option>
+                <option>Đà Nẵng</option>
+                <option>Làm việc từ xa</option>
+              </select>
+              <p class="error" id="location-error"></p>
+            </div>
+          </div>
+
+          <div class="row two-columns">
+            <div class="field">
+              <label for="salaryMin">Mức lương tối thiểu (VNĐ)</label>
+              <input type="number" id="salaryMin" name="salaryMin" min="0" placeholder="12.000.000" />
+              <p class="error" id="salaryMin-error"></p>
+            </div>
+
+            <div class="field">
+              <label for="salaryMax">Mức lương tối đa (VNĐ)</label>
+              <input type="number" id="salaryMax" name="salaryMax" min="0" placeholder="18.000.000" />
+              <p class="error" id="salaryMax-error"></p>
+            </div>
+          </div>
+
+          <div class="row three-columns">
+            <div class="field">
+              <label for="jobType">Loại hình công việc</label>
+              <select id="jobType" name="jobType">
+                <option value="">Chọn loại hình</option>
+                <option>Toàn thời gian</option>
+                <option>Bán thời gian</option>
+                <option>Thực tập</option>
+                <option>Freelance</option>
+              </select>
+              <p class="error" id="jobType-error"></p>
+            </div>
+
+            <div class="field">
+              <label for="quantity">Số lượng tuyển dụng</label>
+              <input type="number" id="quantity" name="quantity" min="1" placeholder="2 người" />
+              <p class="error" id="quantity-error"></p>
+            </div>
+
+            <div class="field">
+              <label for="experience">Kinh nghiệm</label>
+              <select id="experience" name="experience">
+                <option value="">Chọn kinh nghiệm</option>
+                <option>Chưa có kinh nghiệm</option>
+                <option>Dưới 1 năm</option>
+                <option>1 năm</option>
+                <option>2 năm</option>
+                <option>Trên 3 năm</option>
+              </select>
+              <p class="error" id="experience-error"></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Mô tả công việc</label>
+            <textarea id="description" name="description" rows="3"
+              placeholder="Thiết kế giao diện web, mobile và phối hợp phát triển sản phẩm."></textarea>
+            <p class="error" id="description-error"></p>
+          </div>
+
+          <div class="field">
+            <label for="requirements">Yêu cầu ứng viên</label>
+            <textarea id="requirements" name="requirements" rows="3"
+              placeholder="Thành thạo Figma, tư duy UX và có portfolio thực tế."></textarea>
+            <p class="error" id="requirements-error"></p>
+          </div>
+        </section>
+
+        <!-- ---------- CỘT PHẢI: hướng dẫn + nút ---------- -->
+        <aside class="card side-card">
+          <h2>Tin tốt, đúng người</h2>
+          <p class="side-text">Nêu rõ vai trò, kỳ vọng và những giá trị bạn mang lại cho ứng viên.</p>
+
+          <div class="field">
+            <label for="deadline">Hạn ứng tuyển</label>
+            <input type="date" id="deadline" name="deadline" />
+            <p class="error" id="deadline-error"></p>
+          </div>
+
+          <div class="field">
+            <label for="benefits">Quyền lợi</label>
+            <textarea id="benefits" name="benefits" rows="4"
+              placeholder="Mentor 1:1, bảo hiểm, 12 ngày phép và học tập."></textarea>
+          </div>
+
+          <p class="note">Tin tuyển dụng sẽ được kiểm duyệt trước khi hiển thị.</p>
+
+          <div class="actions">
+            <button type="button" class="btn btn-outline" id="save-draft-btn">Lưu bản nháp</button>
+            <!-- type="submit": bấm nút này (hoặc nhấn Enter) sẽ chạy sự kiện submit của form -->
+            <button type="submit" class="btn btn-primary">Xem trước</button>
+          </div>
+        </aside>
+
+      </form>
+    </main>
+  </div>
+
+  <!-- ============ 3. HỘP THOẠI XEM TRƯỚC ============ -->
+  <!-- <dialog> là thẻ có sẵn của HTML: dùng showModal() để mở, close() để đóng -->
+  <dialog id="preview-dialog" class="dialog">
+    <h2>Xem trước tin tuyển dụng</h2>
+    <p class="dialog-hint">Kiểm tra lại thông tin trước khi gửi kiểm duyệt.</p>
+
+    <dl class="preview-list" id="preview-list"></dl>
+
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline" id="edit-btn">Chỉnh sửa lại</button>
+      <button type="button" class="btn btn-primary" id="submit-btn">Gửi kiểm duyệt</button>
+    </div>
+  </dialog>
+
+  <!-- Thông báo nhỏ hiện ở góc dưới (ví dụ: "Đã lưu bản nháp") -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Nạp API trước để create_job.js sử dụng được api.post() -->
+  <script src="./js/api.js"></script>
+  <script src="./js/create_job.js"></script>
+</body>
+</html>
