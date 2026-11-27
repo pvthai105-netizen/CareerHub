@@ -86,9 +86,10 @@ scheduler.add_job(
 @asynccontextmanager         # Đây là một decorator của Python, 
                              # giúp tạo một cơ chế quản lý quá trình bắt đầu và kết thúc của ứng dụng FastAPI bằng async và yield
 async def lifespan(app: FastAPI):
-    # Khi FastAPI bắt đầu chạy, khởi động Scheduler.
+    # Khi FastAPI bắt đầu chạy, khởi động Scheduler (chỉ start nếu chưa chạy).
     # Từ thời điểm này Scheduler bắt đầu thực hiện lịch đã đăng ký.
-    scheduler.start()
+    if not scheduler.running:
+        scheduler.start()
 
     # Giữ ứng dụng FastAPI tiếp tục hoạt động.
     # Khi ứng dụng tắt, chương trình mới chạy xuống phần bên dưới.
@@ -96,7 +97,7 @@ async def lifespan(app: FastAPI):
 
     # Khi FastAPI tắt, dừng Scheduler để không còn tác vụ chạy ngầm
     if scheduler.running:  # Kiểm tra Scheduler có đang chạy không
-        scheduler.shutdown()  # Dừng Scheduler khi ứng dụng tắt
+        scheduler.shutdown(wait=False)  # Dừng Scheduler khi ứng dụng tắt
 
 
 # KHỞI TẠO ỨNG DỤNG FASTAPI

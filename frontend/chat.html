@@ -1068,40 +1068,29 @@
 </head>
 
 <body>
-  <header class="header">
-    <div class="container header-inner">
-      <a href="./home.html" class="logo"><img src="./logoCHT-Photoroom.png" alt="Career Hub"></a>
-      <nav class="nav">
-        <a href="./home.html" id="nav-home">Trang chủ</a>
-        <a href="./home.html#/jobs" id="nav-jobs">Tìm việc</a>
-        <a href="./student_dashboard.html" id="nav-dashboard">Việc làm của tôi</a>
-        <a href="./my_applications.html" id="nav-applications">Nộp đơn</a>
-        <span>Công ty</span>
-        <a href="./chat.html" style="font-weight: 600;">Trợ lý AI</a>
-      </nav>
-      <div class="header-buttons">
-        <a href="./login.html" class="btn btn-outline" style="text-decoration:none; display:inline-flex; align-items:center;">Đăng nhập</a>
-        <a href="./register.html" class="btn" style="text-decoration:none; display:inline-flex; align-items:center;">Đăng ký</a>
-      </div>
-    </div>
-  </header>
-
-    <button class="ai-assistant-menu-toggle" type="button" aria-label="Mở menu trợ lý AI" aria-expanded="false" aria-controls="ai-assistant-sidebar">
-        <span aria-hidden="true">☰</span>
-    </button>
-    <div class="ai-assistant-backdrop" id="ai-assistant-backdrop" hidden></div>
-    <aside class="ai-assistant-sidebar" id="ai-assistant-sidebar" aria-label="Điều hướng trợ lý AI" aria-hidden="true">
-        <div class="ai-assistant-sidebar-header">
-            <h2>Trợ lý AI</h2>
-            <button class="ai-assistant-menu-close" type="button" aria-label="Đóng menu">×</button>
+    <header class="site-header">
+        <div class="container site-navbar">
+            <a class="brand-logo" href="/home.html" title="CareerHub">
+                <img src="logoCHT-Photoroom.png" alt="CareerHub" />
+            </a>
+            <nav aria-label="Điều hướng chính">
+                <ul class="nav-menu">
+                    <li><a class="nav-link" href="/home.html">Trang chủ</a></li>
+                    <li><a class="nav-link" href="/job_post.html">Tìm việc</a></li>
+                    <li><a class="nav-link" href="/job_post.html" title="Đi tới trang việc làm tạm thời">Việc làm của tôi</a></li>
+                    <li>
+                        <a class="nav-link active" href="/chat.html" aria-current="page">
+                            Trợ lý AI
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="nav-actions">
+                <a class="btn btn-outline" href="/login.html">Đăng nhập</a>
+                <a class="btn btn-primary" href="/register.html">Đăng ký</a>
+            </div>
         </div>
-        <p>Chọn công cụ bạn cần</p>
-        <nav class="ai-assistant-sidebar-links" aria-label="Công cụ trợ lý AI">
-            <a class="ai-assistant-sidebar-link active" href="/chat.html" aria-current="page">Trò chuyện</a>
-            <a class="ai-assistant-sidebar-link" href="/ai_job_search.html">Tìm việc bằng AI</a>
-            <a class="ai-assistant-sidebar-link" href="/cv_analysis.html">Phân tích CV</a>
-        </nav>
-    </aside>
+    </header>
 
     <main class="chat-page">
         <div class="container">
