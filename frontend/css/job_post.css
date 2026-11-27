@@ -284,7 +284,7 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1;
+  line-height: 4;
 }
 
 .header-notif {
@@ -813,4 +813,162 @@ html, body {
     align-items: center;
     gap: 12px;
   }
+}
+
+
+/* =========================================
+   LOGOUT MODAL - CAREERHUB THEME
+========================================= */
+
+/* Làm mờ nền */
+.modal-backdrop.show {
+    opacity: 0.45;
+    backdrop-filter: blur(4px);
+}
+
+/* Kích thước popup */
+#logoutModal .logout-modal-dialog {
+    max-width: 420px;
+}
+
+/* Khung popup */
+#logoutModal .logout-modal-content {
+    background: #FFFFFF;
+    border: 1px solid #E8E5F0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 15px 45px rgba(41, 38, 66, 0.18);
+}
+
+/* Nội dung */
+#logoutModal .logout-modal-body {
+    padding: 36px 30px 30px;
+    text-align: center;
+}
+
+/* Biểu tượng cảnh báo */
+#logoutModal .logout-warning-icon {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 3px solid #8176B5;
+    border-radius: 50%;
+
+    background: #F2EFF9;
+    color: #8176B5;
+
+    font-size: 58px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* Tiêu đề */
+#logoutModal .logout-modal-title {
+    margin-bottom: 12px;
+    color: #292642;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+/* Nội dung mô tả */
+#logoutModal .logout-modal-text {
+    max-width: 310px;
+    margin: 0 auto 28px;
+
+    color: #77738D;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Khu vực nút */
+#logoutModal .logout-modal-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Nút chung */
+#logoutModal .logout-modal-actions button {
+    min-width: 120px;
+    padding: 11px 18px;
+
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Nút xác nhận */
+#logoutModal .btn-logout-confirm {
+    background: #8176B5;
+    border: 1px solid #8176B5;
+    color: #FFFFFF;
+
+    box-shadow: 0 4px 10px rgba(129, 118, 181, 0.2);
+}
+
+#logoutModal .btn-logout-confirm:hover {
+    background: #6F64A4;
+    border-color: #6F64A4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(129, 118, 181, 0.3);
+}
+
+/* Nút hủy */
+#logoutModal .btn-logout-cancel {
+    background: #F2EFF9;
+    border: 1px solid #E8E5F0;
+    color: #292642;
+}
+
+#logoutModal .btn-logout-cancel:hover {
+    background: #E8E5F0;
+    border-color: #D8D2E8;
+    transform: translateY(-2px);
+}
+
+/* Hiệu ứng xuất hiện */
+#logoutModal .logout-modal-content {
+    animation: logoutPopupShow 0.25s ease;
+}
+
+@keyframes logoutPopupShow {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    #logoutModal .logout-modal-dialog {
+        max-width: calc(100% - 30px);
+    }
+
+    #logoutModal .logout-modal-body {
+        padding: 30px 20px 24px;
+    }
+
+    #logoutModal .logout-modal-title {
+        font-size: 20px;
+    }
+
+    #logoutModal .logout-modal-actions button {
+        min-width: 0;
+        flex: 1;
+        padding: 11px 8px;
+    }
 }

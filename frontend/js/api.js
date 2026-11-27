@@ -10,21 +10,10 @@ const API_PREFIX = "/api"; // ← đã thêm cơ chế xử lý tiền tố API
  */
 
 function buildUrl(path) {
-  // Đảm bảo đường dẫn luôn bắt đầu bằng dấu /
-  const cleanPath = path.startsWith("/") ? path : "/" + path;
-
-  // Nếu đường dẫn đã có /api hoặc /user thì giữ nguyên
-  if (
-    cleanPath.startsWith("/api/") ||
-    cleanPath === "/api" ||
-    cleanPath.startsWith("/user/") ||
-    cleanPath === "/user"
-  ) {
-    return cleanPath;
-  }
-
-  // Nếu chưa có tiền tố thì tự thêm /api
-  return API_PREFIX + cleanPath;
+  // Đảm bảo đường dẫn luôn bắt đầu bằng /
+  const cleanPath = path.startsWith('/') ? path : '/' + path;
+  // Backend không sử dụng tiền tố /api, trả về đường dẫn sạch
+  return cleanPath;
 }
 
 
