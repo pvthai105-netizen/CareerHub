@@ -1,6 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Regex kiểm tra định dạng email chuẩn
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Xử lý nút Hiện/Ẩn mật khẩu (Toggle Password)
+  const btnTogglePwd = document.getElementById("btn-toggle-pwd");
+  const loginPasswordInput = document.getElementById("login-password");
+  if (btnTogglePwd && loginPasswordInput) {
+    btnTogglePwd.addEventListener("click", () => {
+      const isPassword = loginPasswordInput.type === "password";
+      loginPasswordInput.type = isPassword ? "text" : "password";
+      btnTogglePwd.textContent = isPassword ? "Ẩn" : "Hiện";
+    });
+  }
 
   // ==========================================
   // 1. XỬ LÝ TRANG ĐĂNG NHẬP (LOGIN)
@@ -14,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const alertBox = document.getElementById("login-alert");
     const btnSubmit = document.getElementById("btn-submit-login");
 
-    // Kiểm tra thông báo token hết hạn trên URL query (?expired=1) hoặc đăng xuất (?logout=1)
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("expired") === "1" || urlParams.get("logout") === "1") {
       Auth.clear();
@@ -27,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Nếu đã đăng nhập và token còn hạn, tự chuyển trang luôn
     const currentUser = AuthGuard.getUser();
     if (currentUser && !urlParams.has("force")) {
       AuthGuard.redirectByRole(currentUser.role);
@@ -43,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
 
-      // Validate email
       if (!email || !emailRegex.test(email)) {
         errEmail.style.display = "block";
         isValid = false;
@@ -51,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
         errEmail.style.display = "none";
       }
 
-      // Validate password
       if (!password) {
         errPassword.style.display = "block";
         isValid = false;
@@ -61,17 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!isValid) return;
 
-      // Gửi API đăng nhập
       try {
         btnSubmit.disabled = true;
         btnSubmit.textContent = "Đang đăng nhập...";
 
         const data = await api.post("/api/auth/login", { email, password });
-
-        // Lưu access_token vào localStorage
         Auth.setToken(data.access_token);
 
-        // Lấy thông tin user vừa giải mã từ token và chuyển trang
         const user = AuthGuard.getUser();
         if (user) {
           AuthGuard.redirectByRole(user.role);
@@ -80,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (err) {
         alertBox.className = "alert-box error";
-        alertBox.textContent = err.message || "Đăng nhập thất bại. Vui lòng thử lại.";
+        alertBox.textContent = err.message || "Email hoặc mật khẩu không đúng.";
       } finally {
         btnSubmit.disabled = false;
         btnSubmit.textContent = "Đăng nhập";
@@ -93,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   const formRegister = document.getElementById("form-register");
   if (formRegister) {
+    const fullNameInput = document.getElementById("reg-fullname");
     const emailInput = document.getElementById("reg-email");
     const passwordInput = document.getElementById("reg-password");
     const repasswordInput = document.getElementById("reg-repassword");
@@ -102,12 +105,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const alertBox = document.getElementById("register-alert");
     const btnSubmit = document.getElementById("btn-submit-reg");
 
-    // Xử lý hiệu ứng chọn vai trò (Student / Employer)
-    const roleRadios = document.querySelectorAll('input[name="role"]');
-    roleRadios.forEach((radio) => {
-      radio.addEventListener("change", (e) => {
-        document.querySelectorAll(".role-box").forEach((b) => b.classList.remove("active"));
-        e.target.closest(".role-box").classList.add("active");
+    // Tự động tích chọn role nếu URL có ?role=employer
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("role") === "employer") {
+      const empRadio = document.querySelector('input[name="role"][value="employer"]');
+      if (empRadio) {
+        empRadio.checked = true;
+        document.querySelectorAll(".role-pill").forEach((p) => p.classList.remove("active"));
+        document.getElementById("label-role-employer")?.classList.add("active");
+      }
+    }
+
+    // Hiệu ứng click chọn vai trò
+    const rolePills = document.querySelectorAll(".role-pill");
+    rolePills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        rolePills.forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
       });
     });
 
@@ -120,9 +134,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
       const repassword = repasswordInput.value;
-      const selectedRole = document.querySelector('input[name="role"]:checked')?.value;
+      const fullName = fullNameInput ? fullNameInput.value.trim() : "";
+      const selectedRole = document.querySelector('input[name="role"]:checked')?.value || "student";
 
-      // Validate Email
       if (!email || !emailRegex.test(email)) {
         errEmail.style.display = "block";
         isValid = false;
@@ -130,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
         errEmail.style.display = "none";
       }
 
-      // Validate Mật khẩu (Pydantic yêu cầu tối thiểu 8 ký tự)
       if (!password || password.length < 8) {
         errPassword.style.display = "block";
         isValid = false;
@@ -138,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
         errPassword.style.display = "none";
       }
 
-      // Validate Mật khẩu xác nhận
       if (password !== repassword) {
         errRepassword.style.display = "block";
         isValid = false;
@@ -152,16 +164,21 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSubmit.disabled = true;
         btnSubmit.textContent = "Đang tạo tài khoản...";
 
-        await api.post("/auth/register", {
+        // Lưu họ tên vào localStorage để sang trang hồ sơ tự điền
+        if (fullName) {
+          localStorage.setItem("temp_registered_name", fullName);
+        }
+
+        await api.post("/api/auth/register", {
           email: email,
           password: password,
           role: selectedRole,
         });
 
-        // Tự động đăng nhập để lấy phiên làm việc
+        // Tự động đăng nhập
         let autoLoggedIn = false;
         try {
-          const loginData = await api.post("/auth/login", { email, password });
+          const loginData = await api.post("/api/auth/login", { email, password });
           if (loginData && loginData.access_token) {
             Auth.setToken(loginData.access_token);
             autoLoggedIn = true;
@@ -169,23 +186,14 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (_) {}
 
         alertBox.className = "alert-box success";
-        if (selectedRole === "student") {
-          alertBox.textContent = autoLoggedIn
-            ? "Đăng ký thành công! Đang chuyển sang trang hoàn thiện hồ sơ sinh viên..."
-            : "Đăng ký thành công! Đang chuyển sang trang đăng nhập...";
-        } else {
-          alertBox.textContent = autoLoggedIn
-            ? "Đăng ký thành công! Đang chuyển sang trang hồ sơ công ty..."
-            : "Đăng ký thành công! Đang chuyển sang trang đăng nhập...";
-        }
+        alertBox.textContent = "Đăng ký thành công! Đang chuyển hướng...";
 
-        // Chờ 1.2 giây để người dùng thấy thông báo rồi chuyển trang theo Phương án 2
         setTimeout(() => {
           if (autoLoggedIn) {
             if (selectedRole === "student") {
-              window.location.href = "profile.html"; // Dẫn sinh viên mới đến hoàn thiện hồ sơ
+              window.location.href = "profile.html";
             } else if (selectedRole === "employer") {
-              window.location.href = "employer_profile.html"; // Dẫn doanh nghiệp mới đến cập nhật hồ sơ
+              window.location.href = "employer_profile.html";
             } else {
               window.location.href = "home.html";
             }
@@ -198,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alertBox.textContent = err.message || "Đăng ký không thành công.";
       } finally {
         btnSubmit.disabled = false;
-        btnSubmit.textContent = "Đăng ký tài khoản";
+        btnSubmit.textContent = "Tạo tài khoản";
       }
     });
   }
