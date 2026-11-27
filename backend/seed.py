@@ -1,12 +1,17 @@
-import app.models  # noqa: F401  (nạp mọi model để Base.metadata nhận đủ bảng)
+import os
+import sys
 from datetime import date, datetime, timedelta, timezone
-from app.models.job import JobStatus
+
+# Đảm bảo đường dẫn import backend/app hoạt động trơn tru
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import app.models  # noqa: F401 (nạp toàn bộ model để Base.metadata nhận đủ bảng)
 from app.database import Base, SessionLocal, engine
 from app.models.applications import Application, ApplicationStatus
 from app.models.chat_messages import ChatMessage
 from app.models.cv_analyses import CvAnalysis
 from app.models.employee_profiles import EmployerProfile
-from app.models.job import Job
+from app.models.job import Job, JobStatus, JobType
 from app.models.notifications import Notification
 from app.models.saved_jobs import SavedJob
 from app.models.student_profiles import DesiredJobType, StudentProfile
@@ -14,26 +19,53 @@ from app.models.user import Role, User
 from app.security import hash_password
 
 # ==========================================================
-# 1. TÀI KHOẢN MẪU (Bao gồm 3 user gốc + mở rộng)
+# 1. DANH SÁCH TÀI KHOẢN MẪU (ADMIN - DOANH NGHIỆP - SINH VIÊN)
 # ==========================================================
 SAMPLE_USERS = [
+    # --- Quản trị viên ---
     {"email": "admin@careerhub.vn", "password": "Admin@123", "role": Role.admin},
-    {"email": "employer@careerhub.vn", "password": "Employer@123", "role": Role.employer},
-    {"email": "student@careerhub.vn", "password": "Student@123", "role": Role.student},
-    # Tài khoản mở rộng để test dữ liệu đa dạng
-    {"email": "vng@careerhub.vn", "password": "Employer@123", "role": Role.employer},
-    {"email": "viettel@careerhub.vn", "password": "Employer@123", "role": Role.employer},
-    {"email": "student2@careerhub.vn", "password": "Student@123", "role": Role.student},
-    {"email": "student3@careerhub.vn", "password": "Student@123", "role": Role.student},
-    {"email": "student4@careerhub.vn", "password": "Student@123", "role": Role.student},
+
+    # --- Doanh nghiệp (Thương hiệu lớn, email định danh rõ ràng) ---
+    {"email": "employer@careerhub.vn", "password": "Employer@123", "role": Role.employer},       # FPT Software (Mặc định)
+    {"email": "careers@vng.com.vn", "password": "Employer@123", "role": Role.employer},          # VNG Corporation
+    {"email": "recruitment@viettel.com.vn", "password": "Employer@123", "role": Role.employer},  # Viettel Solutions
+    {"email": "talent@momo.vn", "password": "Employer@123", "role": Role.employer},              # MoMo (M-Service)
+    {"email": "hr@techcombank.com.vn", "password": "Employer@123", "role": Role.employer},       # Techcombank
+
+    # --- Sinh viên (Tên thật, chuyên ngành đa dạng, trường top) ---
+    {"email": "student@careerhub.vn", "password": "Student@123", "role": Role.student},          # Nguyễn Văn An - ĐH Bách Khoa
+    {"email": "ngoc.tran@careerhub.vn", "password": "Student@123", "role": Role.student},        # Trần Thị Bích Ngọc - ĐH Kinh tế Quốc dân
+    {"email": "long.le@careerhub.vn", "password": "Student@123", "role": Role.student},          # Lê Hoàng Long - ĐH Kiến trúc
+    {"email": "tuan.pham@careerhub.vn", "password": "Student@123", "role": Role.student},        # Phạm Minh Tuấn - Học viện PTIT
+    {"email": "trang.dang@careerhub.vn", "password": "Student@123", "role": Role.student},       # Đặng Thùy Trang - ĐH Ngoại Thương
+    {"email": "huy.vu@careerhub.vn", "password": "Student@123", "role": Role.student},           # Vũ Quang Huy - ĐH FPT
 ]
 
 
-def seed():
+def clean_database(db):
+    """Xóa sạch dữ liệu cũ theo đúng thứ tự khóa ngoại để nạp dữ liệu demo tinh gọn."""
+    print("--- 0. LÀM SẠCH DỮ LIỆU CŨ TRONG DATABASE ---")
+    db.query(ChatMessage).delete()
+    db.query(CvAnalysis).delete()
+    db.query(Notification).delete()
+    db.query(SavedJob).delete()
+    db.query(Application).delete()
+    db.query(Job).delete()
+    db.query(StudentProfile).delete()
+    db.query(EmployerProfile).delete()
+    db.query(User).delete()
+    db.commit()
+    print("[CLEAN] Đã dọn sạch các bảng dữ liệu cũ.")
+
+
+def seed(clean: bool = True):
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        print("--- 1. TẠO TÀI KHOẢN USERS ---")
+        if clean:
+            clean_database(db)
+
+        print("\n--- 1. TẠO TÀI KHOẢN USERS ---")
         users_map = {}
         for data in SAMPLE_USERS:
             user = db.query(User).filter(User.email == data["email"]).first()
@@ -48,7 +80,7 @@ def seed():
                 db.flush()
                 print(f"[ADD] User: {data['email']} ({data['role'].value})")
             else:
-                print(f"[SKIP] User: {data['email']} đã tồn tại")
+                print(f"[EXISTS] User: {data['email']}")
             users_map[data["email"]] = user
 
         db.commit()
@@ -60,38 +92,62 @@ def seed():
         employers_data = [
             {
                 "email": "employer@careerhub.vn",
-                "company_name": "FPT Software",
+                "company_name": "Công ty Cổ phần Phần mềm FPT (FPT Software)",
                 "contact_name": "Nguyễn Văn Tuyển",
-                "phone": "0987654321",
+                "phone": "02473007300",
                 "company_website": "https://fptsoftware.com",
-                "address": "Khu Công Nghệ Cao Hòa Lạc, Hà Nội",
-                "description": "Tập đoàn công nghệ hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn cầu.",
-                "logo_url": "https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150",
+                "address": "Khu Công Nghệ Cao Hòa Lạc, Thạch Thất, Hà Nội",
+                "description": "Tập đoàn công nghệ và chuyển đổi số hàng đầu Việt Nam, cung cấp giải pháp phần mềm toàn cầu trên 30 quốc gia.",
+                "logo_url": "https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=200",
                 "tax_code": "0101234567",
                 "is_verified": True,
             },
             {
-                "email": "vng@careerhub.vn",
-                "company_name": "VNG Corporation",
+                "email": "careers@vng.com.vn",
+                "company_name": "Công ty Cổ phần VNG (VNG Corporation)",
                 "contact_name": "Lê Thị Hồng",
-                "phone": "0912345678",
+                "phone": "02839623888",
                 "company_website": "https://vng.com.vn",
-                "address": "VNG Campus, Quận 7, TP. Hồ Chí Minh",
-                "description": "Kỳ lân công nghệ đầu tiên tại Việt Nam với các sản phẩm Zalo, ZaloPay, Game.",
-                "logo_url": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=150",
+                "address": "VNG Campus, Đường số 19, KCX Tân Thuận, Quận 7, TP. Hồ Chí Minh",
+                "description": "Kỳ lân công nghệ đầu tiên tại Việt Nam, tiên phong trong mảng Trò chơi trực tuyến, Zalo, ZaloPay và AI Cloud.",
+                "logo_url": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=200",
                 "tax_code": "0303456789",
                 "is_verified": True,
             },
             {
-                "email": "viettel@careerhub.vn",
-                "company_name": "Viettel Solutions",
+                "email": "recruitment@viettel.com.vn",
+                "company_name": "Tổng Công ty Giải pháp Doanh nghiệp Viettel (Viettel Solutions)",
                 "contact_name": "Trần Quốc Toản",
-                "phone": "0977889900",
+                "phone": "02462778899",
                 "company_website": "https://viettelsolutions.vn",
-                "address": "Số 1 Trần Hữu Dực, Nam Từ Liêm, Hà Nội",
-                "description": "Tổng Công ty Giải pháp Doanh nghiệp Viettel - tiên phong kiến tạo xã hội số.",
-                "logo_url": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=150",
+                "address": "Số 1 Trần Hữu Dực, KĐT Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
+                "description": "Thành viên của Tập đoàn Viettel, tiên phong kiến tạo xã hội số với các giải pháp Cloud, IoT, Big Data, AI và Smart City.",
+                "logo_url": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200",
                 "tax_code": "0100109106",
+                "is_verified": True,
+            },
+            {
+                "email": "talent@momo.vn",
+                "company_name": "Công ty Cổ phần Dịch vụ Di động Trực tuyến (Ví MoMo)",
+                "contact_name": "Phạm Hoàng Nam",
+                "phone": "02854147667",
+                "company_website": "https://momo.vn",
+                "address": "Lầu 6, Tòa nhà Phú Mỹ Hưng, 8 Hoàng Văn Thái, Quận 7, TP. Hồ Chí Minh",
+                "description": "Kỳ lân FinTech hàng đầu Việt Nam cung cấp nền tảng siêu ứng dụng thanh toán, dịch vụ tài chính cho hơn 30 triệu người dùng.",
+                "logo_url": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=200",
+                "tax_code": "0305141933",
+                "is_verified": True,
+            },
+            {
+                "email": "hr@techcombank.com.vn",
+                "company_name": "Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)",
+                "contact_name": "Đỗ Thu Hương",
+                "phone": "02439446368",
+                "company_website": "https://techcombank.com",
+                "address": "Số 6 Quang Trung, P. Trần Hưng Đạo, Q. Hoàn Kiếm, Hà Nội",
+                "description": "Ngân hàng số tiên phong chuyển đổi số với nền tảng công nghệ tài chính hiện đại hàng đầu khu vực Đông Nam Á.",
+                "logo_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=200",
+                "tax_code": "0100230800",
                 "is_verified": True,
             },
         ]
@@ -124,46 +180,68 @@ def seed():
             {
                 "email": "student@careerhub.vn",
                 "full_name": "Nguyễn Văn An",
-                "phone": "0901112223",
+                "phone": "0901112233",
                 "university": "Đại học Bách Khoa Hà Nội",
-                "major": "Công nghệ thông tin",
-                "bio": "Sinh viên năm 3 đam mê lập trình Backend, ham học hỏi và có khả năng làm việc nhóm tốt.",
-                "skills": "Python, FastAPI, MySQL, Docker, Git",
+                "major": "Công nghệ thông tin (Khoa học Máy tính)",
+                "bio": "Sinh viên năm cuối đam mê lập trình Backend và kiến trúc Microservices. Đã có 1 năm kinh nghiệm làm dự án thực tế với Python, FastAPI và Docker.",
+                "skills": "Python, FastAPI, MySQL, Redis, Docker, Git, RESTful API",
                 "desired_job_type": DesiredJobType.INTERNSHIP,
-                "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+                "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
             },
             {
-                "email": "student2@careerhub.vn",
-                "full_name": "Trần Thị Bích",
-                "phone": "0902223334",
-                "university": "Đại học Kinh tế Quốc dân",
-                "major": "Marketing",
-                "bio": "Năng động, sáng tạo, có kinh nghiệm quản trị Fanpage và viết Content chuẩn SEO.",
-                "skills": "Content Writing, SEO, Canva, Social Media Management",
+                "email": "ngoc.tran@careerhub.vn",
+                "full_name": "Trần Thị Bích Ngọc",
+                "phone": "0902223344",
+                "university": "Đại học Kinh tế Quốc dân (NEU)",
+                "major": "Digital Marketing & Truyền thông",
+                "bio": "Năng động, sáng tạo, có tư duy số liệu tốt. Từng quản trị fanpage đạt 50k followers, thành thạo viết bài chuẩn SEO và xây dựng kế hoạch truyền thông.",
+                "skills": "Content Marketing, SEO, Social Media, Google Analytics, Canva, Copywriting",
                 "desired_job_type": DesiredJobType.PART_TIME,
-                "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+                "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
             },
             {
-                "email": "student3@careerhub.vn",
+                "email": "long.le@careerhub.vn",
                 "full_name": "Lê Hoàng Long",
-                "phone": "0903334445",
+                "phone": "0903334455",
                 "university": "Đại học Kiến trúc Hà Nội",
-                "major": "Thiết kế đồ họa",
-                "bio": "Yêu thích UI/UX Design, có tư duy thẩm mỹ hiện đại và làm chủ bộ công cụ Adobe, Figma.",
-                "skills": "Figma, Adobe Photoshop, Illustrator, UI/UX Wireframing",
+                "major": "Thiết kế Đồ họa & Đa phương tiện",
+                "bio": "Đam mê thiết kế giao diện ứng dụng và trải nghiệm người dùng (UI/UX). Sở hữu tư duy thẩm mỹ cao và Portfolio trên Behance với hơn 10 dự án thiết kế.",
+                "skills": "Figma, Adobe Photoshop, Illustrator, UI/UX Wireframing, Prototyping, Design Systems",
                 "desired_job_type": DesiredJobType.BOTH,
-                "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+                "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200",
             },
             {
-                "email": "student4@careerhub.vn",
+                "email": "tuan.pham@careerhub.vn",
                 "full_name": "Phạm Minh Tuấn",
-                "phone": "0904445556",
-                "university": "Học viện Công nghệ Bưu chính Viễn thông",
-                "major": "Khoa học máy tính",
-                "bio": "Sinh viên năm cuối định hướng Data Analyst, nắm vững SQL và phân tích dữ liệu với Python.",
-                "skills": "SQL, Python, Pandas, PowerBI, Machine Learning Cơ bản",
+                "phone": "0904445566",
+                "university": "Học viện Công nghệ Bưu chính Viễn thông (PTIT)",
+                "major": "Khoa học Dữ liệu & Trí tuệ nhân tạo",
+                "bio": "Định hướng trở thành Data Analyst / Data Engineer. Nắm vững phân tích dữ liệu với SQL, thư viện Pandas và xây dựng Dashboard trực quan trên PowerBI.",
+                "skills": "SQL, Python, Pandas, PowerBI, Tableau, Machine Learning Cơ bản, ETL",
                 "desired_job_type": DesiredJobType.INTERNSHIP,
-                "avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+                "avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200",
+            },
+            {
+                "email": "trang.dang@careerhub.vn",
+                "full_name": "Đặng Thùy Trang",
+                "phone": "0905556677",
+                "university": "Đại học Ngoại Thương (FTU)",
+                "major": "Quản trị Kinh doanh & Nhân sự",
+                "bio": "Kỹ năng giao tiếp và đàm phán xuất sắc. Mong muốn phát triển sự nghiệp trong mảng Tuyển dụng công nghệ (Tech Recruiter) và Quản trị nhân sự doanh nghiệp.",
+                "skills": "Lọc CV, Phỏng vấn sơ bộ, Quản lý hồ sơ nhân sự, Tổ chức sự kiện tuyển dụng, Tiếng Anh IELTS 7.5",
+                "desired_job_type": DesiredJobType.INTERNSHIP,
+                "avatar_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200",
+            },
+            {
+                "email": "huy.vu@careerhub.vn",
+                "full_name": "Vũ Quang Huy",
+                "phone": "0906667788",
+                "university": "Đại học FPT Hà Nội",
+                "major": "An toàn Thông tin (Cyber Security)",
+                "bio": "Đam mê phân tích mã độc và giám sát an ninh mạng. Đạt chứng chỉ CEH và tích cực tham gia các giải đấu CTF sinh viên toàn quốc.",
+                "skills": "Wireshark, Linux, Network Security, SOC Tier 1, Web Penetration Testing, Python Security",
+                "desired_job_type": DesiredJobType.INTERNSHIP,
+                "avatar_url": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200",
             },
         ]
 
@@ -187,42 +265,60 @@ def seed():
         db.commit()
 
         # ==========================================================
-        # 4. TẠO 22 TIN TUYỂN DỤNG MẪU (JOBS)
+        # 4. TẠO 25 TIN TUYỂN DỤNG MẪU (20 ACTIVE, 3 DRAFT, 1 CLOSED, 1 EXPIRED)
         # ==========================================================
-        print("\n--- 4. TẠO TIN TUYỂN DỤNG (>= 20 JOBS) ---")
-        emp1 = users_map["employer@careerhub.vn"]
-        emp2 = users_map["vng@careerhub.vn"]
-        emp3 = users_map["viettel@careerhub.vn"]
+        print("\n--- 4. TẠO 25 TIN TUYỂN DỤNG (JOBS) ---")
+        emp_fpt = users_map["employer@careerhub.vn"]
+        emp_vng = users_map["careers@vng.com.vn"]
+        emp_vtt = users_map["recruitment@viettel.com.vn"]
+        emp_momo = users_map["talent@momo.vn"]
+        emp_tcb = users_map["hr@techcombank.com.vn"]
+
+        today = date.today()
+        d_future_short = today + timedelta(days=20)
+        d_future_med = today + timedelta(days=45)
+        d_future_long = today + timedelta(days=60)
+        d_past = today - timedelta(days=15)
 
         raw_jobs = [
-            (emp1.id, "Thực tập sinh Python/FastAPI", "Tham gia phát triển hệ thống backend, xây dựng RESTful API.", "Công nghệ thông tin", "Hà Nội", 4000000, 7000000, "INTERNSHIP", date(2026, 12, 31)),
-            (emp1.id, "Thực tập sinh Frontend ReactJS", "Hỗ trợ cắt giao diện, ghép API, tối ưu trải nghiệm người dùng.", "Công nghệ thông tin", "Hà Nội", 3500000, 6000000, "INTERNSHIP", date(2026, 12, 15)),
-            (emp1.id, "Thực tập sinh Kiểm thử phần mềm (Tester)", "Viết testcase, thực hiện manual test và báo cáo bug trên Jira.", "Công nghệ thông tin", "Hà Nội", 3000000, 5000000, "INTERNSHIP", date(2026, 12, 20)),
-            (emp1.id, "Thực tập sinh DevOps / Cloud", "Làm quen với Docker, CI/CD pipeline và hạ tầng đám mây AWS.", "Công nghệ thông tin", "Hà Nội", 5000000, 8000000, "INTERNSHIP", date(2026, 12, 30)),
-            (emp1.id, "Thực tập sinh Lập trình C++/Embedded", "Nghiên cứu và phát triển phần mềm nhúng trên hệ điều hành Linux.", "Công nghệ thông tin", "Hà Nội", 4500000, 7500000, "INTERNSHIP", date(2026, 12, 25)),
-            (emp1.id, "Thực tập sinh Tuyển dụng Nhân sự (HR Intern)", "Hỗ trợ lọc CV, liên hệ ứng viên và sắp xếp lịch phỏng vấn.", "Nhân sự", "Hà Nội", 2500000, 4000000, "INTERNSHIP", date(2026, 12, 18)),
-            (emp1.id, "Thực tập sinh Quản trị mạng (Network Admin)", "Cấu hình router/switch, hỗ trợ người dùng mạng nội bộ doanh nghiệp.", "Công nghệ thông tin", "Hà Nội", 3500000, 5500000, "INTERNSHIP", date(2026, 12, 28)),
+            # --- 1. FPT Software (5 tin: 4 ACTIVE, 1 DRAFT) ---
+            (emp_fpt.id, "Thực tập sinh Python/FastAPI Backend", "Tham gia phát triển hệ thống quản lý nhân sự và API Gateway cho khách hàng Nhật Bản. Được đào tạo chuyên sâu về Clean Architecture và Docker.", "Công nghệ thông tin", "Hà Nội", 4000000, 7000000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_fpt.id, "Thực tập sinh Frontend ReactJS", "Hỗ trợ xây dựng giao diện người dùng hiện đại, tối ưu tốc độ tải trang, ghép API và quản lý State với Redux Toolkit.", "Công nghệ thông tin", "Hà Nội", 3500000, 6500000, "INTERNSHIP", d_future_med, JobStatus.ACTIVE.value),
+            (emp_fpt.id, "Thực tập sinh Kiểm thử phần mềm (Tester/QA)", "Viết testcase, thực hiện manual testing và phối hợp với đội ngũ lập trình viên ghi nhận lỗi qua Jira.", "Công nghệ thông tin", "Hà Nội", 3000000, 5500000, "INTERNSHIP", d_future_short, JobStatus.ACTIVE.value),
+            (emp_fpt.id, "Kỹ sư Hệ thống Nhúng C++/Linux", "Nghiên cứu và phát triển phần mềm điều khiển nhúng trên nền tảng Linux cho các dự án ô tô thông minh (Automotive).", "Công nghệ thông tin", "Hà Nội", 5000000, 8000000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_fpt.id, "[Tin mới] Thực tập sinh Cloud & DevOps (AWS/Docker)", "Tham gia vận hành hạ tầng CI/CD pipeline, làm quen với dịch vụ AWS ECS/EC2 và tối ưu hóa hệ thống container.", "Công nghệ thông tin", "Hà Nội", 5000000, 8500000, "INTERNSHIP", d_future_long, JobStatus.DRAFT.value),
 
-            (emp2.id, "Thực tập sinh Game Developer (Unity)", "Phát triển logic game 2D/3D cho di động trên nền tảng Unity/C#.", "Công nghệ thông tin", "TP. Hồ Chí Minh", 5000000, 8000000, "INTERNSHIP", date(2026, 12, 30)),
-            (emp2.id, "Thực tập sinh UI/UX Designer", "Thiết kế wireframe, prototype cho ứng dụng mobile bằng Figma.", "Thiết kế", "TP. Hồ Chí Minh", 4000000, 6500000, "INTERNSHIP", date(2026, 12, 22)),
-            (emp2.id, "Nhân viên Content Marketing (Part-time)", "Viết bài social media, kịch bản video ngắn cho sản phẩm công nghệ.", "Marketing", "TP. Hồ Chí Minh", 3000000, 5000000, "PART_TIME", date(2026, 12, 10)),
-            (emp2.id, "Thực tập sinh Data Analyst", "Xử lý dữ liệu hành vi người dùng bằng SQL, Python và vẽ dashboard.", "Phân tích dữ liệu", "TP. Hồ Chí Minh", 4500000, 7000000, "INTERNSHIP", date(2026, 12, 31)),
-            (emp2.id, "Nhân viên Chăm sóc khách hàng Game (Part-time)", "Giải đáp thắc mắc và hỗ trợ khiếu nại của game thủ qua ticket/livechat.", "Dịch vụ khách hàng", "TP. Hồ Chí Minh", 3500000, 5500000, "PART_TIME", date(2026, 12, 15)),
-            (emp2.id, "Thực tập sinh Thiết kế đồ họa 2D", "Thiết kế banner sự kiện, hình ảnh quảng cáo cho game và mạng xã hội.", "Thiết kế", "TP. Hồ Chí Minh", 3500000, 6000000, "INTERNSHIP", date(2026, 12, 24)),
-            (emp2.id, "Thực tập sinh Video Editor (TikTok/Reels)", "Cắt ghép video ngắn, hiệu ứng âm thanh và phụ đề bắt trend.", "Truyền thông", "TP. Hồ Chí Minh", 3000000, 5000000, "PART_TIME", date(2026, 12, 25)),
+            # --- 2. VNG Corporation (5 tin: 4 ACTIVE, 1 DRAFT) ---
+            (emp_vng.id, "Thực tập sinh Game Developer (Unity/C#)", "Phát triển các module gameplay 2D/3D trên nền tảng Unity, tối ưu hiệu năng đồ họa trên thiết bị di động iOS/Android.", "Công nghệ thông tin", "TP. Hồ Chí Minh", 5000000, 8000000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_vng.id, "Thực tập sinh UI/UX Mobile Product", "Nghiên cứu hành vi người dùng, thiết kế wireframe và prototype cho các tính năng mới của ứng dụng giải trí.", "Thiết kế", "TP. Hồ Chí Minh", 4000000, 7000000, "INTERNSHIP", d_future_med, JobStatus.ACTIVE.value),
+            (emp_vng.id, "Nhân viên Content Marketing (Part-time)", "Lên ý tưởng kịch bản video ngắn TikTok, viết nội dung bài đăng trên Facebook Fanpage bắt trend giới trẻ.", "Marketing", "TP. Hồ Chí Minh", 3500000, 6000000, "PART_TIME", d_future_short, JobStatus.ACTIVE.value),
+            (emp_vng.id, "Thực tập sinh Phân tích dữ liệu người dùng", "Truy vấn dữ liệu hành vi game thủ bằng SQL và Python, trực quan hóa các chỉ số tương tác và retention.", "Phân tích dữ liệu", "TP. Hồ Chí Minh", 4500000, 7500000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_vng.id, "[Tin mới] Thực tập sinh 3D Game Artist", "Vẽ texture, dựng model nhân vật và bối cảnh hoạt hình cho các dự án game mobile chuẩn bị ra mắt.", "Thiết kế", "TP. Hồ Chí Minh", 4000000, 6500000, "INTERNSHIP", d_future_med, JobStatus.DRAFT.value),
 
-            (emp3.id, "Thực tập sinh An toàn thông tin (SOC Tier 1)", "Giám sát cảnh báo an ninh mạng, phân tích log và nhận diện tấn công.", "An toàn thông tin", "Hà Nội", 5000000, 8500000, "INTERNSHIP", date(2026, 12, 31)),
-            (emp3.id, "Thực tập sinh Trí tuệ nhân tạo (AI/NLP)", "Nghiên cứu xử lý ngôn ngữ tự nhiên tiếng Việt cho chatbot thông minh.", "Trí tuệ nhân tạo", "Hà Nội", 6000000, 9000000, "INTERNSHIP", date(2026, 12, 30)),
-            (emp3.id, "Thực tập sinh Lập trình viên Java Backend", "Tham gia dự án giải pháp chính phủ điện tử sử dụng Spring Boot.", "Công nghệ thông tin", "Hà Nội", 4000000, 7000000, "INTERNSHIP", date(2026, 12, 20)),
-            (emp3.id, "Thực tập sinh Kế toán nội bộ", "Hỗ trợ sắp xếp hóa đơn, kiểm tra chứng từ và nhập liệu phần mềm kế toán.", "Kế toán / Tài chính", "Hà Nội", 2500000, 4500000, "INTERNSHIP", date(2026, 12, 18)),
-            (emp3.id, "Nhân viên Telesales Giải pháp số (Part-time)", "Gọi điện giới thiệu gói dịch vụ hóa đơn điện tử và chữ ký số cho doanh nghiệp.", "Kinh doanh / Bán hàng", "Hà Nội", 3000000, 6000000, "PART_TIME", date(2026, 12, 15)),
-            (emp3.id, "Thực tập sinh Kỹ sư Dữ liệu (Data Engineer)", "Xây dựng ETL pipeline vận chuyển dữ liệu lớn từ Kafka vào Data Lake.", "Dữ liệu lớn", "Hà Nội", 5500000, 8500000, "INTERNSHIP", date(2026, 12, 31)),
-            (emp3.id, "Thực tập sinh Digital Marketing (Google Ads)", "Hỗ trợ lên chiến dịch quảng cáo tìm kiếm và đo lường tỷ lệ chuyển đổi.", "Marketing", "Hà Nội", 3000000, 5500000, "INTERNSHIP", date(2026, 12, 22)),
-            (emp3.id, "Thực tập sinh Quản lý dự án (PMO Intern)", "Theo dõi tiến độ sprint, cập nhật tài liệu dự án và hỗ trợ Scrum Master.", "Quản lý dự án", "Hà Nội", 3500000, 6000000, "INTERNSHIP", date(2026, 12, 25)),
+            # --- 3. Viettel Solutions (5 tin: 4 ACTIVE/CLOSED, 0 DRAFT) ---
+            (emp_vtt.id, "Thực tập sinh An toàn thông tin (SOC Tier 1)", "Giám sát hệ thống cảnh báo bảo mật SIEM, điều tra log mạng và ứng phó các sự cố an ninh mạng cấp độ 1.", "An toàn thông tin", "Hà Nội", 5000000, 9000000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_vtt.id, "Thực tập sinh AI & Xử lý ngôn ngữ tự nhiên (NLP)", "Nghiên cứu các mô hình ngôn ngữ lớn (LLM), fine-tune trợ lý ảo phục vụ giải pháp chính phủ số.", "Trí tuệ nhân tạo", "Hà Nội", 6000000, 10000000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_vtt.id, "Thực tập sinh Kỹ sư Dữ liệu lớn (Big Data)", "Xây dựng các luồng thu thập và xử lý dữ liệu thời gian thực sử dụng Apache Spark, Kafka và Hadoop.", "Dữ liệu lớn", "Hà Nội", 5500000, 9000000, "INTERNSHIP", d_future_med, JobStatus.ACTIVE.value),
+            (emp_vtt.id, "Nhân viên Kinh doanh Giải pháp số (Part-time)", "Tư vấn và giới thiệu giải pháp chữ ký số, hóa đơn điện tử và dịch vụ lưu trữ đám mây cho doanh nghiệp vừa và nhỏ.", "Kinh doanh / Bán hàng", "Hà Nội", 3000000, 6000000, "PART_TIME", d_future_short, JobStatus.ACTIVE.value),
+            (emp_vtt.id, "Kỹ sư Mạng viễn thông 5G", "Tham gia cấu hình và thử nghiệm trạm phát sóng 5G băng thông rộng. Đã hoàn thành đợt tuyển dụng.", "Viễn thông", "Hà Nội", 6000000, 9000000, "INTERNSHIP", d_past, JobStatus.CLOSED.value),
+
+            # --- 4. MoMo (M-Service) (5 tin: 4 ACTIVE, 1 DRAFT) ---
+            (emp_momo.id, "Thực tập sinh Lập trình Di động (Flutter/iOS)", "Phát triển các tính năng thanh toán tiện ích và dịch vụ Mini-App trên hệ sinh thái siêu ứng dụng MoMo.", "Công nghệ thông tin", "TP. Hồ Chí Minh", 4500000, 7500000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_momo.id, "Thực tập sinh Backend Golang / Microservices", "Xây dựng API xử lý giao dịch tài chính tốc độ cao, đảm bảo tính nhất quán (ACID) và khả năng chịu tải hàng triệu request/ngày.", "Công nghệ thông tin", "TP. Hồ Chí Minh", 5000000, 8500000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_momo.id, "Nhân viên Hỗ trợ Thanh toán Ví điện tử (Part-time)", "Hỗ trợ tiếp nhận thắc mắc và giải đáp các vấn đề liên quan đến giao dịch ví của khách hàng.", "Dịch vụ khách hàng", "TP. Hồ Chí Minh", 3500000, 5500000, "PART_TIME", d_future_short, JobStatus.ACTIVE.value),
+            (emp_momo.id, "Thực tập sinh Phân tích nghiệp vụ (BA Intern)", "Khảo sát yêu cầu người dùng, viết tài liệu đặc tả chức năng (SRS/BRD) cho tính năng thanh toán QR mới.", "Quản lý dự án", "TP. Hồ Chí Minh", 4000000, 6500000, "INTERNSHIP", d_future_med, JobStatus.ACTIVE.value),
+            (emp_momo.id, "[Tin mới] Thực tập sinh Chống gian lận tài chính (Fraud)", "Phân tích các mẫu giao dịch bất thường, xây dựng bộ quy tắc cảnh báo phòng chống gian lận ví điện tử.", "An toàn thông tin", "TP. Hồ Chí Minh", 5000000, 8000000, "INTERNSHIP", d_future_med, JobStatus.DRAFT.value),
+
+            # --- 5. Techcombank (5 tin: 4 ACTIVE/EXPIRED, 0 DRAFT) ---
+            (emp_tcb.id, "Thực tập sinh Java Spring Boot (Ngân hàng số)", "Tham gia phát triển các dịch vụ Core Banking thế hệ mới trên nền tảng Java 17 và kiến trúc Cloud-native.", "Công nghệ thông tin", "Hà Nội", 5000000, 8000000, "INTERNSHIP", d_future_long, JobStatus.ACTIVE.value),
+            (emp_tcb.id, "Thực tập sinh Quản trị rủi ro dữ liệu", "Phân tích dữ liệu tín dụng khách hàng cá nhân, hỗ trợ xây dựng mô hình xếp hạng rủi ro tự động.", "Kế toán / Tài chính", "Hà Nội", 4500000, 7500000, "INTERNSHIP", d_future_med, JobStatus.ACTIVE.value),
+            (emp_tcb.id, "Chuyên viên CSKH Ngân hàng số (Part-time)", "Tư vấn mở tài khoản thanh toán và hỗ trợ hướng dẫn sử dụng ứng dụng Techcombank Mobile.", "Dịch vụ khách hàng", "Hà Nội", 4000000, 6000000, "PART_TIME", d_future_short, JobStatus.ACTIVE.value),
+            (emp_tcb.id, "Thực tập sinh Tuyển dụng & Đào tạo (HR)", "Hỗ trợ đăng tin tuyển dụng, sàng lọc hồ sơ ứng viên và điều phối các lớp đào tạo nhân sự mới.", "Nhân sự", "Hà Nội", 3000000, 5000000, "INTERNSHIP", d_future_med, JobStatus.ACTIVE.value),
+            (emp_tcb.id, "Thực tập sinh Tài chính doanh nghiệp", "Tham gia phân tích báo cáo tài chính của các doanh nghiệp đối tác. Đã hết hạn nộp hồ sơ.", "Kế toán / Tài chính", "Hà Nội", 3500000, 5500000, "INTERNSHIP", d_past, JobStatus.EXPIRED.value),
         ]
 
         jobs_list = []
-        for emp_id, title, desc, ind, loc, s_min, s_max, j_type, d_line in raw_jobs:
+        for emp_id, title, desc, ind, loc, s_min, s_max, j_type, d_line, st in raw_jobs:
             job = db.query(Job).filter(Job.title == title, Job.employer_id == emp_id).first()
             if not job:
                 job = Job(
@@ -234,40 +330,61 @@ def seed():
                     salary_max=s_max,
                     job_type=j_type,
                     deadline=d_line,
-                    status=JobStatus.ACTIVE.value,
+                    status=st,
                     employer_id=emp_id,
                 )
                 db.add(job)
                 db.flush()
-                print(f"[ADD] Job: {title}")
+                print(f"[ADD] Job: {title} ({st})")
             jobs_list.append(job)
 
         db.commit()
 
         # ==========================================================
-        # 5. TẠO ĐƠN ỨNG TUYỂN (>= 20 APPLICATIONS)
+        # 5. TẠO 30 ĐƠN ỨNG TUYỂN (APPLICATIONS)
         # ==========================================================
-        print("\n--- 5. TẠO ĐƠN ỨNG TUYỂN (>= 20 APPLICATIONS) ---")
+        print("\n--- 5. TẠO 30 ĐƠN ỨNG TUYỂN (APPLICATIONS) ---")
         students = [
             users_map["student@careerhub.vn"],
-            users_map["student2@careerhub.vn"],
-            users_map["student3@careerhub.vn"],
-            users_map["student4@careerhub.vn"],
+            users_map["ngoc.tran@careerhub.vn"],
+            users_map["long.le@careerhub.vn"],
+            users_map["tuan.pham@careerhub.vn"],
+            users_map["trang.dang@careerhub.vn"],
+            users_map["huy.vu@careerhub.vn"],
         ]
 
-        statuses = [
+        # Phân bổ trạng thái phong phú
+        statuses_cycle = [
             ApplicationStatus.pending,
             ApplicationStatus.reviewed,
+            ApplicationStatus.interview,
             ApplicationStatus.accepted,
+            ApplicationStatus.pending,
             ApplicationStatus.rejected,
+            ApplicationStatus.pending,
+            ApplicationStatus.withdrawn,
+            ApplicationStatus.interview,
+            ApplicationStatus.reviewed,
         ]
 
+        cover_letters = [
+            "Em rất quan tâm đến vị trí này của công ty và tự tin kỹ năng bản thân sẽ đáp ứng tốt yêu cầu công việc.",
+            "Với nền tảng học tập vững chắc và các dự án cá nhân thực tế, em hy vọng có cơ hội được học hỏi và cống hiến.",
+            "Em xin gửi hồ sơ ứng tuyển kèm CV chi tiết, rất mong có cơ hội trao đổi trong buổi phỏng vấn sắp tới.",
+            "Em đã tìm hiểu kỹ về văn hóa công ty và rất ấn tượng với môi trường chuyên nghiệp, mong muốn được gia nhập đội ngũ.",
+        ]
+
+        active_jobs = [j for j in jobs_list if j.status == JobStatus.ACTIVE.value]
         app_count = 0
-        for i, job in enumerate(jobs_list[:20]):
-            # Phân bổ sinh viên xoay vòng để không bị trùng (job_id, student_id)
-            student = students[i % len(students)]
-            status = statuses[i % len(statuses)]
-            
+        now_utc = datetime.now(timezone.utc)
+
+        # Tạo 30 đơn ứng tuyển không trùng lặp (student_id, job_id)
+        for i in range(30):
+            job = active_jobs[i % len(active_jobs)]
+            student = students[(i + (i // len(active_jobs))) % len(students)]
+            status = statuses_cycle[i % len(statuses_cycle)]
+            applied_time = now_utc - timedelta(days=(30 - i))
+
             exists = db.query(Application).filter(
                 Application.job_id == job.job_id,
                 Application.student_id == student.id,
@@ -278,23 +395,13 @@ def seed():
                     job_id=job.job_id,
                     student_id=student.id,
                     status=status,
-                    applied_at=datetime.now(timezone.utc) - timedelta(days=i),
+                    applied_at=applied_time,
+                    cv_file_path=f"cv_{student.email.split('@')[0]}.pdf",
+                    cover_letter=cover_letters[i % len(cover_letters)],
                 )
                 db.add(app)
                 app_count += 1
-                print(f"[ADD] Application: Student {student.email} -> Job #{job.job_id} ({status.value})")
-
-        # Thêm 2 đơn nữa cho đủ 22 đơn
-        for j in range(20, min(22, len(jobs_list))):
-            student = students[(j + 1) % len(students)]
-            if not db.query(Application).filter(Application.job_id == jobs_list[j].job_id, Application.student_id == student.id).first():
-                db.add(Application(
-                    job_id=jobs_list[j].job_id,
-                    student_id=student.id,
-                    status=ApplicationStatus.pending,
-                ))
-                app_count += 1
-                print(f"[ADD] Application: Student {student.email} -> Job #{jobs_list[j].job_id}")
+                print(f"[ADD] Application #{app_count}: {student.email} -> Job #{job.job_id} ({status.value})")
 
         db.commit()
 
@@ -303,81 +410,93 @@ def seed():
         # ==========================================================
         print("\n--- 6. TẠO TIN ĐÃ LƯU (SAVED JOBS) ---")
         saved_samples = [
-            (students[0].id, jobs_list[0].job_id),
-            (students[0].id, jobs_list[1].job_id),
-            (students[0].id, jobs_list[3].job_id),
-            (students[1].id, jobs_list[9].job_id),
-            (students[1].id, jobs_list[13].job_id),
-            (students[2].id, jobs_list[8].job_id),
-            (students[2].id, jobs_list[12].job_id),
-            (students[3].id, jobs_list[6].job_id),
-            (students[3].id, jobs_list[10].job_id),
-            (students[3].id, jobs_list[19].job_id),
+            (students[0].id, active_jobs[0].job_id),
+            (students[0].id, active_jobs[1].job_id),
+            (students[0].id, active_jobs[11].job_id),
+            (students[1].id, active_jobs[2].job_id),
+            (students[1].id, active_jobs[7].job_id),
+            (students[2].id, active_jobs[6].job_id),
+            (students[2].id, active_jobs[1].job_id),
+            (students[3].id, active_jobs[8].job_id),
+            (students[3].id, active_jobs[12].job_id),
+            (students[4].id, active_jobs[13].job_id),
+            (students[5].id, active_jobs[10].job_id),
+            (students[5].id, active_jobs[14].job_id),
         ]
 
         for stu_id, j_id in saved_samples:
             if not db.query(SavedJob).filter(SavedJob.user_id == stu_id, SavedJob.job_id == j_id).first():
                 db.add(SavedJob(user_id=stu_id, job_id=j_id))
-                print(f"[ADD] SavedJob: Student #{stu_id} saved Job #{j_id}")
+                print(f"[ADD] SavedJob: User #{stu_id} saved Job #{j_id}")
 
         db.commit()
 
         # ==========================================================
-        # 7. TẠO LỊCH SỬ CHAT VỚI BOT (CHAT MESSAGES)
+        # 7. TẠO LỊCH SỬ CHAT VỚI BOT TƯ VẤN (CHAT MESSAGES)
         # ==========================================================
         print("\n--- 7. TẠO LỊCH SỬ CHAT BOT ---")
-        student_main = students[0]
+        student_main = students[0]  # Nguyễn Văn An
         chat_samples = [
-            ("user", "Chào bạn, mình là sinh viên năm 3 ngành CNTT, mình muốn xin tư vấn chuẩn bị hồ sơ thực tập Backend."),
-            ("bot", "Chào bạn! Với vị trí Thực tập sinh Backend, bạn cần chuẩn bị: 1. Nắm chắc một ngôn ngữ (như Python/Java/NodeJS); 2. Hiểu biết về RESTful API và cơ sở dữ liệu (MySQL); 3. Chuẩn bị 1-2 đồ án thực tế đưa lên GitHub."),
-            ("user", "Nhà tuyển dụng thường hỏi những câu hỏi phỏng vấn SQL nào vậy bạn?"),
-            ("bot", "Một số câu hỏi SQL rất hay gặp: 1. Phân biệt INNER JOIN và LEFT JOIN; 2. Chỉ mục (Index) là gì và khi nào nên đánh Index; 3. Sự khác nhau giữa WHERE và HAVING; 4. Cách tối ưu câu truy vấn khi dữ liệu lớn."),
-            ("user", "Cảm ơn bot nhé!"),
-            ("bot", "Chúc bạn sớm tìm được công việc thực tập như ý! Đừng quên nộp CV trực tiếp tại các tin tuyển dụng trên CareerHub nhé."),
+            ("user", "Chào bạn, mình là sinh viên năm cuối Bách Khoa ngành CNTT, mình muốn xin tư vấn chuẩn bị hồ sơ ứng tuyển vị trí Backend Python/FastAPI."),
+            ("bot", "Chào bạn An! Với mục tiêu trở thành Backend Developer chuyên nghiệp, bạn nên tập trung vào 3 điểm cốt lõi trong CV:\n1. Nắm chắc kiến trúc RESTful API, ORM (SQLAlchemy) và tối ưu hóa câu truy vấn CSDL (đánh Index, tránh N+1 Query).\n2. Đưa vào CV các dự án cá nhân có sử dụng Docker, Redis Cache và viết Unit Test.\n3. Nêu rõ các số liệu định lượng về hiệu năng API bạn từng tối ưu (ví dụ: giảm thời gian phản hồi từ 200ms xuống 30ms)."),
+            ("user", "Khi phỏng vấn vị trí Backend, nhà tuyển dụng thường hỏi những câu hỏi nào về Database vậy bạn?"),
+            ("bot", "Các câu hỏi phỏng vấn CSDL rất phổ biến gồm có:\n1. Giải thích tính chất ACID trong giao dịch (Transaction).\n2. Phân biệt Index B-Tree và Hash Index; khi nào một câu truy vấn không tận dụng được Index?\n3. Cách giải quyết bài toán N+1 Query trong ORM (Eager Loading vs Lazy Loading).\n4. Sự khác biệt giữa NoSQL (Redis, MongoDB) và RDBMS (MySQL, PostgreSQL)."),
+            ("user", "Cảm ơn bot nhiều nhé, thông tin rất hữu ích!"),
+            ("bot", "Chúc bạn An tự tin và đạt kết quả xuất sắc trong buổi phỏng vấn sắp tới! Đừng quên theo dõi các tin tuyển dụng mới nhất từ FPT Software và MoMo trên CareerHub nhé."),
         ]
 
-        if not db.query(ChatMessage).filter(ChatMessage.user_id == student_main.id).first():
-            for sender, msg in chat_samples:
-                db.add(ChatMessage(user_id=student_main.id, sender=sender, message=msg))
-                print(f"[ADD] ChatMessage ({sender}): {msg[:40]}...")
+        for sender, msg in chat_samples:
+            db.add(ChatMessage(user_id=student_main.id, sender=sender, message=msg))
+            print(f"[ADD] ChatMessage ({sender}): {msg[:45]}...")
 
         db.commit()
 
         # ==========================================================
-        # 8. TẠO LỊCH SỬ CHẤM ĐIỂM CV (CV ANALYSES)
+        # 8. TẠO LỊCH SỬ CHẤM ĐIỂM CV BẰNG AI (CV ANALYSES)
         # ==========================================================
         print("\n--- 8. TẠO ĐÁNH GIÁ CV (CV ANALYSES) ---")
         cv_samples = [
             (
                 students[0].id,
                 "https://careerhub.vn/uploads/cv/nguyen_van_an_backend.pdf",
-                85.0,
-                "Điểm mạnh: Cấu trúc rõ ràng, kỹ năng Python/FastAPI tốt. Cần cải thiện: Hãy bổ sung các số liệu định lượng (metrics) cho đồ án cá nhân để tăng sức thuyết phục.",
+                88.5,
+                "Điểm mạnh: Cấu trúc hồ sơ chuẩn quốc tế, làm nổi bật kỹ năng lập trình Python/FastAPI và Docker. Dự án thực tế rõ ràng. Cần cải thiện: Hãy bổ sung các chỉ số đo lường hiệu năng (metrics) cho dự án cá nhân để tăng sức thuyết phục với nhà tuyển dụng.",
             ),
             (
                 students[1].id,
-                "https://careerhub.vn/uploads/cv/tran_thi_bich_marketing.pdf",
-                78.5,
-                "Điểm mạnh: Kinh nghiệm viết Content phong phú. Cần cải thiện: Nên đính kèm link Portfolio các bài viết nổi bật để nhà tuyển dụng dễ tham khảo.",
+                "https://careerhub.vn/uploads/cv/tran_thi_bich_ngoc_marketing.pdf",
+                82.0,
+                "Điểm mạnh: Kỹ năng viết Content và quản trị kênh truyền thông phong phú. Cần cải thiện: Nên đính kèm liên kết Portfolio tổng hợp các bài viết nổi bật và chiến dịch đã từng triển khai để nhà tuyển dụng đánh giá trực tiếp.",
             ),
             (
                 students[2].id,
                 "https://careerhub.vn/uploads/cv/le_hoang_long_designer.pdf",
-                92.0,
-                "Hồ sơ xuất sắc! Bố cục thẩm mỹ, link dự án Behance/Figma rất chi tiết và đúng chuẩn UI/UX quốc tế.",
+                94.0,
+                "Hồ sơ xuất sắc! Bố cục thẩm mỹ, link dự án Behance/Figma rất chi tiết, thể hiện tư duy thiết kế lấy người dùng làm trung tâm (User-Centered Design) đúng chuẩn UI/UX quốc tế.",
             ),
             (
                 students[3].id,
                 "https://careerhub.vn/uploads/cv/pham_minh_tuan_data.pdf",
-                82.0,
-                "Nền tảng SQL và Python phân tích dữ liệu rất vững. Nên bổ sung thêm kỹ năng trực quan hóa dữ liệu qua Tableau hoặc PowerBI.",
+                85.0,
+                "Điểm mạnh: Nền tảng SQL và thư viện phân tích dữ liệu Pandas rất vững chắc. Cần cải thiện: Nên bổ sung thêm các chứng chỉ trực tuyến về Data Visualization (PowerBI / Tableau) để làm hồ sơ nổi bật hơn.",
+            ),
+            (
+                students[4].id,
+                "https://careerhub.vn/uploads/cv/dang_thuy_trang_hr.pdf",
+                80.5,
+                "Điểm mạnh: Kỹ năng giao tiếp và tiếng Anh tốt (IELTS 7.5). Cần cải thiện: Hãy nêu rõ hơn các hoạt động tổ chức sự kiện hoặc câu lạc bộ mà bạn từng tham gia điều phối.",
+            ),
+            (
+                students[5].id,
+                "https://careerhub.vn/uploads/cv/vu_quang_huy_security.pdf",
+                87.0,
+                "Điểm mạnh: Sở hữu chứng chỉ an ninh mạng quốc tế và có trải nghiệm thực chiến tại các cuộc thi CTF. Rất phù hợp với vị trí SOC Tier 1.",
             ),
         ]
 
         for s_id, url, score, fb in cv_samples:
-            if not db.query(CvAnalysis).filter(CvAnalysis.student_id == s_id).first():
-                db.add(CvAnalysis(student_id=s_id, cv_file_url=url, score=score, feedback=fb))
-                print(f"[ADD] CvAnalysis: Student #{s_id} - Score: {score}")
+            db.add(CvAnalysis(student_id=s_id, cv_file_url=url, score=score, feedback=fb))
+            print(f"[ADD] CvAnalysis: Student #{s_id} - Score: {score}")
 
         db.commit()
 
@@ -386,17 +505,21 @@ def seed():
         # ==========================================================
         print("\n--- 9. TẠO THÔNG BÁO (NOTIFICATIONS) ---")
         notif_samples = [
-            (students[0].id, "Ứng tuyển thành công", "Bạn đã nộp đơn vào vị trí 'Thực tập sinh Python/FastAPI' tại FPT Software."),
-            (students[0].id, "Hồ sơ đã được xem", "Nhà tuyển dụng FPT Software đã mở xem hồ sơ của bạn."),
-            (students[1].id, "Cập nhật trạng thái đơn", "Đơn ứng tuyển 'Content Marketing' của bạn đã chuyển sang trạng thái: Đã xem xét."),
-            (emp1.id, "Có ứng viên mới", "Ứng viên Nguyễn Văn An vừa nộp đơn vào vị trí Thực tập sinh Python/FastAPI."),
-            (emp2.id, "Có ứng viên mới", "Ứng viên Trần Thị Bích vừa nộp đơn vào vị trí Content Marketing."),
+            (students[0].id, "Ứng tuyển thành công", "Bạn đã nộp đơn vào vị trí 'Thực tập sinh Python/FastAPI Backend' tại FPT Software."),
+            (students[0].id, "Hồ sơ đã được xem", "Nhà tuyển dụng FPT Software đã mở xem hồ sơ ứng tuyển của bạn."),
+            (students[0].id, "Mời phỏng vấn", "MoMo đã gửi lời mời bạn tham gia vòng phỏng vấn kỹ thuật trực tuyến."),
+            (students[1].id, "Cập nhật trạng thái đơn", "Đơn ứng tuyển 'Content Marketing' của bạn tại VNG đã chuyển sang trạng thái: Đã xem xét."),
+            (students[2].id, "Chúc mừng trúng tuyển", "VNG Corporation chúc mừng bạn đã xuất sắc trúng tuyển vị trí 'Thực tập sinh UI/UX Mobile Product'!"),
+            (students[5].id, "Lịch phỏng vấn an ninh mạng", "Viettel Solutions trân trọng mời bạn tham gia phỏng vấn vị trí SOC Tier 1 vào sáng thứ Sáu."),
+            (emp_fpt.id, "Có ứng viên mới", "Ứng viên Nguyễn Văn An vừa nộp đơn vào vị trí Thực tập sinh Python/FastAPI Backend."),
+            (emp_vng.id, "Có ứng viên mới", "Ứng viên Lê Hoàng Long vừa nộp hồ sơ ứng tuyển vị trí Thực tập sinh UI/UX Mobile Product."),
+            (emp_momo.id, "Có ứng viên mới", "Ứng viên Nguyễn Văn An vừa ứng tuyển vị trí Backend Golang / Microservices."),
+            (emp_tcb.id, "Có ứng viên mới", "Ứng viên Đặng Thùy Trang vừa nộp đơn vào vị trí Thực tập sinh Tuyển dụng & Đào tạo."),
         ]
 
         for u_id, title, message in notif_samples:
-            if not db.query(Notification).filter(Notification.user_id == u_id, Notification.title == title).first():
-                db.add(Notification(user_id=u_id, title=title, message=message, is_read=False))
-                print(f"[ADD] Notification: User #{u_id} - {title}")
+            db.add(Notification(user_id=u_id, title=title, message=message, is_read=False))
+            print(f"[ADD] Notification: User #{u_id} - {title}")
 
         db.commit()
         print("\n=== TẤT CẢ DỮ LIỆU SEED ĐÃ HOÀN TẤT THÀNH CÔNG ===")
@@ -409,4 +532,4 @@ def seed():
 
 
 if __name__ == "__main__":
-    seed()
+    seed(clean=True)
