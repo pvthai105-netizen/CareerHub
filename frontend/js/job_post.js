@@ -1,15 +1,4 @@
-
-// job_post.js - Quản lý trang Tin tuyển dụng (CareerHub)
-// ---------------------------------------------------
-// 1. Kiểm tra đăng nhập và vai trò nhà tuyển dụng
-// 2. Lấy danh sách tin từ backend
-// 3. Render bảng, tab trạng thái, tìm kiếm, lọc, phân trang
-// 4. Xử lý sửa, đóng, xóa và đăng tin mới
-// ---------------------------------------------------
-
-/**
- * Debounce: Giảm số lần gọi xử lý khi người dùng nhập tìm kiếm.
- */
+// Debounce: Giảm số lần gọi xử lý khi người dùng nhập tìm kiếm.
 function debounce(fn, delay) {
   let timeout;
 
@@ -27,6 +16,10 @@ const selectors = {
   searchInput: document.querySelector('.search-box .search-input'),
   filterSelect: document.querySelector('.filter-box .filter-select'),
   tableBody: document.querySelector('.job-table tbody'),
+
+  // Lấy nút X có sẵn trong HTML làm mẫu
+  deleteButtonTemplate: document.querySelector('.job-table tbody .action-delete'),
+
   paginationInfo: document.querySelector('.pagination-info'),
   paginationPages: document.querySelector('.pagination-pages'),
   createBtn: document.querySelector('.btn-create-job'),
@@ -268,13 +261,27 @@ function renderJobRow(job) {
     actionLink('Sửa', () => editJob(getJobId(job)))
   );
 
+  if (normalizeStatus(job.status) === 'closed') {
   tdActions.appendChild(
-    actionLink('Đóng', () => closeJob(job))
-  );
+    actionLink('Mở lại', () => reopenJob(job))
+    );
+  } else {
+    tdActions.appendChild(
+      actionLink('Đóng', () => closeJob(job))
+    );
+  }
 
-  tdActions.appendChild(
-    actionLink('Xóa', () => deleteJob(job))
-  );
+  // Lấy nút X có sẵn trong HTML
+  const deleteBtn = selectors.deleteButtonTemplate.cloneNode(true);
+
+  // Gán sự kiện xóa cho nút X
+  deleteBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    deleteJob(job);
+  });
+
+  // Thêm nút X vào cột thao tác
+  tdActions.appendChild(deleteBtn);
 
   tr.append(
     tdName,
@@ -366,7 +373,7 @@ function editJob(jobId) {
     return;
   }
 
-  window.location.href = `edit_job.html?id=${jobId}`;
+  window.location.href = `create_job.html?edit_id=${jobId}`;
 }
 
 /**
@@ -405,6 +412,39 @@ async function closeJob(job) {
     alert(err.message || 'Không thể đóng tin');
   }
 }
+
+
+/**
+ * Mở lại tin tuyển dụng đã đóng.
+ */
+async function reopenJob(job) {
+  const ok = confirm('Bạn có chắc muốn mở lại tin tuyển dụng này?');
+
+  if (!ok) return;
+
+  try {
+    const jobId = getJobId(job);
+
+    const newStatus = getApiStatusValue(
+      job.status,
+      'active'
+    );
+
+    await api.patch(
+      `/jobs/${jobId}/status`,
+      { status: newStatus }
+    );
+
+    alert('Đã mở lại tin tuyển dụng thành công');
+
+    await loadJobs();
+
+  } catch (err) {
+    console.error('Lỗi mở lại tin:', err);
+    alert(err.message || 'Không thể mở lại tin');
+  }
+}
+
 
 /**
  * Xóa tin tuyển dụng.
@@ -667,19 +707,19 @@ const confirmLogoutBtn = document.querySelector("#confirmLogoutBtn");
 const logoutModalElement = document.querySelector("#logoutModal");
 
 if (logoutBtn && logoutModalElement && confirmLogoutBtn) {
-    const logoutModal = new bootstrap.Modal(logoutModalElement);
+  const logoutModal = new bootstrap.Modal(logoutModalElement);
 
-    // Bấm đăng xuất ở sidebar -> mở popup
-    logoutBtn.addEventListener("click", function (event) {
-        event.preventDefault();
-        logoutModal.show();
-    });
+  // Bấm đăng xuất ở sidebar -> mở popup
+  logoutBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    logoutModal.show();
+  });
 
-    // Xác nhận đăng xuất
-    confirmLogoutBtn.addEventListener("click", function () {
-        Auth.clear();
-        window.location.href = "./login.html";
-    });
+  // Xác nhận đăng xuất
+  confirmLogoutBtn.addEventListener("click", function () {
+    Auth.clear();
+    window.location.href = "./login.html";
+  });
 }
 
 /**
