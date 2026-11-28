@@ -50,11 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     jobSelect.disabled = true;
     appendOption("Đang tải danh sách công việc...", "", true);
     try {
-      const response = await fetch("/jobs/?page=1&limit=100");
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result?.detail || "Không tải được danh sách công việc.");
-      }
+      const result = await api.get("/jobs/?page=1&limit=100");
       const jobs = Array.isArray(result?.items) ? result.items : [];
       jobSelect.replaceChildren();
       appendOption("Chọn công việc muốn ứng tuyển", "", true);
