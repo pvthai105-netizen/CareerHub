@@ -124,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function openCv(applicant, download, button) {
     button.disabled = true;
-    const viewWindow = download ? null : window.open("about:blank", "_blank");
     try {
       const response = await fetch(`/api/jobs/${applicant.job_id}/applications/${applicant.id}/cv`, {
         headers: { Authorization: `Bearer ${Auth.getToken()}` },
@@ -144,15 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
         anchor.click();
         setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
       } else {
-        if (viewWindow) {
-          viewWindow.location = blobUrl;
-        } else {
-          window.location.href = blobUrl;
-        }
+        window.open(blobUrl, "_blank");
         setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
       }
     } catch (error) {
-      if (viewWindow) viewWindow.close();
       setFeedback(error.message || "Không tải được CV.", true);
     } finally {
       button.disabled = false;

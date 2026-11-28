@@ -221,10 +221,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cvFileName.textContent = file.name;
     const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-    if (!MIME_TYPES[extension] || file.type !== MIME_TYPES[extension]) {
+    if (!MIME_TYPES[extension]) {
       cvHint.textContent = "Chỉ nhận CV PDF hoặc DOCX hợp lệ.";
       cvHint.className = "field-hint is-error";
-      cvInput.setCustomValidity("Chọn file PDF hoặc DOCX và đúng MIME type.");
+      cvInput.setCustomValidity("Chọn file PDF hoặc DOCX.");
       return;
     }
     if (file.size > MAX_CV_SIZE) {
@@ -265,7 +265,12 @@ document.addEventListener("DOMContentLoaded", () => {
       setFeedback("Hồ sơ đã được gửi thành công. Trạng thái đơn hiện là Chờ.", "success");
       await loadApplications();
     } catch (error) {
-      setFeedback(error.message || "Không thể gửi hồ sơ ứng tuyển.", "error");
+      const msg = error.message || "Không thể gửi hồ sơ ứng tuyển.";
+      if (msg.includes("đã ứng tuyển") || msg.includes("409")) {
+        setFeedback("Bạn đã ứng tuyển tin tuyển dụng này rồi.", "error");
+      } else {
+        setFeedback(msg, "error");
+      }
     } finally {
       submitButton.disabled = false;
       submitButton.innerHTML = 'Gửi hồ sơ <span aria-hidden="true">→</span>';
