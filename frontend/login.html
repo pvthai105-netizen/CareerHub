@@ -4,131 +4,128 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập - CareerHub</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <style>
-      .auth-container {
-        min-height: calc(100vh - 72px - 250px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 16px;
-      }
-      .auth-card {
-        width: 100%;
-        max-width: 440px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        padding: 36px 32px;
-        box-shadow: var(--shadow-md);
-      }
-      .auth-header {
-        text-align: center;
-        margin-bottom: 28px;
-      }
-      .auth-header h1 {
-        font-size: 24px;
-        color: var(--ink);
-        margin-bottom: 8px;
-      }
-      .auth-header p {
-        color: var(--muted);
-        font-size: 14px;
-        margin: 0;
-      }
-      .form-error {
-        color: #be4848;
-        font-size: 12px;
-        margin-top: 4px;
-        display: none;
-      }
-      .alert-box {
-        display: none;
-        padding: 12px 16px;
-        border-radius: var(--radius-sm);
-        font-size: 13px;
-        margin-bottom: 20px;
-      }
-      .alert-box.error {
-        display: block;
-        background-color: var(--error-bg);
-        color: #be4848;
-        border: 1px solid #f5c2c2;
-      }
-      .alert-box.info {
-        display: block;
-        background-color: var(--info-bg);
-        color: var(--indigo);
-        border: 1px solid var(--accent);
-      }
-    </style>
+    <link rel="stylesheet" href="css/auth.css" />
   </head>
   <body>
-    <!-- Header -->
-    <header class="site-header">
-      <div class="container site-navbar">
-        <a href="home.html" class="brand-logo" title="CareerHub">
-          <img src="logoCHT-Photoroom.png" alt="CareerHub Logo" />
+    <div class="auth-wrapper">
+      <!-- CỘT TRÁI: BANNER THƯƠNG HIỆU (CHUẨN FIGMA) -->
+      <aside class="auth-sidebar">
+        <a href="home.html" class="sidebar-logo">
+          <img src="logoCHW-Photoroom.png" alt="CareerHub Logo" />
         </a>
-        <div class="nav-actions">
-          <span style="font-size: 13px; color: var(--muted)"
-            >Chưa có tài khoản?</span
-          >
-          <a href="register.html" class="btn btn-outline">Đăng ký</a>
+
+        <div class="sidebar-content">
+          <span class="future-badge">YOUR FUTURE STARTS HERE</span>
+          <h1 class="sidebar-title">
+            Chào mừng bạn<br />đến với tương lai.
+          </h1>
+          <p class="sidebar-desc">
+            Dù bạn đang bắt đầu hay tìm một bước tiến mới, Career Connect luôn đồng hành cùng bạn.
+          </p>
+
+          <div class="highlight-box">
+            <h3>Đúng người. Đúng cơ hội.</h3>
+            <p>
+              Kết nối với hơn 850 doanh nghiệp và khám phá 2.400+ cơ hội nghề nghiệp trên khắp Việt Nam.
+            </p>
+          </div>
         </div>
-      </div>
-    </header>
 
-    <!-- Main Form -->
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="auth-header">
-          <h1>Chào mừng trở lại</h1>
-          <p>Đăng nhập để kết nối cơ hội việc làm và thực tập</p>
+        <div class="sidebar-footer">
+          © 2026 Career Connect
         </div>
+      </aside>
 
-        <!-- Khung thông báo chung (Lỗi backend, token hết hạn) -->
-        <div id="login-alert" class="alert-box"></div>
+      <!-- CỘT PHẢI: FORM ĐĂNG NHẬP (CHUẨN FIGMA) -->
+      <main class="auth-main">
+        <div class="auth-form-container">
+          <a href="home.html" class="back-home-link">
+            ← Về trang chủ
+          </a>
 
-        <form id="form-login" novalidate>
-          <div class="form-group">
-            <label class="form-label" for="login-email">Địa chỉ Email</label>
-            <input
-              type="email"
-              id="login-email"
-              class="form-control"
-              placeholder="name@example.com"
-              required
-            />
-            <div class="form-error" id="err-login-email">
-              Email không đúng định dạng.
-            </div>
+          <div class="form-header">
+            <h2>Đăng nhập</h2>
+            <p>Tiếp tục kết nối với những cơ hội phù hợp.</p>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="login-password">Mật khẩu</label>
-            <input
-              type="password"
-              id="login-password"
-              class="form-control"
-              placeholder="Nhập mật khẩu"
-              required
-            />
-            <div class="form-error" id="err-login-password">
-              Vui lòng nhập mật khẩu.
+          <!-- Thông báo lỗi/thành công -->
+          <div id="login-alert" class="alert-box"></div>
+
+          <form id="form-login" novalidate>
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input
+                type="email"
+                id="login-email"
+                class="form-input"
+                placeholder="minhanh.nguyen@example.com"
+                required
+              />
+              <div class="form-error" id="err-login-email">
+                Vui lòng nhập địa chỉ email hợp lệ.
+              </div>
             </div>
+
+            <div class="form-group">
+              <label for="login-password">Mật khẩu</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="login-password"
+                  class="form-input"
+                  placeholder="••••••••••••"
+                  required
+                />
+                <button type="button" class="toggle-pwd" id="btn-toggle-pwd">Hiện</button>
+              </div>
+              <div class="form-error" id="err-login-password">
+                Vui lòng nhập mật khẩu.
+              </div>
+            </div>
+
+            <div class="form-options">
+              <label class="checkbox-label">
+                <input type="checkbox" id="remember-me" checked />
+                <span>Ghi nhớ đăng nhập</span>
+              </label>
+              <a href="javascript:void(0)" class="link-primary" onclick="alert('Vui lòng liên hệ quản trị viên qua email admin@careerhub.vn để khôi phục mật khẩu.')">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" id="btn-submit-login" class="btn-auth-submit">
+              Đăng nhập
+            </button>
+          </form>
+
+          <div class="auth-divider">
+            <span>hoặc đăng nhập bằng</span>
           </div>
 
-          <button
-            type="submit"
-            id="btn-submit-login"
-            class="btn btn-primary"
-            style="width: 100%; margin-top: 10px"
-          >
-            Đăng nhập
-          </button>
-        </form>
-      </div>
+          <div>
+            <button type="button" class="btn-google" onclick="alert('Tính năng đăng nhập Google đang được tích hợp.')">
+              <svg width="18" height="18" viewBox="0 0 18 18">
+                <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.61z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.27c-.8.54-1.83.86-3.04.86-2.34 0-4.33-1.58-5.04-3.71H.95v2.33C2.43 15.89 5.48 18 9 18z"/>
+                <path fill="#FBBC05" d="M3.96 10.7c-.18-.54-.28-1.12-.28-1.7s.1-1.16.28-1.7V4.97H.95A8.996 8.996 0 0 0 0 9c0 1.45.35 2.82.95 4.03l3.01-2.33z"/>
+                <path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.43 2.11.95 4.97l3.01 2.33c.71-2.13 2.7-3.72 5.04-3.72z"/>
+              </svg>
+              Google
+            </button>
+          </div>
+
+          <div class="switch-auth-link">
+            Chưa có tài khoản? <a href="register.html">Đăng ký ngay →</a>
+          </div>
+
+          <!-- Phần dành cho Nhà tuyển dụng và Cổng quản trị -->
+          <div class="employer-gate-box">
+            <div class="gate-title">BẠN LÀ NHÀ TUYỂN DỤNG?</div>
+            <div class="gate-actions">
+              <a href="register.html?role=employer" class="btn-employer-login">Đăng ký doanh nghiệp</a>
+              <a href="admin.html" class="link-admin-portal">Cổng quản trị →</a>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- Scripts -->

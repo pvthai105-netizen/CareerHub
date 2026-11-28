@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from math import ceil
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.models.job import Job, JobStatus
 from app.models.user import User
@@ -70,7 +70,15 @@ def get_admin_jobs(
     total = query.count()
     total_pages = ceil(total / limit) if total else 0
     offset = (page - 1) * limit
-    jobs = query.order_by(Job.created_at.desc()).offset(offset).limit(limit).all()
+    jobs = (
+        query.options(
+            joinedload(Job.employer).joinedload(User.employer_profile)
+        )
+        .order_by(Job.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
 
     items = [_format_job_item(j) for j in jobs]
 
@@ -85,7 +93,14 @@ def get_admin_jobs(
 
 def get_admin_job_detail(db: Session, job_id: int) -> AdminJobDetailResponse:
     """Admin xem chi tiết đầy đủ của một tin tuyển dụng."""
-    job = db.query(Job).filter(Job.job_id == job_id).first()
+    job = (
+        db.query(Job)
+        .options(
+            joinedload(Job.employer).joinedload(User.employer_profile)
+        )
+        .filter(Job.job_id == job_id)
+        .first()
+    )
     if not job:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

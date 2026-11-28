@@ -1,5 +1,6 @@
-const API_BASE = "http://127.0.0.1:8000"; // Lý do: Frontend chạy bằng Live Server cổng 5500, còn Backend FastAPI chạy cổng 8000
-// Thêm tiền tố API chung để đồng nhất các endpoint backend
+// Tự động nhận diện: Nếu chạy Live Server (port 5500) thì trỏ port 8000, 
+// nếu chạy qua FastAPI hoặc đã deploy lên Render thì dùng domain hiện tại ("")
+const API_BASE = window.location.port === "5500" ? "http://127.0.0.1:8000" : "";// Thêm tiền tố API chung để đồng nhất các endpoint backend
 const API_PREFIX = "/api"; // ← đã thêm cơ chế xử lý tiền tố API
 
 /**
@@ -9,21 +10,10 @@ const API_PREFIX = "/api"; // ← đã thêm cơ chế xử lý tiền tố API
  */
 
 function buildUrl(path) {
-  // Đảm bảo đường dẫn luôn bắt đầu bằng dấu /
-  const cleanPath = path.startsWith("/") ? path : "/" + path;
-
-  // Nếu đường dẫn đã có /api hoặc /user thì giữ nguyên
-  if (
-    cleanPath.startsWith("/api/") ||
-    cleanPath === "/api" ||
-    cleanPath.startsWith("/user/") ||
-    cleanPath === "/user"
-  ) {
-    return cleanPath;
-  }
-
-  // Nếu chưa có tiền tố thì tự thêm /api
-  return API_PREFIX + cleanPath;
+  // Đảm bảo đường dẫn luôn bắt đầu bằng /
+  const cleanPath = path.startsWith('/') ? path : '/' + path;
+  // Backend không sử dụng tiền tố /api, trả về đường dẫn sạch
+  return cleanPath;
 }
 
 

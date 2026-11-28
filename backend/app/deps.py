@@ -47,15 +47,21 @@ def get_current_user(
     return user
 
 
-def require_roles(*roles: Role):
+def require_roles(*roles: Role, detail: str | None = None):
     """Chỉ cho phép các vai trò được liệt kê.
     Ví dụ: Depends(require_roles(Role.employer, Role.admin))"""
 
     def checker(user: User = Depends(get_current_user)) -> User:
         if user.role not in roles:
+            error_detail = detail
+            if not error_detail:
+                if roles == (Role.employer,):
+                    error_detail = "Chỉ nhà tuyển dụng mới được thực hiện thao tác này"
+                else:
+                    error_detail = "Bạn không có quyền truy cập"
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Bạn không có quyền truy cập",
+                detail=error_detail,
             )
         return user
 

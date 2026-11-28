@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 
 from app.models.user import Role, User
@@ -39,7 +39,11 @@ def get_users_list(
 
     total = query.count()
     users = (
-        query.order_by(User.created_at.desc())
+        query.options(
+            joinedload(User.student_profile),
+            joinedload(User.employer_profile),
+        )
+        .order_by(User.created_at.desc())
         .offset((page - 1) * limit)
         .limit(limit)
         .all()
@@ -75,7 +79,15 @@ def get_users_list(
 
 def get_user_detail(db: Session, user_id: int) -> UserDetailResponse:
     """Xem thông tin chi tiết một tài khoản kèm hồ sơ liên kết."""
-    user = db.get(User, user_id)
+    user = (
+        db.query(User)
+        .options(
+            joinedload(User.student_profile),
+            joinedload(User.employer_profile),
+        )
+        .filter(User.id == user_id)
+        .first()
+    )
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
