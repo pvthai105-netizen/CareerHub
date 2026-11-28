@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Không tìm thấy trang | CareerHub</title>
+    <link rel="icon" href="/logoCHT-Photoroom.png" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .notfound-main {
+        min-height: calc(100vh - 72px - 220px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 16px;
+      }
+
+      .notfound-card {
+        width: 100%;
+        max-width: 560px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 44px 32px;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+      }
+
+      .notfound-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        background: var(--info-bg);
+        color: var(--indigo);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      .notfound-code {
+        font-size: clamp(64px, 14vw, 96px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--indigo);
+        margin-bottom: 14px;
+      }
+
+      .notfound-title {
+        font-size: 24px;
+        line-height: 1.3;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 10px;
+      }
+
+      .notfound-desc {
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--muted);
+        max-width: 420px;
+        margin: 0 auto 28px;
+      }
+
+      .notfound-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      @media (max-width: 560px) {
+        .notfound-card {
+          padding: 32px 20px;
+        }
+        .notfound-title {
+          font-size: 20px;
+        }
+        .notfound-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .notfound-actions .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-navbar">
+        <a href="/home.html" class="brand-logo" title="CareerHub">
+          <img src="/logoCHT-Photoroom.png" alt="CareerHub Logo" />
+        </a>
+
+        <ul class="nav-menu">
+          <li><a href="/home.html" class="nav-link">Trang chủ</a></li>
+          <li><a href="/student_dashboard.html" class="nav-link">Việc làm của tôi</a></li>
+          <li><a href="/employer_dashboard.html" class="nav-link">Doanh nghiệp</a></li>
+          <li><a href="/profile.html" class="nav-link">Hồ sơ</a></li>
+          <li><a href="/company_detail.html" class="nav-link">Công ty</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="/login.html" class="btn btn-outline">Đăng nhập</a>
+          <a href="/register.html" class="btn btn-primary">Đăng ký</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="notfound-main">
+      <section class="notfound-card" aria-labelledby="notfound-heading">
+        <span class="notfound-badge">Lỗi 404</span>
+        <div class="notfound-code" aria-hidden="true">404</div>
+        <h1 id="notfound-heading" class="notfound-title">Không tìm thấy trang bạn yêu cầu</h1>
+        <p class="notfound-desc">
+          Đường dẫn có thể đã bị thay đổi, tạm thời không khả dụng hoặc bạn đã nhập nhầm địa chỉ.
+        </p>
+        <div class="notfound-actions">
+          <a href="/home.html" class="btn btn-primary">Về trang chủ</a>
+          <a href="/home.html#/jobs" class="btn btn-outline">Tìm việc làm</a>
+          <button
+            type="button"
+            class="btn btn-ghost"
+            onclick="history.length > 1 ? history.back() : (window.location.href='/home.html')"
+          >
+            ← Quay lại
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a href="/home.html" class="brand-logo" style="margin-bottom: 12px">
+              <img src="/logoCHT-Photoroom.png" alt="CareerHub Logo" />
+            </a>
+            <p class="footer-desc">
+              Một nền tảng. Mọi cơ hội. Kết nối việc làm thêm và thực tập chất lượng cao cho sinh viên.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="footer-col-title">Ứng viên</h4>
+            <ul class="footer-links">
+              <li><a href="/home.html#/jobs">Tìm việc làm</a></li>
+              <li><a href="/profile.html">Hồ sơ cá nhân</a></li>
+              <li><a href="/my_applications.html">Đơn ứng tuyển</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-col-title">Nhà tuyển dụng</h4>
+            <ul class="footer-links">
+              <li><a href="/employer_dashboard.html">Tổng quan doanh nghiệp</a></li>
+              <li><a href="/job_post.html">Đăng tin tuyển dụng</a></li>
+              <li><a href="/employer_profile.html">Hồ sơ công ty</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-col-title">Liên hệ</h4>
+            <p style="color: var(--muted); font-size: 13px; margin-bottom: 6px">
+              📍 Học viện CN Bưu chính Viễn thông
+            </p>
+            <p style="color: var(--muted); font-size: 13px; margin-bottom: 6px">
+              ✉️ contact@careerconnect.vn
+            </p>
+            <p style="color: var(--muted); font-size: 13px">
+              📞 (024) 3754 5555
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>© 2026 CareerHub / CareerConnect - Nhóm 4.</span>
+          <span>Nền tảng kết nối việc làm sinh viên</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <script src="/js/ui.js"></script>
+  </body>
+</html>

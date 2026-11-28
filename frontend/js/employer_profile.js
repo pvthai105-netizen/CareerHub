@@ -3,6 +3,40 @@
  */
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // 0. Điều khiển Sidebar drawer trên tablet & mobile (< 992px)
+  const hamburgerBtn = document.getElementById("hamburger");
+  const sidebarEl = document.getElementById("sidebar");
+  const overlayEl = document.getElementById("overlay");
+
+  function openSidebarDrawer() {
+    sidebarEl?.classList.add("open");
+    overlayEl?.classList.add("show");
+    document.body.classList.add("drawer-open");
+    hamburgerBtn?.setAttribute("aria-expanded", "true");
+  }
+
+  function closeSidebarDrawer() {
+    sidebarEl?.classList.remove("open");
+    overlayEl?.classList.remove("show");
+    document.body.classList.remove("drawer-open");
+    hamburgerBtn?.setAttribute("aria-expanded", "false");
+  }
+
+  hamburgerBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (sidebarEl?.classList.contains("open")) closeSidebarDrawer();
+    else openSidebarDrawer();
+  });
+  overlayEl?.addEventListener("click", closeSidebarDrawer);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidebarEl?.classList.contains("open")) closeSidebarDrawer();
+  });
+  sidebarEl?.querySelectorAll(".sidebar-menu a").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth < 992) closeSidebarDrawer();
+    });
+  });
+
   // 1. Kiểm tra quyền truy cập (Bắt buộc vai trò Employer)
   const currentUser = AuthGuard.requireRoles(["employer"]);
   if (!currentUser) return;
@@ -31,6 +65,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Hiển thị Toast
   function showToast(title, message, isError = false) {
+    if (typeof window.showToast === "function") {
+      window.showToast(title, message, isError);
+      return;
+    }
     if (!toast) return;
     toast.className = `toast-notice show ${isError ? "toast-error" : ""}`;
     toast.querySelector(".toast-icon").textContent = isError ? "⚠️" : "✓";
@@ -60,9 +98,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // 3. Tải dữ liệu hồ sơ công ty từ API
+  const statusSlot = document.getElementById("employer-profile-status");
   async function loadProfile() {
+    if (statusSlot && typeof CareerHubUI !== "undefined") {
+      statusSlot.hidden = false;
+      CareerHubUI.renderLoading(statusSlot, "Đang tải hồ sơ doanh nghiệp...");
+    }
     try {
       const data = await api.get("/employers/me");
+      if (statusSlot) {
+        statusSlot.hidden = true;
+        statusSlot.innerHTML = "";
+      }
       if (!data) return;
 
       currentProfileId = data.id;
@@ -93,6 +140,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       calculateProgress();
     } catch (err) {
+      if (statusSlot && typeof CareerHubUI !== "undefined") {
+        statusSlot.hidden = false;
+        CareerHubUI.renderError(statusSlot, {
+          title: "Không thể tải hồ sơ doanh nghiệp",
+          message: err.message || "Vui lòng kiểm tra kết nối máy chủ và thử lại.",
+          onRetry: loadProfile,
+        });
+      }
       showToast("Lỗi tải hồ sơ", err.message, true);
     }
   }

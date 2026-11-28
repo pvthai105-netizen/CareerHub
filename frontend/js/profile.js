@@ -62,6 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   let toastTimer = null;
   function showToast(title, message, isError = false) {
+    if (typeof window.showToast === "function") {
+      window.showToast(title, message, isError);
+      return;
+    }
     if (!toast) return;
     clearTimeout(toastTimer);
     toast.className = `toast-notice show ${isError ? "toast-error" : ""}`;
@@ -429,10 +433,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Nếu người dùng có đăng nhập bằng tài khoản sinh viên và backend đang chạy, đồng bộ từ API
     if (typeof Auth !== "undefined" && Auth.getToken() && typeof api !== "undefined") {
+      if (lastSavedTimeEl) lastSavedTimeEl.textContent = "Đang đồng bộ hồ sơ từ máy chủ...";
       try {
         const apiData = await api.get("/students/me");
         if (apiData) {
-          // Lưu vào localStorage và điền form
           const mergedData = {
             ...apiData,
             updated_at: new Date().toISOString()
@@ -441,8 +445,10 @@ document.addEventListener("DOMContentLoaded", () => {
           populateForm(mergedData);
         }
       } catch (apiErr) {
-        // Backend có thể chưa chạy hoặc token hết hạn, không làm gián đoạn trải nghiệm người dùng
         console.warn("Không thể đồng bộ API, sử dụng dữ liệu offline từ localStorage:", apiErr.message);
+        if (lastSavedTimeEl) {
+          lastSavedTimeEl.textContent = "Chưa đồng bộ được máy chủ · Đang dùng dữ liệu đã lưu cục bộ";
+        }
       }
     }
   }
@@ -569,19 +575,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       updateLivePreview();
       showToast("✨ Trợ giúp AI", "Đã tự động tạo đoạn giới thiệu bản thân chuẩn hóa theo ngành và kỹ năng của bạn!");
-    });
-  }
-
-  const navAiAssistant = document.getElementById("nav-ai-assistant");
-  if (navAiAssistant) {
-    navAiAssistant.addEventListener("click", (e) => {
-      e.preventDefault();
-      showToast("🤖 Trợ lý AI CareerHub", "Trợ lý AI sẵn sàng hỗ trợ! Hãy bấm '✨ Trợ giúp AI viết Bio' trong phần Giới thiệu bản thân để tự động tối ưu hồ sơ nhé.");
-      if (btnAiBio) {
-        btnAiBio.scrollIntoView({ behavior: "smooth", block: "center" });
-        btnAiBio.style.transform = "scale(1.08)";
-        setTimeout(() => { btnAiBio.style.transform = ""; }, 600);
-      }
     });
   }
 

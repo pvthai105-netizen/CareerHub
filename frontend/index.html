@@ -81,7 +81,7 @@
         <div
           style="
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
           "
         >
@@ -205,6 +205,38 @@
           <button class="page-btn">→</button>
         </div>
       </section>
+
+      <!-- Khối 06: Trạng thái hệ thống (Loading / Empty / Error) & Toast -->
+      <section style="margin-bottom: 40px">
+        <h2>06. Trạng thái hệ thống &amp; Toast</h2>
+        <div class="ui-states-grid" style="margin-bottom: 20px">
+          <div class="ui-state ui-state--loading" role="status">
+            <div class="ui-spinner" aria-hidden="true"></div>
+            <p class="ui-state__desc">Đang tải dữ liệu...</p>
+          </div>
+
+          <div class="ui-state ui-state--empty">
+            <div class="ui-state__icon" aria-hidden="true">📂</div>
+            <h3 class="ui-state__title">Chưa có dữ liệu</h3>
+            <p class="ui-state__desc">Hiện chưa có mục nào phù hợp để hiển thị.</p>
+          </div>
+
+          <div class="ui-state ui-state--error" role="alert">
+            <div class="ui-state__icon" aria-hidden="true">!</div>
+            <h3 class="ui-state__title">Không thể tải dữ liệu</h3>
+            <p class="ui-state__desc">Kết nối tạm gián đoạn. Vui lòng thử lại.</p>
+            <button type="button" class="btn btn-primary ui-state__action" onclick="window.showToast('Đang thử kết nối lại...', 'info')">
+              Thử lại
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button type="button" class="btn btn-primary" onclick="window.showToast('Lưu thành công!', 'success')">Toast thành công</button>
+          <button type="button" class="btn btn-outline" onclick="window.showToast('Không thể kết nối máy chủ.', 'error')">Toast lỗi</button>
+          <a href="404.html" class="btn btn-ghost">Xem trang 404 →</a>
+        </div>
+      </section>
     </main>
 
     <!-- ====================================================================
@@ -228,18 +260,18 @@
           <div>
             <h4 class="footer-col-title">Ứng viên</h4>
             <ul class="footer-links">
-              <li><a href="#">Tìm việc làm</a></li>
-              <li><a href="#">Tạo CV</a></li>
-              <li><a href="#">Cẩm nang</a></li>
+              <li><a href="home.html#/jobs">Tìm việc làm</a></li>
+              <li><a href="profile.html">Hồ sơ cá nhân</a></li>
+              <li><a href="my_applications.html">Đơn ứng tuyển</a></li>
             </ul>
           </div>
 
           <div>
             <h4 class="footer-col-title">Nhà tuyển dụng</h4>
             <ul class="footer-links">
-              <li><a href="#">Đăng tin tuyển dụng</a></li>
-              <li><a href="#">Tìm kiếm hồ sơ</a></li>
-              <li><a href="#">Bảng giá</a></li>
+              <li><a href="employer_dashboard.html">Tổng quan doanh nghiệp</a></li>
+              <li><a href="job_post.html">Đăng tin tuyển dụng</a></li>
+              <li><a href="employer_profile.html">Hồ sơ công ty</a></li>
             </ul>
           </div>
 
@@ -265,5 +297,6 @@
     </footer>
     <script src="js/api.js"></script>
     <script src="js/auth-guard.js"></script>
+    <script src="js/ui.js"></script>
   </body>
 </html>
